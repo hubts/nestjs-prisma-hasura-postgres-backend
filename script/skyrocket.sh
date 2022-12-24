@@ -34,7 +34,7 @@ main() {
         git add .
         git commit -m "[$version] $message"
 
-        echo "🥰 Successfully updated and committed to [ $new_version ]"
+        echo "🥰 [ $new_version ] Successfully updated and committed!"
     else
         echo "😥 Failed"
     fi
