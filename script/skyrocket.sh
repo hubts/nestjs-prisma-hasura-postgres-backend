@@ -30,9 +30,8 @@ main() {
         sed -i ".tmp" -E "s/${search}/${replace}/g" "package.json"
         rm "package.json.tmp"
 
-        read -p "❓ Enter a new commit message: " message
         git add .
-        git commit -m "[$version] $message"
+        git cz
 
         echo "🥰 [ $new_version ] Successfully updated and committed!"
     else
