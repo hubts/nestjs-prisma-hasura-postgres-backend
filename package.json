@@ -1,6 +1,6 @@
 {
     "name": "nestjs-easyfull-boilerplate",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "",
     "author": "",
     "private": true,
@@ -26,6 +26,7 @@
         "@nestjs/config": "^2.2.0",
         "@nestjs/core": "^9.0.0",
         "@nestjs/platform-express": "^9.0.0",
+        "@nestjs/throttler": "^3.1.0",
         "@nestjs/typeorm": "^9.0.1",
         "joi": "^17.7.0",
         "pg": "^8.8.0",
