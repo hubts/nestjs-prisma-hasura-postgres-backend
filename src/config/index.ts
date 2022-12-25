@@ -3,7 +3,7 @@ import { ValidationSchema } from "./env/validation.schema";
 import { TypeOrmConfig } from "./typeorm.config";
 import { TypeOrmConfigService } from "./service/typeorm.config.service";
 import { ThrottlerConfig } from "./throttler.config";
-import { ThrottlerConfigService } from "./service/throttler.config.servic";
+import { ThrottlerConfigService } from "./service/throttler.config.service";
 
 export {
     ValidationSchema,

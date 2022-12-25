@@ -1,12 +1,13 @@
 {
     "name": "nestjs-easyfull-boilerplate",
-    "version": "0.0.7",
+    "version": "0.0.8-0",
     "description": "",
     "author": "",
     "private": true,
     "license": "UNLICENSED",
     "scripts": {
-        "commit": "cz",
+        "git:prepatch": "./script/skyrocket.sh prepatch",
+        "git:patch": "./script/skyrocket.sh patch",
         "prebuild": "rimraf dist",
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
