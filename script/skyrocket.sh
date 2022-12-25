@@ -21,6 +21,9 @@ main() {
     request="$1"
     previous_version=$(node -p "require('$ROOT_DIR/package.json').version")
     new_version=$(npm version $request --no-git-tag-version)
+    if (( $? != 0 )); then
+        new_version="$request"
+    fi
     echo "🛫 Try to update [ $previous_version ] -> [ $new_version ]"
 
     if (( $? == 0 )); then
