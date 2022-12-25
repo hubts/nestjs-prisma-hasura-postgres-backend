@@ -1,6 +1,6 @@
 {
     "name": "nestjs-easyfull-boilerplate",
-    "version": "0.0.8-0",
+    "version": "0.0.8-1",
     "description": "",
     "author": "",
     "private": true,
@@ -8,6 +8,7 @@
     "scripts": {
         "git:prepatch": "./script/skyrocket.sh prepatch",
         "git:patch": "./script/skyrocket.sh patch",
+        "git:prerelease": "./script/skyrocket.sh prerelease",
         "prebuild": "rimraf dist",
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -29,6 +30,7 @@
         "@nestjs/platform-express": "^9.0.0",
         "@nestjs/throttler": "^3.1.0",
         "@nestjs/typeorm": "^9.0.1",
+        "cache-manager": "^5.1.4",
         "joi": "^17.7.0",
         "pg": "^8.8.0",
         "reflect-metadata": "^0.1.13",
@@ -41,6 +43,7 @@
         "@nestjs/cli": "^9.0.0",
         "@nestjs/schematics": "^9.0.0",
         "@nestjs/testing": "^9.0.0",
+        "@types/cache-manager": "^4.0.2",
         "@types/express": "^4.17.13",
         "@types/jest": "28.1.8",
         "@types/node": "^16.0.0",

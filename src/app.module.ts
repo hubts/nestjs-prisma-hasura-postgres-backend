@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { CacheModule, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import {
     ThrottlerConfigService,
@@ -9,6 +9,7 @@ import {
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
+import { AppController } from "./app.controller";
 
 @Module({
     imports: [
@@ -24,7 +25,9 @@ import { APP_GUARD } from "@nestjs/core";
         ThrottlerModule.forRootAsync({
             useClass: ThrottlerConfigService,
         }),
+        CacheModule.register(),
     ],
+    controllers: [AppController],
     providers: [
         {
             provide: APP_GUARD,
