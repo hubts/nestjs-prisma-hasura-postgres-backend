@@ -19,3 +19,4 @@
     -   Cache module has been imported. It is just in-memory cache.
     -   User module has been added.
         -   User controller, service, and entity with dto are implemented.
+        -   Default DTO for User is implemented as domain (exactly same with user entity), other DTOs are implemented in 'dto' dir.
