@@ -5,6 +5,12 @@
 -   Throttler
 -   Example Module
     -   User
+        -   Create
+        -   Update
+        -   Delete
+        -   FindAll
+        -   FindOneById
+-   Morgan: HTTP Request Logger Middleware
 
 # Logs
 
@@ -20,3 +26,6 @@
     -   User module has been added.
         -   User controller, service, and entity with dto are implemented.
         -   Default DTO for User is implemented as domain (exactly same with user entity), other DTOs are implemented in 'dto' dir.
+    -   Shared directory has been implemented.
+        -   Enums & Models: base DTO, entity, interface for each model (can be used to implement domain).
+        -   Util: random generator, hash crypt (for password)
