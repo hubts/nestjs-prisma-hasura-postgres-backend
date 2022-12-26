@@ -11,7 +11,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD, APP_PIPE } from "@nestjs/core";
 import { AppController } from "./app.controller";
 import { UserModule } from "./module/user/user.module";
-import { CustomValidationPipe } from "./common/pipe/custom-validation.pipe";
+import { CustomValidationPipe } from "@common/pipe/custom-validation.pipe";
 
 @Module({
     imports: [

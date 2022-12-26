@@ -4,6 +4,8 @@ import { NestExpressApplication } from "@nestjs/platform-express";
 import { Logger, VersioningType } from "@nestjs/common";
 import { AppConfig } from "@config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import * as fs from "fs";
+import { SwaggerThemePath } from "@common/asset/swagger-theme";
 
 async function bootstrap() {
     const logger = new Logger("Main");
@@ -34,8 +36,12 @@ async function bootstrap() {
             swaggerConfig.build()
         );
         const swaggerPath = "docs";
+        const swaggerTheme = fs
+            .readFileSync(SwaggerThemePath.Newspaper) // You can change the theme of swagger page from here
+            .toString();
         SwaggerModule.setup(swaggerPath, app, swaggerDocument, {
             explorer: true,
+            customCss: swaggerTheme,
         });
 
         // Start
