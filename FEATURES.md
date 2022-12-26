@@ -18,7 +18,7 @@
 
     -   Project is newly started!
     -   TypeORM module has been imported. We use 'Postgres' for database.
-    -   Configurations are added. APP and TypeORM were the first.
+    -   Configurations are added. APP and TypeORM configs were the first.
 
 -   2022-12-26
     -   Throttler module has been imported. The configuration of it is optional.
@@ -27,5 +27,6 @@
         -   User controller, service, and entity with dto are implemented.
         -   Default DTO for User is implemented as domain (exactly same with user entity), other DTOs are implemented in 'dto' dir.
     -   Shared directory has been implemented.
-        -   Enums & Models: base DTO, entity, interface for each model (can be used to implement domain).
-        -   Util: random generator, hash crypt (for password)
+        -   Enums & Models: base DTO, entity, interface for each model (can be used to implement domain easily) are implemented.
+        -   Util: random generator, hash crypt (for password) have been implemented.
+    -   Package 'morgan' has been imported to see http request in log.
