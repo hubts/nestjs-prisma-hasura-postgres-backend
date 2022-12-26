@@ -6,9 +6,10 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from "typeorm";
+import { IBase } from "./base.interface";
 
 @Entity()
-export abstract class BaseEntity {
+export abstract class BaseEntity implements IBase {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 

@@ -1,9 +1,10 @@
-import { BaseEntity } from "@shared/entity/base.entity";
+import { BaseEntity } from "@shared/model";
 import { Exclude } from "class-transformer";
 import { Column, Entity } from "typeorm";
+import { IUser } from "./user.interface";
 
 @Entity("user", { schema: process.env.DB_SCHEMA })
-export class User extends BaseEntity {
+export class User extends BaseEntity implements IUser {
     @Column("text")
     email: string;
 

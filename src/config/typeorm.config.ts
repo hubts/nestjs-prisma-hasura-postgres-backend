@@ -1,6 +1,6 @@
 import { registerAs } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { entities } from "@shared/entity/entities";
+import { entities } from "@shared/model";
 
 export const TypeOrmConfig = registerAs(
     "typeorm",

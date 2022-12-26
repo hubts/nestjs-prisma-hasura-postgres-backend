@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Random } from "@shared/util";
 import { Exclude } from "class-transformer";
+import { IBase } from "./base.interface";
 
-export class BaseDto {
+export class BaseDto implements IBase {
     @ApiProperty({
         description: "id",
         example: Random.uuid(),

@@ -1,9 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseDto } from "@shared/dto/base.dto";
+import { BaseDto } from "@shared/model";
 import { Random } from "@shared/util";
 import { Exclude } from "class-transformer";
+import { IUser } from "./user.interface";
 
-export class UserDto extends BaseDto {
+export class UserDto extends BaseDto implements IUser {
     @ApiProperty({
         description: "Email (Login ID)",
         example: Random.email(),
