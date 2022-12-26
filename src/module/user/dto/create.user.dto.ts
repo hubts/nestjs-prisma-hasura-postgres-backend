@@ -1,10 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Random } from "@shared/util";
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateUserDto {
     @ApiProperty({
         description: "Email",
-        example: "email@example.com",
+        example: Random.email(),
     })
     @IsNotEmpty()
     @IsEmail()
@@ -12,7 +13,7 @@ export class CreateUserDto {
 
     @ApiProperty({
         description: "Password",
-        example: "1234",
+        example: Random.string(10),
     })
     @IsNotEmpty()
     @IsString()
@@ -20,7 +21,7 @@ export class CreateUserDto {
 
     @ApiProperty({
         description: "Name",
-        example: "John Doe",
+        example: Random.nickname(),
     })
     @IsNotEmpty()
     @IsString()
@@ -28,7 +29,7 @@ export class CreateUserDto {
 
     @ApiProperty({
         description: "Age",
-        example: 30,
+        example: Random.number(20, 50),
     })
     @IsNotEmpty()
     @IsNumber()

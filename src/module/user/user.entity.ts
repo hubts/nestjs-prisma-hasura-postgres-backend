@@ -1,20 +1,13 @@
-import {
-    Column,
-    CreateDateColumn,
-    DeleteDateColumn,
-    Entity,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-} from "typeorm";
+import { BaseEntity } from "@shared/entity/base.entity";
+import { Exclude } from "class-transformer";
+import { Column, Entity } from "typeorm";
 
 @Entity("user", { schema: process.env.DB_SCHEMA })
-export class User {
-    @PrimaryGeneratedColumn()
-    id: string;
-
+export class User extends BaseEntity {
     @Column("text")
     email: string;
 
+    @Exclude()
     @Column("text")
     password: string;
 
@@ -23,19 +16,4 @@ export class User {
 
     @Column("int")
     age: number;
-
-    @CreateDateColumn({
-        name: "created_at",
-    })
-    createdAt: Date;
-
-    @UpdateDateColumn({
-        name: "updated_at",
-    })
-    updatedAt: Date;
-
-    @DeleteDateColumn({
-        name: "deleted_at",
-    })
-    deletedAt: Date;
 }

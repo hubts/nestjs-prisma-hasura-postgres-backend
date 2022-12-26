@@ -1,47 +1,29 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { BaseDto } from "@shared/dto/base.dto";
+import { Random } from "@shared/util";
+import { Exclude } from "class-transformer";
 
-export class UserDto {
-    @ApiProperty({
-        description: "id",
-        example: "1",
-    })
-    id: string;
-
+export class UserDto extends BaseDto {
     @ApiProperty({
         description: "Email (Login ID)",
-        example: "email@example.com",
+        example: Random.email(),
     })
     email: string;
 
+    @Exclude()
+    password: string;
+
     @ApiProperty({
         description: "Name of user",
-        example: "John Doe",
+        example: Random.nickname(),
     })
     name: string;
 
     @ApiProperty({
         description: "Age of user",
-        example: 30,
+        example: Random.number(20, 50),
     })
     age: number;
-
-    @ApiProperty({
-        description: "Created date",
-        example: new Date(),
-    })
-    createdAt: Date;
-
-    @ApiProperty({
-        description: "Updated date",
-        example: new Date(),
-    })
-    updatedAt: Date;
-
-    @ApiProperty({
-        description: "Deleted date",
-        example: null,
-    })
-    deletedAt: Date;
 }
 
 export class OneUserDto {
