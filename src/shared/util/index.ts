@@ -1,3 +1,4 @@
+import { Bcrypt } from "./bcrypt";
 import { Random } from "./random";
 
-export { Random };
+export { Random, Bcrypt };
