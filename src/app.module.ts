@@ -10,6 +10,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
 import { AppController } from "./app.controller";
+import { UserModule } from "./module/user/user.module";
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { AppController } from "./app.controller";
             useClass: ThrottlerConfigService,
         }),
         CacheModule.register(),
+        UserModule,
     ],
     controllers: [AppController],
     providers: [

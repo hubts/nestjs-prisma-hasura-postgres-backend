@@ -1,5 +1,6 @@
 import { registerAs } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { entities } from "@shared/entity/entities";
 
 export const TypeOrmConfig = registerAs(
     "typeorm",
@@ -10,7 +11,7 @@ export const TypeOrmConfig = registerAs(
         username: process.env.DB_USERNAME || "postgres",
         password: process.env.DB_PASSWORD || "postgres",
         database: process.env.DB_NAME || "postgres",
-        entities: [],
+        entities: [...entities],
         synchronize: process.env.DB_SYNC === "true",
         logging: process.env.DB_LOGGING === "true",
         schema: process.env.DB_SCHEMA || "public",
