@@ -1,10 +1,9 @@
+import { User } from "./user.entity";
+
 export class UserDto {
-    id: string;
-    email: string;
-    password: string;
-    name: string;
-    age: string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date;
+    user: User;
+}
+
+export class UsersDto {
+    users: User[];
 }
