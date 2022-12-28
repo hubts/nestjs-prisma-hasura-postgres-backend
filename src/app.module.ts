@@ -16,6 +16,7 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { AppController } from "./app.controller";
 import { UserModule } from "./module/user/user.module";
 import { CustomValidationPipe } from "@common/pipe/custom-validation.pipe";
+import { HealthCheckModule } from "./module/health-check/health-check.module";
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { CustomValidationPipe } from "@common/pipe/custom-validation.pipe";
             useClass: ThrottlerConfigService,
         }),
         CacheModule.register(),
+        HealthCheckModule,
         UserModule,
     ],
     controllers: [AppController],
