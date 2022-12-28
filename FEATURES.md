@@ -10,6 +10,7 @@
         -   Delete
         -   FindAll
         -   FindOneById
+    -   HealthCheck
 -   Morgan: HTTP Request Logger Middleware
 
 # Logs
@@ -21,6 +22,7 @@
     -   Configurations are added. APP and TypeORM configs were the first.
 
 -   2022-12-26
+
     -   Throttler module has been imported. The configuration of it is optional.
     -   Cache module has been imported. It is just in-memory cache.
     -   User module has been added.
@@ -30,3 +32,9 @@
         -   Enums & Models: base DTO, entity, interface for each model (can be used to implement domain easily) are implemented.
         -   Util: random generator, hash crypt (for password) have been implemented.
     -   Package 'morgan' has been imported to see http request in log.
+
+-   2022-12-28
+    -   HealthCheck
+        -   Http and database checks are implemented.
+    -   Decorator
+    -   Error/HttpExceptionFilter is used to handler errors.
