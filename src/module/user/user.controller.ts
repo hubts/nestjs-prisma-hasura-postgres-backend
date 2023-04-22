@@ -1,13 +1,4 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpStatus,
-    Param,
-    Patch,
-    Post,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { ManyUsersDto, OneUserDto } from "./user.dto";
 import { CreateUserDto, UpdateUserDto } from "./dto";
@@ -18,6 +9,7 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
+    @Get()
     @ApiOperation({
         summary: "Get all users without any options",
     })
@@ -26,7 +18,6 @@ export class UserController {
         description: "Users are found",
         type: ManyUsersDto,
     })
-    @Get()
     async getAllUsers(): Promise<ManyUsersDto> {
         return {
             users: await this.userService.findAll(),
@@ -57,9 +48,7 @@ export class UserController {
         type: OneUserDto,
     })
     @Post()
-    async createUser(
-        @Body() createUserDto: CreateUserDto
-    ): Promise<OneUserDto> {
+    async createUser(@Body() createUserDto: CreateUserDto): Promise<OneUserDto> {
         return {
             user: await this.userService.create(createUserDto),
         };
@@ -74,10 +63,7 @@ export class UserController {
         type: OneUserDto,
     })
     @Patch(":id")
-    async updateUser(
-        @Param("id") id: string,
-        @Body() updateUserDto: UpdateUserDto
-    ): Promise<OneUserDto> {
+    async updateUser(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto): Promise<OneUserDto> {
         return {
             user: await this.userService.update(id, updateUserDto),
         };

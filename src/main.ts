@@ -1,12 +1,14 @@
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { Logger, VersioningType } from "@nestjs/common";
+
+import { AppModule } from "./app.module";
 import { AppConfig } from "@config";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { SwaggerThemePath } from "@common/asset/swagger-theme";
-import * as fs from "fs";
+import { SwaggerThemePath } from "@common/swagger/theme";
+
 import * as morgan from "morgan";
+import setupSwagger from "@common/swagger/setup";
 
 async function bootstrap() {
     const logger = new Logger("Main");
@@ -32,29 +34,14 @@ async function bootstrap() {
         });
 
         // Swagger
-        const swaggerConfig = new DocumentBuilder()
-            .setTitle("NestJS Boilerplate Swagger")
-            .setDescription("Swagger for API in NestJS");
-        const swaggerDocument = SwaggerModule.createDocument(
-            app,
-            swaggerConfig.build()
-        );
         const swaggerPath = "docs";
-        const swaggerTheme = fs
-            .readFileSync(SwaggerThemePath.Newspaper) // You can change the theme of swagger page from here
-            .toString();
-        SwaggerModule.setup(swaggerPath, app, swaggerDocument, {
-            explorer: true,
-            customCss: swaggerTheme,
-        });
+        setupSwagger(app, swaggerPath);
 
         // Start
         const config = AppConfig();
         await app.listen(config.port, async () => {
             logger.log(`Application is running on ${await app.getUrl()}`);
-            logger.log(
-                `Documentation is ready: ${await app.getUrl()}/${swaggerPath}`
-            );
+            logger.log(`Documentation is ready: ${await app.getUrl()}/${swaggerPath}`);
         });
     } catch (error) {
         logger.error(`Failed to start the application: ${error}`);
