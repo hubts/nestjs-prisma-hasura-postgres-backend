@@ -5,12 +5,13 @@ import {
     HttpHealthIndicator,
     HealthCheck,
     TypeOrmHealthIndicator,
+    HealthIndicatorResult,
 } from "@nestjs/terminus";
 
 @ApiTags("HealthCheck")
 @Controller("health")
 export class HealthCheckController implements OnModuleInit {
-    private readonly logger = new Logger("📢 HealthCheck");
+    private readonly logger = new Logger("Healthy");
 
     constructor(
         private health: HealthCheckService,
@@ -20,14 +21,21 @@ export class HealthCheckController implements OnModuleInit {
 
     async onModuleInit() {
         const checkResult = await this.check();
-        if (checkResult.status === "ok") {
-            Object.keys(checkResult.info).map(key =>
-                console.log(`${key}: ${JSON.stringify(checkResult.info[key])}`)
-            );
-        } else {
-            Object.keys(checkResult.error).map(key =>
-                console.log(`${key}: ${JSON.stringify(checkResult.error[key])}`)
-            );
+        switch (checkResult.status) {
+            case "ok": {
+                const details = checkResult.details as HealthIndicatorResult;
+                const log = `🔔 Nice! ${JSON.stringify(details)}`;
+                this.logger.log(log);
+                break;
+            }
+            case "shutting_down":
+            case "error": {
+                const details = checkResult.details as HealthIndicatorResult;
+                const errors = checkResult.error as HealthIndicatorResult;
+                const log = `🚫 OMG! ${JSON.stringify(details)}: ${JSON.stringify(errors)}`;
+                this.logger.error(log);
+                break;
+            }
         }
     }
 
@@ -39,7 +47,7 @@ export class HealthCheckController implements OnModuleInit {
     async check() {
         return await this.health.check([
             () => this.http.pingCheck("http", "https://google.com"),
-            () => this.database.pingCheck("database", { timeout: 1500 }),
+            () => this.database.pingCheck("database", { timeout: 30000 }),
         ]);
     }
 }

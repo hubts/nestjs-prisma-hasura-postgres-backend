@@ -14,9 +14,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         this.config = config;
     }
 
-    createTypeOrmOptions():
-        | TypeOrmModuleOptions
-        | Promise<TypeOrmModuleOptions> {
+    createTypeOrmOptions(): TypeOrmModuleOptions | Promise<TypeOrmModuleOptions> {
         return {
             ...this.config,
         };

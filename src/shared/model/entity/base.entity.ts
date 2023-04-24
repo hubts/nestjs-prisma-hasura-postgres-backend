@@ -1,34 +1,28 @@
 import { Exclude } from "class-transformer";
-import {
-    CreateDateColumn,
-    DeleteDateColumn,
-    Entity,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-} from "typeorm";
-import { IBase } from "./base.interface";
+import { CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { IBase } from "../interface/base.interface";
 
 @Entity()
 export abstract class BaseEntity implements IBase {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
     @CreateDateColumn({
         type: "timestamptz",
         name: "created_at",
     })
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn({
         type: "timestamptz",
         name: "updated_at",
     })
-    updatedAt: Date;
+    updatedAt!: Date;
 
     @Exclude()
     @DeleteDateColumn({
         type: "timestamptz",
         name: "deleted_at",
     })
-    deletedAt: Date | null;
+    deletedAt?: Date | null;
 }

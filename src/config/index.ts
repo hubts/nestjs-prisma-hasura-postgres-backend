@@ -1,17 +1,17 @@
-import { AppConfig } from "./app.config";
-import { ValidationSchema } from "./env/validation.schema";
-import { TypeOrmConfig } from "./typeorm.config";
-import { TypeOrmConfigService } from "./service/typeorm.config.service";
-import { ThrottlerConfig } from "./throttler.config";
-import { ThrottlerConfigService } from "./service/throttler.config.service";
+import { ServerConfig, ServerConfigValidation } from "./server.config";
+import { ThrottlerConfig, ThrottlerConfigValidation } from "./throttler.config";
+import { TypeOrmConfig, TypeOrmConfigValidation } from "./typeorm.config";
+import * as Joi from "joi";
 
-export {
-    ValidationSchema,
-    AppConfig,
-    TypeOrmConfig,
-    TypeOrmConfigService,
-    ThrottlerConfig,
-    ThrottlerConfigService,
-};
+export * from "./server.config";
+export * from "./throttler.config";
+export * from "./typeorm.config";
 
-export const configurations = [AppConfig, TypeOrmConfig, ThrottlerConfig];
+export * from "./service";
+
+export const configurations = [ServerConfig, ThrottlerConfig, TypeOrmConfig];
+export const validationSchema = Joi.object({
+    ...ServerConfigValidation,
+    ...ThrottlerConfigValidation,
+    ...TypeOrmConfigValidation,
+});

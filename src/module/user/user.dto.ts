@@ -4,32 +4,32 @@ import { Random } from "@shared/util";
 import { Exclude } from "class-transformer";
 import { IUser } from "./user.interface";
 
-export class UserDto extends BaseDto implements IUser {
+export class UserDto extends BaseDto implements Partial<IUser> {
     @ApiProperty({
         description: "Email (Login ID)",
         example: Random.email(),
     })
-    email: string;
+    email!: string;
 
     @Exclude()
-    password: string;
+    password?: string;
 
     @ApiProperty({
         description: "Name of user",
         example: Random.nickname(),
     })
-    name: string;
+    name!: string;
 
     @ApiProperty({
         description: "Age of user",
         example: Random.number(20, 50),
     })
-    age: number;
+    age!: number;
 }
 
 export class OneUserDto {
     @ApiProperty()
-    user: UserDto;
+    user!: UserDto;
 }
 
 export class ManyUsersDto {
@@ -37,5 +37,5 @@ export class ManyUsersDto {
         type: () => UserDto,
         isArray: true,
     })
-    users: UserDto[];
+    users!: UserDto[];
 }

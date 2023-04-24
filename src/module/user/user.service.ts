@@ -41,8 +41,8 @@ export class UserService {
         const { name, age } = updateUserDto;
 
         const existingUser = await this.findOneById(id);
-        existingUser.name = name;
-        existingUser.age = age;
+        if (name) existingUser.name = name;
+        if (age) existingUser.age = age;
 
         try {
             await this.userRepo.update(id, existingUser);

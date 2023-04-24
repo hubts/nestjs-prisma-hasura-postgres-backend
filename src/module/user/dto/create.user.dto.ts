@@ -3,35 +3,35 @@ import { Random } from "@shared/util";
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateUserDto {
+    @IsNotEmpty()
+    @IsEmail()
     @ApiProperty({
         description: "Email",
         example: Random.email(),
     })
-    @IsNotEmpty()
-    @IsEmail()
-    email: string;
+    email!: string;
 
+    @IsNotEmpty()
+    @IsString()
     @ApiProperty({
         description: "Password",
         example: Random.string(10),
     })
+    password!: string;
+
     @IsNotEmpty()
     @IsString()
-    password: string;
-
     @ApiProperty({
         description: "Name",
         example: Random.nickname(),
     })
-    @IsNotEmpty()
-    @IsString()
-    name: string;
+    name!: string;
 
+    @IsNotEmpty()
+    @IsNumber()
     @ApiProperty({
         description: "Age",
         example: Random.number(20, 50),
     })
-    @IsNotEmpty()
-    @IsNumber()
-    age: number;
+    age!: number;
 }

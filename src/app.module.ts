@@ -1,15 +1,6 @@
-import {
-    CacheModule,
-    ClassSerializerInterceptor,
-    Module,
-} from "@nestjs/common";
+import { CacheModule, ClassSerializerInterceptor, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import {
-    ThrottlerConfigService,
-    TypeOrmConfigService,
-    ValidationSchema,
-    configurations,
-} from "@config";
+import { ThrottlerConfigService, TypeOrmConfigService, configurations, validationSchema } from "@config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
@@ -22,8 +13,8 @@ import { HealthCheckModule } from "./module/health-check/health-check.module";
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            validationSchema: ValidationSchema,
             envFilePath: [".env"],
+            validationSchema,
             load: [...configurations],
         }),
         TypeOrmModule.forRootAsync({

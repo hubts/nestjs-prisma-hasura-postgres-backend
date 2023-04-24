@@ -1,9 +1,4 @@
-import {
-    Injectable,
-    ArgumentMetadata,
-    ValidationPipe,
-    BadRequestException,
-} from "@nestjs/common";
+import { Injectable, ArgumentMetadata, ValidationPipe, BadRequestException } from "@nestjs/common";
 import { plainToClass } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
 
@@ -28,21 +23,16 @@ export class CustomValidationPipe extends ValidationPipe {
         if (errors.length > 0) {
             const records: object[] = [];
             const errorRecords = this.searchErrorConstraints(errors, records);
-            throw new BadRequestException(
-                `Payload validation failed: ${JSON.stringify(errorRecords)}`
-            );
+            throw new BadRequestException(`Payload validation failed: ${JSON.stringify(errorRecords)}`);
         }
         return value;
     }
 
-    searchErrorConstraints(
-        errors: ValidationError[],
-        records: object[]
-    ): object[] {
+    searchErrorConstraints(errors: ValidationError[], records: object[]): object[] {
         for (const error of errors) {
             if (error.constraints) {
                 records.push(error.constraints);
-            } else {
+            } else if (error.children) {
                 this.searchErrorConstraints(error.children, records);
             }
         }

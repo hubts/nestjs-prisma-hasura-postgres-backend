@@ -29,13 +29,7 @@ export class Random {
 
     static url(length = 10, extension?: string): string {
         const ext = extension ? `.${extension}` : "";
-        return (
-            "https://" +
-            this.string(length) +
-            ".com/" +
-            this.string(length) +
-            ext
-        );
+        return "https://" + this.string(length) + ".com/" + this.string(length) + ext;
     }
 
     static nickname(): string {
@@ -44,16 +38,12 @@ export class Random {
 
     static digits(length = 4): string {
         const unit = Math.pow(10, length);
-        return (Math.floor(Math.random() * unit) + unit)
-            .toString()
-            .substring(1);
+        return (Math.floor(Math.random() * unit) + unit).toString().substring(1);
     }
 
     static date(daysBetween = 0, before = false): Date {
         const daysBetweenInMs = Math.floor(daysBetween) * 86400 * 1000;
-        const randomTimeInMs = before
-            ? -this.number(0, daysBetweenInMs)
-            : this.number(0, daysBetweenInMs);
+        const randomTimeInMs = before ? -this.number(0, daysBetweenInMs) : this.number(0, daysBetweenInMs);
         return new Date(new Date().getTime() + randomTimeInMs);
     }
 }

@@ -1,10 +1,7 @@
 import { ThrottlerConfig } from "@config";
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigType } from "@nestjs/config";
-import {
-    ThrottlerModuleOptions,
-    ThrottlerOptionsFactory,
-} from "@nestjs/throttler";
+import { ThrottlerModuleOptions, ThrottlerOptionsFactory } from "@nestjs/throttler";
 
 @Injectable()
 export class ThrottlerConfigService implements ThrottlerOptionsFactory {
@@ -17,9 +14,7 @@ export class ThrottlerConfigService implements ThrottlerOptionsFactory {
         this.config = config;
     }
 
-    createThrottlerOptions():
-        | ThrottlerModuleOptions
-        | Promise<ThrottlerModuleOptions> {
+    createThrottlerOptions(): ThrottlerModuleOptions | Promise<ThrottlerModuleOptions> {
         return {
             ...this.config,
         };
