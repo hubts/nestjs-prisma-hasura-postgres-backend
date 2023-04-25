@@ -1,39 +1,18 @@
 import { randomBytes } from "crypto";
 import { v4 as uuidv4 } from "uuid";
+import { TimeUtil } from "./time";
 
-export class Random {
+export class RandomUtil {
     static uuid(): string {
         return uuidv4();
     }
 
-    static hex(length = 10): string {
+    static hex(length = 16): string {
         return randomBytes(length).toString("hex");
     }
 
-    static number(min = 0, max: number): number {
+    static range(min: number, max: number): number {
         return Math.ceil(Math.random() * (max - min) + min);
-    }
-
-    static string(length = 10): string {
-        const alphabet = "abcdefghijklmnopqrstuvwxyz";
-        let result = "";
-        for (let i = 0; i < length; i++) {
-            result += alphabet.charAt(this.number(0, alphabet.length - 1));
-        }
-        return result;
-    }
-
-    static email(length = 10): string {
-        return this.string(length) + "@email.com";
-    }
-
-    static url(length = 10, extension?: string): string {
-        const ext = extension ? `.${extension}` : "";
-        return "https://" + this.string(length) + ".com/" + this.string(length) + ext;
-    }
-
-    static nickname(): string {
-        return NICKNAME_POOL[Math.floor(Math.random() * NICKNAME_POOL.length)];
     }
 
     static digits(length = 4): string {
@@ -41,10 +20,49 @@ export class Random {
         return (Math.floor(Math.random() * unit) + unit).toString().substring(1);
     }
 
-    static date(daysBetween = 0, before = false): Date {
-        const daysBetweenInMs = Math.floor(daysBetween) * 86400 * 1000;
-        const randomTimeInMs = before ? -this.number(0, daysBetweenInMs) : this.number(0, daysBetweenInMs);
-        return new Date(new Date().getTime() + randomTimeInMs);
+    static alphabets(length = 10): string {
+        const alphabet = "abcdefghijklmnopqrstuvwxyz";
+        let result = "";
+        for (let i = 0; i < length; i++) {
+            result += alphabet.charAt(this.range(0, alphabet.length - 1));
+        }
+        return result;
+    }
+
+    static pick<T>(array: T[]): T {
+        const index = this.range(0, array.length - 1);
+        return array[index];
+    }
+
+    static shuffle<T>(array: T[]): T[] {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    static email(length = 10): string {
+        const domainPool = ["gmail.com", "naver.com", "daum.net"];
+        const alphabeticLength = this.range(4, 6);
+        const digitsLength = length - alphabeticLength;
+        return this.alphabets(alphabeticLength) + this.digits(digitsLength) + "@" + this.pick(domainPool);
+    }
+
+    static url(length = 10, extension?: string): string {
+        const ext = extension ? `.${extension}` : "";
+        return "https://" + this.alphabets(length) + ".com/" + this.alphabets(length) + ext;
+    }
+
+    static nickname(): string {
+        return this.pick(NICKNAME_POOL);
+    }
+
+    static dateBetween(standardDate = new Date(), diffDays = 0): Date {
+        const difference = diffDays < 0 ? Math.ceil(diffDays) : Math.floor(diffDays);
+        const diffDaysInMs = difference * TimeUtil.ONE_DAY_IN_MS;
+        const randomTimeInMs = diffDays < 0 ? this.range(diffDaysInMs, 0) : this.range(0, diffDaysInMs);
+        return new Date(standardDate.getTime() + randomTimeInMs);
     }
 }
 

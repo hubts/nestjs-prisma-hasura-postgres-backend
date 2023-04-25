@@ -1,13 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { BaseDto } from "@shared/model";
-import { Random } from "@shared/util";
+import { RandomUtil } from "@shared/util";
 import { Exclude } from "class-transformer";
 import { IUser } from "./user.interface";
 
 export class UserDto extends BaseDto implements Partial<IUser> {
     @ApiProperty({
         description: "Email (Login ID)",
-        example: Random.email(),
+        example: RandomUtil.email(),
     })
     email!: string;
 
@@ -16,13 +16,13 @@ export class UserDto extends BaseDto implements Partial<IUser> {
 
     @ApiProperty({
         description: "Name of user",
-        example: Random.nickname(),
+        example: RandomUtil.nickname(),
     })
     name!: string;
 
     @ApiProperty({
         description: "Age of user",
-        example: Random.number(20, 50),
+        example: RandomUtil.range(20, 70),
     })
     age!: number;
 }

@@ -1,24 +1,24 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Random } from "@shared/util";
+import { RandomUtil } from "@shared/util";
 import { Exclude } from "class-transformer";
 import { IBase } from "../interface/base.interface";
 
 export class BaseDto implements IBase {
     @ApiProperty({
         description: "id",
-        example: Random.uuid(),
+        example: RandomUtil.uuid(),
     })
     id!: string;
 
     @ApiProperty({
         description: "Created date",
-        example: Random.date(3, true),
+        example: RandomUtil.dateBetween(new Date(), -5),
     })
     createdAt!: Date;
 
     @ApiProperty({
         description: "Updated date",
-        example: Random.date(1, true),
+        example: RandomUtil.dateBetween(new Date(), 0),
     })
     updatedAt!: Date;
 

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Random } from "@shared/util";
+import { RandomUtil } from "@shared/util";
 import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class UpdateUserDto {
@@ -7,7 +7,7 @@ export class UpdateUserDto {
     @IsString()
     @ApiProperty({
         description: "Name",
-        example: Random.nickname(),
+        example: RandomUtil.nickname(),
     })
     name?: string;
 
@@ -15,7 +15,7 @@ export class UpdateUserDto {
     @IsNumber()
     @ApiProperty({
         description: "Age",
-        example: Random.number(20, 50),
+        example: RandomUtil.range(20, 70),
     })
     age?: number;
 }
