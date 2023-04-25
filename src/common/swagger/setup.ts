@@ -1,7 +1,7 @@
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import * as fs from "fs";
 import { SwaggerThemePath } from "./theme";
+import * as fs from "fs";
 
 export default function setupSwagger(app: NestExpressApplication, path: string): void {
     const swaggerConfig = new DocumentBuilder()

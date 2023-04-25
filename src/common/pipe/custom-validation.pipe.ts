@@ -12,6 +12,7 @@ export class CustomValidationPipe extends ValidationPipe {
         if (!metatype || !this.toValidate(metatype)) {
             return value;
         }
+
         const object = plainToClass(metatype, value);
         const errors = await validate(object, {
             skipNullProperties: false, // If property is null, would you let me in?
@@ -20,11 +21,13 @@ export class CustomValidationPipe extends ValidationPipe {
             forbidNonWhitelisted: true,
             transform: true,
         });
+
         if (errors.length > 0) {
             const records: object[] = [];
             const errorRecords = this.searchErrorConstraints(errors, records);
             throw new BadRequestException(`Payload validation failed: ${JSON.stringify(errorRecords)}`);
         }
+
         return value;
     }
 
