@@ -4,29 +4,16 @@
         "module": "commonjs",
         "declaration": true,
         "removeComments": true,
+        "esModuleInterop": true,
+        "exactOptionalPropertyTypes": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
-        "target": "ES2022",
+        "target": "ES2021",
         "sourceMap": true,
         "outDir": "./dist",
         "baseUrl": ".",
         "incremental": true,
-        "skipLibCheck": true,
-        "strictNullChecks": false,
-        "noImplicitAny": false,
-        "strictBindCallApply": false,
-        "forceConsistentCasingInFileNames": false,
-        "noFallthroughCasesInSwitch": false,
-        "paths": {
-            "@config": ["src/config"],
-            "@config/*": ["src/config/*"],
-            "@shared": ["src/shared"],
-            "@shared/*": ["src/shared/*"],
-            "@common": ["src/common"],
-            "@common/*": ["src/common/*"],
-            "@user": ["src/module/user"],
-            "@user/*": ["src/module/user/*"]
-        }
+        "skipLibCheck": true
     }
 }

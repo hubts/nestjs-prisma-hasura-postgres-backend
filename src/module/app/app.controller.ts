@@ -5,7 +5,7 @@ import { Cache } from "cache-manager";
 export class AppController {
     constructor(
         @Inject(CACHE_MANAGER)
-        private readonly cacheManager: Cache
+        readonly cacheManager: Cache
     ) {}
 
     @Get("/cache")

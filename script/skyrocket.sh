@@ -1,45 +1,71 @@
 #!/bin/bash
 
-# Go to root directory
-SCRIPT_DIR=$(dirname $0)
-[[ "$SCRIPT_DIR" = "." ]] && SCRIPT_DIR=$(pwd)
-ROOT_DIR=$(dirname $SCRIPT_DIR)
-cd $ROOT_DIR
-
-# Usage
+# Print the usage and exit
 usage() {
-    echo "Usage: $0 [<new_version> | major | minor | patch | premajor | preminor | prepatch | prerelease]"
+    echo "Usage: $0 [<new_version> | major | minor | patch | premajor | preminor | prepatch | prerelease] [path:=$(pwd)]"
     exit 1
 }
 
-main() {
-    [ "$1" == "" ] && usage
-
+# Print the current branch of git
+print_branch() {
     branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
-    echo "🎄 Your branch is [ $branch ]"
+    echo "🎄 Your current branch is [ $branch ]"
+}
 
-    request="$1"
-    previous_version=$(node -p "require('$ROOT_DIR/package.json').version")
+# Get the current package version
+get_version() {
+    dir="$1"
+    version=$(node -p "require('$dir/package.json').version")
+    if (( $? != 0 )); then
+        echo "😥 We cannot find your package.json in here: $(pwd)"
+        exit 1
+    fi
+    echo $version
+}
+
+# Git commit
+commit() {
+    dir="$1"
+    git add .
+    git cz
+    if (( $? == 0 )); then
+        new_version=$(get_version $dir)
+        echo "🥰 [ $new_version ] Successfully updated and committed!"
+    else
+        echo "😥 Failed to commit."
+        exit 1
+    fi
+}
+
+bump() {
+    dir="$1"
+    request="$2"
+    [ "$request" == "" ] && usage
+    
+    print_branch
+
+    old_version=$(get_version $dir)
     new_version=$(npm version $request --no-git-tag-version)
     if (( $? != 0 )); then
         new_version="$request"
     fi
-    echo "🛫 Try to update [ $previous_version ] -> [ $new_version ]"
+    echo "📂 Location: $dir/package.json"
+    echo "🛫 We are trying to update the version [ $old_version ] -> [ $new_version ]"
 
-    if (( $? == 0 )); then
-        version=${new_version:1}
-        search='("version":[[:space:]]*").+(")'
-        replace="\1${version}\2"
-        sed -i ".tmp" -E "s/${search}/${replace}/g" "package.json"
-        rm "package.json.tmp"
-
-        git add .
-        git cz
-
-        echo "🥰 [ $new_version ] Successfully updated and committed!"
-    else
-        echo "😥 Failed"
+    version=${new_version:1}
+    search='(\"version\":[[:space:]]*\").+(\")'
+    replace="\1${version}\2"
+    sed -n -E "s/${search}/${replace}/g" "package.json"
+    if (( $? != 0 )); then
+        echo "😥 Failed to update the version"
+        exit 1
     fi
+
+    commit $dir
 }
 
-main "$1"
+################################
+## This script runs from here ##
+################################
+
+bump "${2:-$(pwd)}" "$1"

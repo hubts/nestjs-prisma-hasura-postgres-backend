@@ -1,3 +1,3 @@
-export * from "./crypto";
+export * from "./crypto-extension";
 export * from "./random";
 export * from "./time";

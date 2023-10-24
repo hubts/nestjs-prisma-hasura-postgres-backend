@@ -1,16 +1,28 @@
 import { registerAs } from "@nestjs/config";
 import { ThrottlerModuleOptions } from "@nestjs/throttler";
-import * as Joi from "joi";
+import { IsInt, Min, IsNotEmpty } from "class-validator";
+import { validateConfig } from "./util/validate-config";
 
 export const ThrottlerConfig = registerAs(
     "throttler",
-    (): ThrottlerModuleOptions => ({
-        ttl: parseInt(process.env.THROTTLER_TTL || "60"),
-        limit: parseInt(process.env.THROTTLER_LIMIT || "1000"),
-    })
+    (): ThrottlerModuleOptions => {
+        validateConfig(process.env, ThrottlerConfigValidation);
+
+        return {
+            ttl: parseInt(process.env.THROTTLER_TTL || "60"),
+            limit: parseInt(process.env.THROTTLER_LIMIT || "1000"),
+        };
+    }
 );
 
-export const ThrottlerConfigValidation = {
-    THROTTLER_TTL: Joi.optional(),
-    THROTTLER_LIMIT: Joi.optional(),
-};
+class ThrottlerConfigValidation {
+    @IsNotEmpty()
+    @IsInt()
+    @Min(1)
+    THROTTLER_TTL?: number;
+
+    @IsNotEmpty()
+    @IsInt()
+    @Min(1)
+    THROTTLER_LIMIT?: number;
+}

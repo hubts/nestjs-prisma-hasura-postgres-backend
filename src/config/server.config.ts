@@ -1,13 +1,33 @@
 import { registerAs } from "@nestjs/config";
-import * as Joi from "joi";
+import { IsEnum, IsInt, IsNotEmpty, Max, Min } from "class-validator";
+import { validateConfig } from "./util/validate-config";
 
-export const ServerConfig = registerAs("server", () => ({
-    environment: process.env.NODE_ENV,
-    port: parseInt(process.env.PORT || "8000"),
-    isProduction: process.env.NODE_ENV === "production",
-}));
+export const ServerConfig = registerAs("server", () => {
+    validateConfig(process.env, ServerConfigValidation);
 
-export const ServerConfigValidation = {
-    NODE_ENV: Joi.string().valid("local", "development", "production").required(),
-    PORT: Joi.number().port().required(),
-};
+    return {
+        environment: process.env.ENV as ServerEnv,
+        port: parseInt(process.env.PORT || "8000"),
+        isProduction: process.env.ENV === ServerEnv.PRODUCTION,
+    };
+});
+
+export enum ServerEnv {
+    LOCAL = "local",
+    TEST = "test",
+    DEVELOPMENT = "development",
+    STAGING = "staging",
+    PRODUCTION = "production",
+}
+
+class ServerConfigValidation {
+    @IsNotEmpty()
+    @IsEnum(ServerEnv)
+    ENV!: ServerEnv;
+
+    @IsNotEmpty()
+    @IsInt()
+    @Min(0)
+    @Max(65535)
+    PORT!: number;
+}

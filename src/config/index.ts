@@ -1,17 +1,10 @@
-import { ServerConfig, ServerConfigValidation } from "./server.config";
-import { ThrottlerConfig, ThrottlerConfigValidation } from "./throttler.config";
-import { TypeOrmConfig, TypeOrmConfigValidation } from "./typeorm.config";
-import * as Joi from "joi";
-
-export * from "./server.config";
-export * from "./throttler.config";
-export * from "./typeorm.config";
+import { DatabaseConfig } from "./database.config";
+import { ServerConfig } from "./server.config";
+import { ThrottlerConfig } from "./throttler.config";
 
 export * from "./service";
+export * from "./server.config";
+export * from "./throttler.config";
+export * from "./database.config";
 
-export const configurations = [ServerConfig, ThrottlerConfig, TypeOrmConfig];
-export const validationSchema = Joi.object({
-    ...ServerConfigValidation,
-    ...ThrottlerConfigValidation,
-    ...TypeOrmConfigValidation,
-});
+export const configurations = [ServerConfig, ThrottlerConfig, DatabaseConfig];

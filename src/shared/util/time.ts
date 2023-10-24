@@ -42,33 +42,21 @@ export class TimeUtil {
      *
      * @param {Date} date1 - Comparing date 1.
      * @param {Date} date2 - Comparing date 2.
-     * @returns {boolean} True if the two dates are the same, false otherwise.
+     * @returns {boolean} True if the two dates are the same, if not, false.
      */
     static isEqualDate(date1: Date, date2: Date): boolean {
         return new Date(date1).getTime() === new Date(date2).getTime();
     }
 
-    /**
-     * Add days to the date.
-     *
-     * @param date - Standard date.
-     * @param days - Adding days.
-     * @returns {Date} The date after days from the standard date.
-     */
     static addDays(date: Date, days: number): Date {
         return new Date(new Date(date).getTime() + this.ONE_DAY_IN_MS * days);
     }
 
-    /**
-     * Check if a date is between the two dates.
-     *
-     * @param date - Comparing date.
-     * @param start - Start date.
-     * @param end - End date.
-     * @returns {boolean} True if a date is between start and end dates, false otherwise.
-     */
     static isBetween(date: Date, start: Date, end: Date): boolean {
         const target = new Date(date).getTime();
-        return new Date(start).getTime() <= target && target <= new Date(end).getTime();
+        return (
+            new Date(start).getTime() <= target &&
+            target <= new Date(end).getTime()
+        );
     }
 }

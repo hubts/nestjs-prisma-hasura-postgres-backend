@@ -4,9 +4,13 @@ import { Logger, VersioningType } from "@nestjs/common";
 
 import { AppModule } from "./app.module";
 
-import * as morgan from "morgan";
-import setupSwagger from "@common/swagger/setup";
-import { ServerConfig } from "@config";
+import { json } from "body-parser";
+import helmet from "helmet";
+import compression from "compression";
+import morgan from "morgan";
+import { ServerConfig } from "./config";
+import { setupSwagger } from "./common/swagger";
+import { CustomLogger } from "./common/logger";
 
 async function run() {
     const logger = new Logger("Main");
@@ -15,8 +19,24 @@ async function run() {
         /**
          * Application and configuration
          */
-        const app = await NestFactory.create<NestExpressApplication>(AppModule);
-        const config = ServerConfig();
+        const app = await NestFactory.create<NestExpressApplication>(
+            AppModule,
+            {
+                bufferLogs: true,
+                abortOnError: true,
+            }
+        );
+        const serverConfig = ServerConfig();
+
+        /**
+         * Custom logger
+         */
+        app.useLogger(app.get(CustomLogger));
+
+        /**
+         * Limitation of input JSON size
+         */
+        app.use(json({ limit: "256kb" }));
 
         /**
          * CORS
@@ -29,9 +49,15 @@ async function run() {
         });
 
         /**
-         * Logging middleware
+         * Secure HTTP header
          */
-        app.use(morgan(config.isProduction ? "combined" : "dev"));
+        app.use(helmet());
+        app.use(compression());
+
+        /**
+         * Logging middleware (optional)
+         */
+        app.use(morgan(serverConfig.isProduction ? "combined" : "dev"));
 
         /**
          * API prefix and versioning
@@ -50,9 +76,11 @@ async function run() {
         /**
          * Start
          */
-        await app.listen(config.port, async () => {
+        await app.listen(serverConfig.port, async () => {
             logger.log(`Application is running on ${await app.getUrl()}`);
-            logger.log(`Documentation is ready: ${await app.getUrl()}/${swaggerPath}`);
+            logger.log(
+                `Documentation is ready: ${await app.getUrl()}/${swaggerPath}`
+            );
         });
     } catch (error) {
         logger.error(`Failed to start the application: ${error}`);
