@@ -32,7 +32,9 @@ export class HealthCheckController implements OnModuleInit {
             case "error": {
                 const details = checkResult.details as HealthIndicatorResult;
                 const errors = checkResult.error as HealthIndicatorResult;
-                const log = `🚫 OMG! ${JSON.stringify(details)}: ${JSON.stringify(errors)}`;
+                const log = `🚫 OMG! ${JSON.stringify(
+                    details
+                )}: ${JSON.stringify(errors)}`;
                 this.logger.error(log);
                 break;
             }
