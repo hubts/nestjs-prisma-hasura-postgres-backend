@@ -1,8 +1,4 @@
-import {
-    CacheModule,
-    ClassSerializerInterceptor,
-    Module,
-} from "@nestjs/common";
+import { ClassSerializerInterceptor, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
@@ -19,43 +15,28 @@ import {
 import { entities } from "./entity";
 import { HttpExceptionFilter } from "./common/error";
 import { CustomLoggerModule } from "./common/logger";
+import { AppService } from "./module/app/app.service";
 
 @Module({
     imports: [
         ConfigModule.forRoot({
-            isGlobal: true,
-            envFilePath: [".env"],
-            load: [...configurations],
+            isGlobal: true, // ConfigModule can be globally used in any module
+            envFilePath: [".env"], // The environment file to be imported
+            load: [...configurations], // Load configurations organized and separated into each config object
         }),
-        TypeOrmModule.forRootAsync({
-            useClass: DatabaseConfigService,
-        }),
+        TypeOrmModule.forRootAsync({ useClass: DatabaseConfigService }),
         TypeOrmModule.forFeature([...entities]),
-        ThrottlerModule.forRootAsync({
-            useClass: ThrottlerConfigService,
-        }),
+        ThrottlerModule.forRootAsync({ useClass: ThrottlerConfigService }),
         CustomLoggerModule,
-        CacheModule.register(),
         HealthCheckModule,
     ],
     controllers: [AppController],
     providers: [
-        {
-            provide: APP_GUARD,
-            useClass: ThrottlerGuard,
-        },
-        {
-            provide: APP_PIPE,
-            useClass: CustomValidationPipe,
-        },
-        {
-            provide: APP_INTERCEPTOR,
-            useClass: ClassSerializerInterceptor,
-        },
-        {
-            provide: APP_FILTER,
-            useClass: HttpExceptionFilter,
-        },
+        AppService,
+        { provide: APP_GUARD, useClass: ThrottlerGuard },
+        { provide: APP_PIPE, useClass: CustomValidationPipe },
+        { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },
+        { provide: APP_FILTER, useClass: HttpExceptionFilter },
     ],
 })
 export class AppModule {}

@@ -1,5 +1,5 @@
 import { registerAs } from "@nestjs/config";
-import { ThrottlerModuleOptions } from "@nestjs/throttler";
+import { ThrottlerModuleOptions, seconds } from "@nestjs/throttler";
 import { IsInt, Min, IsNotEmpty } from "class-validator";
 import { validateConfig } from "./util/validate-config";
 
@@ -8,10 +8,13 @@ export const ThrottlerConfig = registerAs(
     (): ThrottlerModuleOptions => {
         validateConfig(process.env, ThrottlerConfigValidation);
 
-        return {
-            ttl: parseInt(process.env.THROTTLER_TTL || "60"),
-            limit: parseInt(process.env.THROTTLER_LIMIT || "1000"),
-        };
+        // Current version of throttler accepts 'ttl' in milliseconds
+        return [
+            {
+                ttl: seconds(parseInt(process.env.THROTTLER_TTL || "60")),
+                limit: parseInt(process.env.THROTTLER_LIMIT || "1000"),
+            },
+        ];
     }
 );
 
