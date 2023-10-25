@@ -1,3 +1,4 @@
+import { IAudit } from "src/shared/entity";
 import {
     CreateDateColumn,
     DeleteDateColumn,
@@ -7,7 +8,7 @@ import {
 } from "typeorm";
 
 @Entity()
-export abstract class AuditEntity {
+export abstract class AuditEntity implements IAudit {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 

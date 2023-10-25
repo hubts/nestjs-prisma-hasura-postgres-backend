@@ -1,0 +1,1 @@
+export const REDIS_SET_DEFAULT_SECONDS = 30;

@@ -1,5 +1,8 @@
 import { CommonEntities } from "./common";
+import { UserEntities } from "./user";
 
 export * from "./audit.entity";
+export * from "./user";
 
-export const entities = [...CommonEntities];
+// All entities are spread to synchronize in database
+export const entities = [...CommonEntities, ...UserEntities];
