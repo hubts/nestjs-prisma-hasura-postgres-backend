@@ -18,7 +18,6 @@ import { CustomLoggerModule } from "./common/logger";
 import { AppService } from "./module/app/app.service";
 import { UserModule } from "./module/user/user.module";
 import { AuthModule } from "./module/auth/auth.module";
-import { RedisModule } from "./infrastructure/redis/redis.module";
 
 @Module({
     imports: [
@@ -32,13 +31,16 @@ import { RedisModule } from "./infrastructure/redis/redis.module";
         ThrottlerModule.forRootAsync({ useClass: ThrottlerConfigService }), // Throttler configuration imported
         CustomLoggerModule, // Custom logger module to use logger in 'main.ts'
         HealthCheckModule, // Health check module
-        RedisModule, // Redis module to test in AppService
+        /**
+         * Below: Implemented domain modules
+         */
         UserModule,
         AuthModule,
     ],
     controllers: [AppController],
     providers: [
         AppService,
+        // Globally used providers with 'APP_' prefix
         { provide: APP_GUARD, useClass: ThrottlerGuard },
         { provide: APP_PIPE, useClass: CustomValidationPipe },
         { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },

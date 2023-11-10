@@ -3,7 +3,7 @@ import { AuditEntity } from "../audit.entity";
 import { IUser } from "src/shared/entity";
 import { UserRole } from "src/shared/enum";
 
-@Entity()
+@Entity("user")
 export class UserEntity extends AuditEntity implements IUser {
     @Column({ unique: true, comment: "User unique email" })
     email!: string;

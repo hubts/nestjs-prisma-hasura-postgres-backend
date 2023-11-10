@@ -1,7 +1,7 @@
 version: "3.6"
 services:
     postgres:
-        image: postgres:13 # Postgres version (13 recommended)
+        image: postgres:13 # Postgres version (13 recommended in this time)
         container_name: postgres # Name of container deployed
         restart: always # It will restart when the container is shut down
         ports:

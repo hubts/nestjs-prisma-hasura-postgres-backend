@@ -1,7 +1,10 @@
 import { randomBytes } from "crypto";
 import { v4 as uuidv4 } from "uuid";
-import { TimeUtil } from "./time";
+import { TimeExtension } from "./time-extension";
 
+/**
+ * Random generation.
+ */
 export class Random {
     /**
      * Get random UUID v4.
@@ -110,7 +113,7 @@ export class Random {
      * @returns Random 'past' date between the particular date and the date before the N days.
      */
     static dateBefore(date: Date, diffDays: number): Date {
-        const diffDaysInMs = diffDays * TimeUtil.ONE_DAY_IN_MS;
+        const diffDaysInMs = diffDays * TimeExtension.ONE_DAY_IN_MS;
         return new Date(date.getTime() - this.number(0, diffDaysInMs));
     }
 
@@ -121,7 +124,7 @@ export class Random {
      * @returns Random 'future' date between the particular date and the date after the N days.
      */
     static dateAfter(date: Date, diffDays: number): Date {
-        const diffDaysInMs = diffDays * TimeUtil.ONE_DAY_IN_MS;
+        const diffDaysInMs = diffDays * TimeExtension.ONE_DAY_IN_MS;
         return new Date(date.getTime() + this.number(0, diffDaysInMs));
     }
 
@@ -134,12 +137,12 @@ export class Random {
     static dateBetween(date = new Date(), diffDays = 0): Date {
         const difference =
             diffDays < 0 ? Math.ceil(diffDays) : Math.floor(diffDays);
-        const diffDaysInMs = difference * TimeUtil.ONE_DAY_IN_MS;
-        const randomTimeUtilInMs =
+        const diffDaysInMs = difference * TimeExtension.ONE_DAY_IN_MS;
+        const randomTimeInMs =
             diffDays < 0
                 ? this.number(diffDaysInMs, 0)
                 : this.number(0, diffDaysInMs);
-        return new Date(date.getTime() + randomTimeUtilInMs);
+        return new Date(date.getTime() + randomTimeInMs);
     }
 
     /**
@@ -193,7 +196,7 @@ export class Random {
     }
 
     /**
-     * Get random birth in (YYYY-MM-DD) format.
+     * Get random birth in 'YYYY-MM-DD' format.
      * @returns Random birth.
      */
     static birth(): string {

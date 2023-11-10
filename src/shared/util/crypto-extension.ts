@@ -7,23 +7,28 @@ import {
     createHash,
 } from "crypto";
 
+/**
+ * Crypto extension from 'crypto' library.
+ *
+ * If you do not want to use 'bcrypt', delete the methods associated with the library.
+ */
 export class CryptoExtension {
+    /**
+     * Get SHA-256 hash.
+     * @param {string | Buffer} data - Input ingredient to hash.
+     * @returns {string} Hashed result in SHA-256 (32 bytes).
+     */
     static sha256(data: string | Buffer): string {
         return createHash("sha256").update(data).digest("hex");
     }
 
-    static hashPassword(password: string): string {
-        const saltOrRounds = genSaltSync();
-        return hashSync(password, saltOrRounds);
-    }
-
-    static comparePassword(
-        plainPassword: string,
-        hashPassword: string
-    ): boolean {
-        return compareSync(plainPassword, hashPassword);
-    }
-
+    /**
+     * Encrypt by AES-256-CBC algorithm (Symmetric).
+     * @param plainText - Plain text to encrypt.
+     * @param iv - Initial vector.
+     * @param key - Symmetric key.
+     * @returns {string} Cipher text (encrypted).
+     */
     static encryptAes256Cbc(
         plainText: string,
         iv: string,
@@ -43,6 +48,13 @@ export class CryptoExtension {
         return encryptedText;
     }
 
+    /**
+     * Decrypt by AES-256-CBC algorithm (Symmetric).
+     * @param cipherText - Cipher text to decrypt.
+     * @param iv - Initial vector.
+     * @param key - Symmetric key.
+     * @returns {string} Plain text (decrypted).
+     */
     static decryptAes256Cbc(
         cipherText: string,
         iv: string,
@@ -60,5 +72,28 @@ export class CryptoExtension {
         decryptedValue += decipher.final("utf-8");
 
         return decryptedValue;
+    }
+
+    /**
+     * Bcrypt: Hash the password.
+     * @param {string} password - The password to be hashed.
+     * @returns {string} Hashed result.
+     */
+    static hashPassword(password: string): string {
+        const saltOrRounds = genSaltSync();
+        return hashSync(password, saltOrRounds);
+    }
+
+    /**
+     * Bcrypt: Compare the hash password and the original expected.
+     * @param plainPassword - The original password before hashing.
+     * @param hashPassword - The hash password (may be expected as result).
+     * @returns {boolean} Whether the hash of the password matches or not.
+     */
+    static comparePassword(
+        plainPassword: string,
+        hashPassword: string
+    ): boolean {
+        return compareSync(plainPassword, hashPassword);
     }
 }
