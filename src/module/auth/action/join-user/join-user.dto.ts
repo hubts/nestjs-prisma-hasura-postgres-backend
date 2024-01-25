@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsNickname, IsPassword } from "src/common/decorator";
 import {
     IJoinUserInput,
     IJoinUserOutput,
@@ -16,12 +17,14 @@ export class JoinUserBodyDto implements IJoinUserInput {
     email: string;
 
     @IsNotEmpty()
+    @IsPassword()
     @ApiProperty({
         example: Random.lowercase(),
     })
     password: string;
 
     @IsNotEmpty()
+    @IsNickname()
     @ApiProperty({
         example: Random.lowercase(),
     })
