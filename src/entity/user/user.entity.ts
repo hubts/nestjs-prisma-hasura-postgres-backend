@@ -1,22 +1,24 @@
-import { Column, Entity } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 import { AuditEntity } from "../audit.entity";
 import { IUser } from "src/shared/entity";
 import { UserRole } from "src/shared/enum";
+import { USER_NICKNAME_LENGTH } from "src/shared/constant";
+import { CryptoExtension } from "src/shared/util";
 
 @Entity("user")
 export class UserEntity extends AuditEntity implements IUser {
     @Column({ unique: true, comment: "User unique email" })
-    email!: string;
+    email: string;
 
     @Column({ comment: "User password (hashed)" })
-    password!: string;
+    password: string;
 
     @Column({
-        length: 20,
+        length: USER_NICKNAME_LENGTH,
         unique: true,
-        comment: "User unique nickname (max 20 length)",
+        comment: `User unique nickname (max ${USER_NICKNAME_LENGTH} length)`,
     })
-    nickname!: string;
+    nickname: string;
 
     @Column({
         type: "enum",
@@ -24,5 +26,11 @@ export class UserEntity extends AuditEntity implements IUser {
         default: UserRole.USER,
         comment: `User role: ${Object.values(UserRole)}`,
     })
-    role!: UserRole;
+    role: UserRole;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    setHashPassword() {
+        this.password = CryptoExtension.hashPassword(this.password);
+    }
 }

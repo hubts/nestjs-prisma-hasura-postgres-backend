@@ -18,6 +18,15 @@ import { CustomLoggerModule } from "./common/logger";
 import { AppService } from "./module/app/app.service";
 import { UserModule } from "./module/user/user.module";
 import { AuthModule } from "./module/auth/auth.module";
+import { CacheModule } from "./infrastructure";
+
+const DomainModules = [
+    /**
+     * Below: Implemented domain modules
+     */
+    UserModule,
+    AuthModule,
+];
 
 @Module({
     imports: [
@@ -31,11 +40,8 @@ import { AuthModule } from "./module/auth/auth.module";
         ThrottlerModule.forRootAsync({ useClass: ThrottlerConfigService }), // Throttler configuration imported
         CustomLoggerModule, // Custom logger module to use logger in 'main.ts'
         HealthCheckModule, // Health check module
-        /**
-         * Below: Implemented domain modules
-         */
-        UserModule,
-        AuthModule,
+        CacheModule, // Cache module (global)
+        ...DomainModules,
     ],
     controllers: [AppController],
     providers: [

@@ -1,10 +1,7 @@
+import { TimeExtension } from "./time-extension";
 import { randomBytes } from "crypto";
 import { v4 as uuidv4 } from "uuid";
-import { TimeExtension } from "./time-extension";
 
-/**
- * Random generation.
- */
 export class Random {
     /**
      * Get random UUID v4.
@@ -19,7 +16,7 @@ export class Random {
      * @returns Random email formatted as '(6 chars + 4 digits)@email.com'.
      */
     static email(): string {
-        return this.string(6) + this.digits(4) + "@email.com";
+        return this.lowercase(6) + this.digits(4) + "@email.com";
     }
 
     /**
@@ -42,12 +39,26 @@ export class Random {
     }
 
     /**
-     * Get random alphabetic string in length.
-     * @param length - Length of random string (default = 10).
-     * @returns Random alphabetic string in length
+     * Get random alphabetic string in lowercase as length.
+     * @param length - Length of random lowercase string (default = 10).
+     * @returns Random alphabetic string in lowercase as length
      */
-    static string(length = 10): string {
+    static lowercase(length = 10): string {
         const alphabet = "abcdefghijklmnopqrstuvwxyz";
+        let result = "";
+        for (let i = 0; i < length; i++) {
+            result += alphabet.charAt(this.number(0, alphabet.length - 1));
+        }
+        return result;
+    }
+
+    /**
+     * Get random alphabetic string in uppercase as length.
+     * @param length - Length of random uppercase string (default = 10).
+     * @returns Random alphabetic string in uppercase as length
+     */
+    static uppercase(length = 10): string {
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         let result = "";
         for (let i = 0; i < length; i++) {
             result += alphabet.charAt(this.number(0, alphabet.length - 1));
@@ -77,9 +88,9 @@ export class Random {
         const ext = extension ? `.${extension}` : "";
         return (
             "https://" +
-            this.string(length) +
+            this.lowercase(length) +
             ".com/" +
-            this.string(length) +
+            this.lowercase(length) +
             ext
         );
     }
@@ -104,6 +115,16 @@ export class Random {
         return (Math.floor(Math.random() * unit) + unit)
             .toString()
             .substring(1);
+    }
+
+    /**
+     * Get random rate in range (0 ~ 1).
+     * @param precision - Set a precision to fix.
+     * @returns Random rate in range (0 ~ 1) with the fixed precision.
+     */
+    static rate(precision = 2): string {
+        const random = this.number(0, 100);
+        return (random / 100).toFixed(precision);
     }
 
     /**
@@ -138,11 +159,11 @@ export class Random {
         const difference =
             diffDays < 0 ? Math.ceil(diffDays) : Math.floor(diffDays);
         const diffDaysInMs = difference * TimeExtension.ONE_DAY_IN_MS;
-        const randomTimeInMs =
+        const randomTimeUtilInMs =
             diffDays < 0
                 ? this.number(diffDaysInMs, 0)
                 : this.number(0, diffDaysInMs);
-        return new Date(date.getTime() + randomTimeInMs);
+        return new Date(date.getTime() + randomTimeUtilInMs);
     }
 
     /**
@@ -196,7 +217,7 @@ export class Random {
     }
 
     /**
-     * Get random birth in 'YYYY-MM-DD' format.
+     * Get random birth in (YYYY-MM-DD) format.
      * @returns Random birth.
      */
     static birth(): string {

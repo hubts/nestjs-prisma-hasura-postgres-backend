@@ -1,45 +1,30 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
-import { UserService } from "../service";
+import { ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Post } from "@nestjs/common";
+import { CommandBus } from "@nestjs/cqrs";
+
+import { ApiSpec, JwtRolesAuth, Requestor } from "src/common/decorator";
+import { UserEntity } from "src/entity";
 import { UserRoute, UserRouteName } from "./user.route";
 import {
-    CreateUserInputDto,
-    FindUserOneDto,
-    FindUsersDto,
-    UpdateUserInputDto,
-    UserIdDto,
-} from "./dto";
+    UpdatePasswordBodyDto,
+    UpdatePasswordCommand,
+    UpdatePasswordResponseDto,
+} from "../action";
 
+@ApiTags(UserRouteName)
 @Controller(UserRouteName)
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly commandBus: CommandBus) {}
 
-    @Get(UserRoute.GetUsersAll)
-    async getUsersAll(): Promise<FindUsersDto> {
-        return await this.userService.getUsersAll();
-    }
-
-    @Get(UserRoute.GetUserOneByEmail)
-    async getUserOneByEmail(
-        @Param("email") email: string
-    ): Promise<FindUserOneDto> {
-        return await this.userService.getUserOneByEmail(email);
-    }
-
-    @Post(UserRoute.JoinUser)
-    async joinUser(@Body() body: CreateUserInputDto): Promise<UserIdDto> {
-        return await this.userService.createUser(body);
-    }
-
-    @Post(UserRoute.UpdateUser)
-    async updateUser(
-        @Param("id") id: string,
-        @Body() body: UpdateUserInputDto
-    ): Promise<UserIdDto> {
-        return await this.userService.updateUser(id, body);
-    }
-
-    @Post(UserRoute.DeleteUser)
-    async deleteUser(@Param("id") id: string): Promise<void> {
-        await this.userService.deleteUser(id);
+    @Post(UserRoute.UpdatePassword.Name)
+    @JwtRolesAuth(...UserRoute.UpdatePassword.Permission)
+    @ApiSpec(UpdatePasswordResponseDto)
+    async updatePassword(
+        @Requestor() user: UserEntity,
+        @Body() body: UpdatePasswordBodyDto
+    ): Promise<UpdatePasswordResponseDto> {
+        return await this.commandBus.execute(
+            new UpdatePasswordCommand(user, body)
+        );
     }
 }

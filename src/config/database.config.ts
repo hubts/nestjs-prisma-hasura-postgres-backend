@@ -38,29 +38,29 @@ export const DatabaseConfig = registerAs(
 class DatabaseConfigValidation {
     @IsNotEmpty()
     @IsString()
-    DB_HOST!: string;
+    DB_HOST: string;
 
     @IsNotEmpty()
     @IsInt()
     @Min(0)
     @Max(65535)
-    DB_PORT!: number;
+    DB_PORT: number;
 
     @IsNotEmpty()
     @IsString()
-    DB_USERNAME!: string;
+    DB_USERNAME: string;
 
     @IsNotEmpty()
     @IsString()
-    DB_PASSWORD!: string;
+    DB_PASSWORD: string;
 
     @IsNotEmpty()
     @IsString()
-    DB_NAME!: string;
+    DB_NAME: string;
 
     @IsNotEmpty()
     @IsBoolean()
-    DB_SYNC!: boolean;
+    DB_SYNC: boolean;
 
     @IsOptional()
     @IsBoolean()
@@ -68,5 +68,5 @@ class DatabaseConfigValidation {
 
     @IsNotEmpty()
     @IsString()
-    DB_SCHEMA!: string;
+    DB_SCHEMA: string;
 }

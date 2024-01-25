@@ -1,4 +1,10 @@
-import { Controller, Get, Logger, OnModuleInit, Req } from "@nestjs/common";
+import {
+    Controller,
+    Get,
+    Logger,
+    OnApplicationBootstrap,
+    Req,
+} from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
     HealthCheckService,
@@ -10,7 +16,7 @@ import {
 
 @ApiTags("HealthCheck")
 @Controller("health")
-export class HealthCheckController implements OnModuleInit {
+export class HealthCheckController implements OnApplicationBootstrap {
     private readonly logger = new Logger("Healthy🔋");
 
     constructor(
@@ -20,19 +26,32 @@ export class HealthCheckController implements OnModuleInit {
         private readonly memory: MemoryHealthIndicator
     ) {}
 
-    async onModuleInit() {
-        const checkResult = await this.checkConnections();
-        const overview = checkResult.status === "ok" ? "✅" : "🚫";
-        const details = Object.keys(checkResult.details).map(
-            key =>
-                `${key} ( ${
-                    checkResult.details[key].status === "up" ? "✅" : `🚫`
-                } )`
+    async onApplicationBootstrap() {
+        const status = await this.getStatus();
+        const overview = status.overview ? "✅" : "🚫";
+        const details = Object.keys(status.details).map(
+            key => `${key} ( ${status.details[key] ? "✅" : `🚫`} )`
         );
-        this.logger.verbose(`Result ( ${overview} ) => ${details.join(", ")}`);
-        if (checkResult.error && Object.keys(checkResult.error).length !== 0) {
-            this.logger.error(`Error: ${JSON.stringify(checkResult.error)}`);
-        }
+        this.logger.log(`Result ( ${overview} ) => ${details.join(", ")}`);
+    }
+
+    async getStatus(): Promise<{
+        overview: boolean;
+        details: {
+            [key: string]: boolean;
+        };
+    }> {
+        const checkResult = await this.checkConnections();
+        const details: {
+            [key: string]: boolean;
+        } = {};
+        Object.keys(checkResult.details).map(key => {
+            details[key] = checkResult.details[key].status === "up";
+        });
+        return {
+            overview: checkResult.status === "ok",
+            details,
+        };
     }
 
     @Get()

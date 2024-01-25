@@ -1,0 +1,17 @@
+version: "3.6"
+services:
+    database:
+        image: postgres:13 # Postgres version (13 recommended in this time)
+        container_name: ${CONTAINER_NAME} # Name of container deployed
+        restart: always # It will restart when the container is shut down
+        ports:
+            - ${POSTGRES_PORT}:5432 # Container external:internal port
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER} # Postgres database username
+            POSTGRES_DB: ${POSTGRES_DB} # Postgres database name
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Connection password
+            PGDATA: /var/lib/postgresql/data/pgdata
+        volumes:
+            - ./${POSTGRES_VOLUME_DIR}:/var/lib/postgresal/data/pgdata
+            - ./postgresql.conf:/tmp/postgresql.conf
+        command: postgres -c config_file=/tmp/postgresql.conf

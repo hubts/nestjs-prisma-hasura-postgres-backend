@@ -1,0 +1,6 @@
+# migrations, seeds
+/migrations
+/seeds
+
+# Environment
+.env

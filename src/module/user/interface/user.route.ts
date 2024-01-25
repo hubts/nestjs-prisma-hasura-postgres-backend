@@ -1,8 +1,9 @@
+import { UserRole } from "src/shared/enum";
+
 export const UserRouteName = "users";
 export const UserRoute = {
-    GetUsersAll: "/",
-    GetUserOneByEmail: "/:email",
-    JoinUser: "/join",
-    UpdateUser: "/update/:id",
-    DeleteUser: "/delete/:id",
+    UpdatePassword: {
+        Name: "update-password",
+        Permission: [UserRole.USER],
+    },
 };

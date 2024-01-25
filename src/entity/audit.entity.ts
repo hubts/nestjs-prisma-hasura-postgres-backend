@@ -10,14 +10,14 @@ import {
 @Entity()
 export abstract class AuditEntity implements IAudit {
     @PrimaryGeneratedColumn("uuid")
-    id!: string;
+    id: string;
 
     @CreateDateColumn({ type: "timestamptz" })
-    createdAt!: Date;
+    createdAt: Date;
 
     @UpdateDateColumn({ type: "timestamptz" })
-    updatedAt!: Date;
+    updatedAt: Date;
 
     @DeleteDateColumn({ type: "timestamptz", nullable: true })
-    deletedAt!: Date | null;
+    deletedAt: Date | null;
 }

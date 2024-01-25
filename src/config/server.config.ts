@@ -1,5 +1,5 @@
 import { registerAs } from "@nestjs/config";
-import { IsEnum, IsInt, IsNotEmpty, Max, Min } from "class-validator";
+import { IsEnum, IsInt, IsNotEmpty, IsString, Max, Min } from "class-validator";
 import { validateConfig } from "./util/validate-config";
 
 export const ServerConfig = registerAs("server", () => {
@@ -7,8 +7,9 @@ export const ServerConfig = registerAs("server", () => {
 
     return {
         environment: process.env.ENV as ServerEnv,
-        port: parseInt(process.env.PORT || "8000"),
+        port: parseInt(process.env.PORT as string),
         isProduction: process.env.ENV === ServerEnv.PRODUCTION,
+        externalEndpoint: process.env.EXTERNAL_ENDPOINT as string,
     };
 });
 
@@ -23,11 +24,15 @@ export enum ServerEnv {
 class ServerConfigValidation {
     @IsNotEmpty()
     @IsEnum(ServerEnv)
-    ENV!: ServerEnv;
+    ENV: ServerEnv;
 
     @IsNotEmpty()
     @IsInt()
     @Min(0)
     @Max(65535)
-    PORT!: number;
+    PORT: number;
+
+    @IsNotEmpty()
+    @IsString()
+    EXTERNAL_ENDPOINT: string;
 }

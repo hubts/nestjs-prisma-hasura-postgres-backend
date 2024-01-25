@@ -5,9 +5,11 @@ import * as fs from "fs";
 
 export function setupSwagger(
     app: NestExpressApplication,
-    swaggerPath: string
+    swaggerPath: string,
+    baseUrl: string
 ): void {
     const swaggerConfig = new DocumentBuilder()
+        .addServer(baseUrl)
         .setTitle("Backend API Swagger")
         .setDescription("Documents to experience the Backend API")
         .addBearerAuth({

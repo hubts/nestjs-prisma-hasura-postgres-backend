@@ -1,13 +1,29 @@
 import { LogLevel } from "@nestjs/common";
 import { IConsoleLog } from "src/common/logger/interface";
-import { Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    PrimaryGeneratedColumn,
+} from "typeorm";
 
-@Entity()
+@Entity("console_log")
 export class ConsoleLogEntity implements IConsoleLog {
     @PrimaryGeneratedColumn()
-    id!: number;
-    message!: string;
-    context!: string;
-    level!: LogLevel;
-    trace!: string | null;
+    id: number;
+
+    @CreateDateColumn({ type: "timestamptz" })
+    createdAt: Date;
+
+    @Column()
+    message: string;
+
+    @Column()
+    context: string;
+
+    @Column()
+    level: LogLevel;
+
+    @Column({ type: "varchar", nullable: true })
+    trace: string | null;
 }

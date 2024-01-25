@@ -1,6 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
-import { Logger, VersioningType } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 
 import { AppModule } from "./app.module";
 
@@ -11,14 +11,13 @@ import morgan from "morgan";
 import { ServerConfig } from "./config";
 import { setupSwagger } from "./common/swagger";
 import { CustomLogger } from "./common/logger";
+import { HealthCheckController } from "./module/health-check/health-check.controller";
 
 async function run() {
     const logger = new Logger("Main");
 
     try {
-        /**
-         * Application and configuration
-         */
+        // Application and configuration
         const app = await NestFactory.create<NestExpressApplication>(
             AppModule,
             {
@@ -28,59 +27,58 @@ async function run() {
         );
         const serverConfig = ServerConfig();
 
-        /**
-         * Custom logger
-         */
+        // Custom logger (with database saving)
         app.useLogger(app.get(CustomLogger));
 
-        /**
-         * Limitation of input JSON size
-         */
+        // Payload limit
         app.use(json({ limit: "256kb" }));
 
-        /**
-         * CORS
-         */
+        // CORS
         app.enableCors({
-            allowedHeaders: "Content-Type",
-            methods: "GET, PUT, POST, DELETE",
+            allowedHeaders: ["Content-Type", "Authorization"],
+            methods: "GET, POST",
             credentials: true,
             origin: "*",
         });
 
-        /**
-         * Secure HTTP header
-         */
+        // Swagger
+        const swaggerPath = "docs";
+        setupSwagger(app, swaggerPath, serverConfig.externalEndpoint);
+
+        // Secure HTTP header and compression
         app.use(helmet());
         app.use(compression());
 
-        /**
-         * Logging middleware (optional)
-         */
+        // Logging middleware (optional)
         app.use(morgan(serverConfig.isProduction ? "combined" : "dev"));
 
-        /**
-         * API prefix and versioning
-         */
-        app.setGlobalPrefix("api");
-        app.enableVersioning({
-            type: VersioningType.URI,
-        });
-
-        /**
-         * Swagger
-         */
-        const swaggerPath = "docs";
-        setupSwagger(app, swaggerPath);
+        // API prefix and versioning (optional)
+        // app.setGlobalPrefix("api");
+        // app.enableVersioning({
+        //     type: VersioningType.URI,
+        // });
 
         /**
          * Start
          */
+        const healthCheckController = app.get(HealthCheckController);
+        const status = await healthCheckController.getStatus();
         await app.listen(serverConfig.port, async () => {
-            logger.log(`Application is running on ${await app.getUrl()}`);
-            logger.log(
-                `Documentation is ready: ${await app.getUrl()}/${swaggerPath}`
-            );
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const packageJson = require("../package.json");
+
+            let log = `Application [ ${packageJson.name}:${packageJson.version} ] is successfully started\n`;
+            log += `< Information >\n`;
+            log += `Env                 : ${serverConfig.environment}\n`;
+            log += `Application URL     : ${await app.getUrl()}\n`;
+            log += `External endpoint   : ${serverConfig.externalEndpoint}\n`;
+            log += `Swagger document    : ${serverConfig.externalEndpoint}/${swaggerPath}\n`;
+            log += `Healthy (overview)  : ${status.overview ? "✅" : "🚫"}\n`;
+            log += `Healthy (details)   : ${Object.keys(status.details)
+                .map(key => `${key} ( ${status.details[key] ? "✅" : "🚫"} )`)
+                .join(", ")}`;
+
+            logger.verbose(log);
         });
     } catch (error) {
         logger.error(`Failed to start the application: ${error}`);

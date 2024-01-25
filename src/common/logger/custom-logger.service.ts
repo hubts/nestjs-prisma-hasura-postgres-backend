@@ -2,7 +2,7 @@ import { Injectable, LogLevel } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { IConsoleLog, IErrorLog } from "./interface";
 import { ServerEnv } from "src/config";
-import { ConsoleLogEntity, ErrorLogEntity } from "src/entity/common";
+import { ConsoleLogEntity, ErrorLogEntity } from "src/entity";
 
 @Injectable()
 export class CustomLoggerService {

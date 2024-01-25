@@ -1,0 +1,5 @@
+# postgres data volume
+/pgdata
+
+# Environment
+.env

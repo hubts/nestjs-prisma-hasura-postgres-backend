@@ -5,5 +5,5 @@ export interface IUser extends IAudit {
     email: string;
     password: string;
     nickname: string;
-    role: UserRole;
+    role?: UserRole;
 }
