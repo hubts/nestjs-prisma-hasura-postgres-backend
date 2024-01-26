@@ -47,15 +47,13 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
             await this.service.issueAuthTokens(savedUser);
 
         this.log(savedUser);
-        return {
-            success: true,
-            code: 1000,
+        return new JoinUserResponseDto({
             message: "User registration has been completed.", // Welcome
             data: {
                 accessToken,
                 refreshToken,
             },
-        };
+        });
     }
 
     log(newUser: UserEntity) {
