@@ -1,0 +1,4 @@
+- "!include public_cache.yaml"
+- "!include public_console_log.yaml"
+- "!include public_error_log.yaml"
+- "!include public_user.yaml"

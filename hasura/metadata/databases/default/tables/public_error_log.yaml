@@ -1,0 +1,3 @@
+table:
+  name: error_log
+  schema: public
