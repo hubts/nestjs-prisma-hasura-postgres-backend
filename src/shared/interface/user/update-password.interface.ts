@@ -1,12 +1,8 @@
-import { IResponse } from "../response";
-
 export interface IUpdatePasswordInput {
     originalPassword: string;
     newPassword: string;
 }
 
-export interface IUpdatePasswordOutputData {
+export interface IUpdatePasswordOutput {
     id: string;
 }
-
-export type IUpdatePasswordOutput = IResponse<IUpdatePasswordOutputData>;

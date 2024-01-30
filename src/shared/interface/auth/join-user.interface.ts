@@ -4,13 +4,6 @@ export interface IJoinUserInput {
     nickname: string;
 }
 
-// export interface IJoinUserOutputData {
-//     accessToken: string;
-//     refreshToken: string;
-// }
-
-// export type IJoinUserOutput = IResponse<IJoinUserOutputData>;
-
 export interface IJoinUserOutput {
     accessToken: string;
     refreshToken: string;
