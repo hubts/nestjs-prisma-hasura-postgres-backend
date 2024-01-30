@@ -1,6 +1,7 @@
 import { ApiTags } from "@nestjs/swagger";
 import { Body, Controller, Post } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
+
 import { ApiSpec } from "src/common/decorator";
 import { AuthRoute, AuthRouteName } from "./auth.route";
 import {

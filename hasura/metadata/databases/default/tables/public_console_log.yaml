@@ -1,0 +1,3 @@
+table:
+  name: console_log
+  schema: public

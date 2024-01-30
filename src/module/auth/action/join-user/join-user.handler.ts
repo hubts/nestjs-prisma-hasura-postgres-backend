@@ -3,7 +3,7 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { JoinUserCommand } from "./join-user.command";
 import { JoinUserResponseDto } from "./join-user.dto";
 import { UserService } from "src/module/user/domain";
-import { ERROR } from "src/shared/constant/error.constant";
+import { ERROR } from "src/shared/constant";
 import { IUser } from "src/shared/entity";
 import { UserEntity } from "src/entity";
 import { Logger } from "@nestjs/common";
@@ -21,6 +21,7 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
     async execute(command: JoinUserCommand): Promise<JoinUserResponseDto> {
         const { email, nickname, password } = command.body;
 
+        // Check email duplication
         const existingEmail = await this.userService.userRepo.exist({
             where: { email },
         });
@@ -28,6 +29,7 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
             return ERROR.EMAIL_ALREADY_EXISTS;
         }
 
+        // Check nickname duplication
         const existingNickname = await this.userService.userRepo.exist({
             where: { nickname },
         });
@@ -35,6 +37,9 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
             return ERROR.NICKNAME_ALREADY_EXISTS;
         }
 
+        /**
+         * Process
+         */
         const newUser: IUser = {
             email,
             nickname,
@@ -47,15 +52,13 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
             await this.service.issueAuthTokens(savedUser);
 
         this.log(savedUser);
-        return {
-            success: true,
-            code: 1000,
+        return new JoinUserResponseDto({
             message: "User registration has been completed.", // Welcome
             data: {
                 accessToken,
                 refreshToken,
             },
-        };
+        });
     }
 
     log(newUser: UserEntity) {

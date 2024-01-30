@@ -21,6 +21,7 @@ export class UpdatePasswordHandler
         const user = command.user;
         const { originalPassword, newPassword } = command.body;
 
+        // Check password
         const isPasswordCorrect = CryptoExtension.comparePassword(
             originalPassword,
             user.password
@@ -29,6 +30,9 @@ export class UpdatePasswordHandler
             return ERROR.WRONG_PASSWORD;
         }
 
+        /**
+         * Process
+         */
         const updatedUser = this.service.userRepo.create({
             ...user,
             password: newPassword,
@@ -36,14 +40,12 @@ export class UpdatePasswordHandler
         await this.service.userRepo.update(user.id, updatedUser);
 
         this.log(updatedUser);
-        return {
-            success: true,
-            code: 1000,
+        return new UpdatePasswordResponseDto({
             message: "The password has been successfully changed.",
             data: {
                 id: user.id,
             },
-        };
+        });
     }
 
     log(user: UserEntity) {

@@ -1,4 +1,8 @@
-export const ERROR = {
+import { IResponse } from "../interface";
+
+export const ERROR: {
+    [key: string]: IResponse;
+} = {
     EMAIL_ALREADY_EXISTS: {
         success: false,
         code: 4001,

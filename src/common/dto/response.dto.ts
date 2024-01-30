@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { ApiProperty } from "@nestjs/swagger";
 import { IResponse } from "src/shared/interface";
-import { Random } from "src/shared/util";
 
 export class ResponseDto<T> implements IResponse<T> {
-    constructor(code: number, message: string, data: T) {
-        this.code = code;
-        this.message = message;
-        this.data = data;
+    constructor(input: { code?: number; message?: string; data?: T }) {
+        const { code, message, data } = input;
+        if (code) this.code = code;
+        if (message) this.message = message;
+        if (data) this.data = data;
     }
 
     @ApiProperty({
@@ -16,12 +16,12 @@ export class ResponseDto<T> implements IResponse<T> {
     success: boolean = true;
 
     @ApiProperty({
-        example: 0,
+        example: 1000,
     })
     code: number = 1000;
 
     @ApiProperty({
-        example: Random.lowercase(10),
+        example: "This is a message.",
     })
     message: string;
 

@@ -1,9 +1,9 @@
+import { ResponseDto } from "src/common/dto";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 import {
     IUpdatePasswordInput,
     IUpdatePasswordOutput,
-    IUpdatePasswordOutputData,
 } from "src/shared/interface";
 import { Random } from "src/shared/util";
 
@@ -23,9 +23,16 @@ export class UpdatePasswordBodyDto implements IUpdatePasswordInput {
     newPassword: string;
 }
 
-export class UpdatePasswordResponseDto implements IUpdatePasswordOutput {
-    success: boolean;
-    code: number;
-    message: string;
-    data?: IUpdatePasswordOutputData;
+export class UpdatePasswordResponseData implements IUpdatePasswordOutput {
+    @ApiProperty({
+        example: Random.uuid(),
+    })
+    id: string;
+}
+
+export class UpdatePasswordResponseDto extends ResponseDto<UpdatePasswordResponseData> {
+    @ApiProperty({
+        type: UpdatePasswordResponseData,
+    })
+    data?: UpdatePasswordResponseData;
 }
