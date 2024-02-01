@@ -26,6 +26,8 @@ async function run() {
             }
         );
         const serverConfig = ServerConfig();
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const packageJson = require("../package.json");
 
         // Custom logger (with database saving)
         app.useLogger(app.get(CustomLogger));
@@ -43,7 +45,14 @@ async function run() {
 
         // Swagger
         const swaggerPath = "docs";
-        setupSwagger(app, swaggerPath, serverConfig.externalEndpoint);
+        setupSwagger(app, {
+            path: swaggerPath,
+            serverUrl: serverConfig.externalEndpoint,
+            // localhostPort: serverConfig.port,
+            title: packageJson.name,
+            version: packageJson.version,
+            description: "Documents to experience API.",
+        });
 
         // Secure HTTP header and compression
         app.use(helmet());
@@ -64,9 +73,6 @@ async function run() {
         const healthCheckController = app.get(HealthCheckController);
         const status = await healthCheckController.getStatus();
         await app.listen(serverConfig.port, async () => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const packageJson = require("../package.json");
-
             let log = `Application [ ${packageJson.name}:${packageJson.version} ] is successfully started\n`;
             log += `< Information >\n`;
             log += `Env                 : ${serverConfig.environment}\n`;

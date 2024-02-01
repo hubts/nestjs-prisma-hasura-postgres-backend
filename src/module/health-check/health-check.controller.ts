@@ -72,8 +72,11 @@ export class HealthCheckController implements OnApplicationBootstrap {
     })
     async checkConnections() {
         return await this.health.check([
-            () => this.http.pingCheck("http", "https://google.com"),
-            () => this.database.pingCheck("database", { timeout: 5000 }),
+            () =>
+                this.http.pingCheck("http", "https://google.com", {
+                    timeout: 3000,
+                }),
+            () => this.database.pingCheck("database", { timeout: 3000 }),
             () => this.memory.checkHeap("heap-memory", 2 * 1024 * 1024 * 1024), // 2 GB
         ]);
     }

@@ -2,7 +2,7 @@ import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 import { AuditEntity } from "../audit.entity";
 import { IUser } from "src/shared/entity";
 import { UserRole } from "src/shared/enum";
-import { USER_NICKNAME_LENGTH } from "src/shared/constant";
+import { USER_PROPERTY_LENGTH } from "src/shared/constant";
 import { CryptoExtension } from "src/shared/util";
 
 @Entity("user")
@@ -14,9 +14,9 @@ export class UserEntity extends AuditEntity implements IUser {
     password: string;
 
     @Column({
-        length: USER_NICKNAME_LENGTH,
+        length: USER_PROPERTY_LENGTH.NICKNAME.MAX,
         unique: true,
-        comment: `User unique nickname (max ${USER_NICKNAME_LENGTH} length)`,
+        comment: `User unique nickname (max ${USER_PROPERTY_LENGTH.NICKNAME.MAX} length)`,
     })
     nickname: string;
 
@@ -24,7 +24,7 @@ export class UserEntity extends AuditEntity implements IUser {
         type: "enum",
         enum: UserRole,
         default: UserRole.USER,
-        comment: `User role: ${Object.values(UserRole)}`,
+        comment: `User roles: ${Object.values(UserRole)}`,
     })
     role: UserRole;
 

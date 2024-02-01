@@ -28,11 +28,20 @@ export class CustomValidationPipe extends ValidationPipe {
         });
 
         if (errors.length > 0) {
-            const records: object[] = [];
-            const errorRecords = this.searchErrorConstraints(errors, records);
-            throw new BadRequestException(
-                `Payload validation failed: ${JSON.stringify(errorRecords)}`
-            );
+            const records: {
+                property: string;
+                value: any;
+                messages: string[];
+            }[] = [];
+            this.searchErrorConstraints(errors, records);
+            const firstErrorMessage = records[0].messages[0];
+            throw new BadRequestException(firstErrorMessage, {
+                cause: records.reduce(
+                    (prev: string[], curr) => prev.concat(curr.messages),
+                    []
+                ),
+                description: "Payload validation failed",
+            });
         }
 
         return value;
@@ -40,16 +49,23 @@ export class CustomValidationPipe extends ValidationPipe {
 
     searchErrorConstraints(
         errors: ValidationError[],
-        records: object[]
-    ): object[] {
+        records: {
+            property: string;
+            value: any;
+            messages: string[];
+        }[]
+    ): void {
         for (const error of errors) {
             if (error.constraints) {
-                records.push(error.constraints);
+                records.push({
+                    property: error.property,
+                    value: error.value,
+                    messages: Object.values(error.constraints),
+                });
             } else if (error.children) {
                 this.searchErrorConstraints(error.children, records);
             }
         }
-        return records;
     }
 
     toValidate(metatype: any): boolean {
