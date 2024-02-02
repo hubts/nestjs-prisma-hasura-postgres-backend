@@ -2,10 +2,10 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { UpdatePasswordCommand } from "./update-password.command";
 import { UpdatePasswordResponseDto } from "./update-password.dto";
 import { CryptoExtension } from "src/shared/util";
-import { ERROR } from "src/shared/constant";
 import { UserService } from "../../domain";
 import { Logger } from "@nestjs/common";
 import { UserEntity } from "src/entity";
+import { ERROR, SUCCESS_MESSAGE } from "src/shared/interface";
 
 @CommandHandler(UpdatePasswordCommand)
 export class UpdatePasswordHandler
@@ -41,7 +41,7 @@ export class UpdatePasswordHandler
 
         this.log(updatedUser);
         return new UpdatePasswordResponseDto({
-            message: "The password has been successfully changed.",
+            message: SUCCESS_MESSAGE.USER.UPDATE_PASSWORD,
             data: {
                 id: user.id,
             },

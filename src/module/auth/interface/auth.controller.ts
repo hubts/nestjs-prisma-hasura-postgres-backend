@@ -2,7 +2,8 @@ import { ApiTags } from "@nestjs/swagger";
 import { Body, Controller, Post } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 
-import { ApiSpec } from "src/common/decorator";
+import { ApiErrorResponses, ApiSpec } from "src/common/decorator";
+import { ERROR } from "src/shared/interface";
 import { AuthRoute, AuthRouteName } from "./auth.route";
 import {
     JoinUserBodyDto,
@@ -17,6 +18,10 @@ export class AuthController {
 
     @Post(AuthRoute.JoinUser.Name)
     @ApiSpec(JoinUserResponseDto)
+    @ApiErrorResponses([
+        ERROR.EMAIL_ALREADY_EXISTS,
+        ERROR.NICKNAME_ALREADY_EXISTS,
+    ])
     async joinUser(
         @Body() body: JoinUserBodyDto
     ): Promise<JoinUserResponseDto> {

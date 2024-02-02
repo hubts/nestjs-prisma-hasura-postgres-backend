@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { JoinUserCommand } from "./join-user.command";
 import { JoinUserResponseDto } from "./join-user.dto";
 import { UserService } from "src/module/user/domain";
-import { ERROR } from "src/shared/constant";
 import { IUser } from "src/shared/entity";
 import { UserEntity } from "src/entity";
 import { Logger } from "@nestjs/common";
 import { AuthService } from "../../domain";
+import { ERROR, SUCCESS_MESSAGE } from "src/shared/interface";
 
 @CommandHandler(JoinUserCommand)
 export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
@@ -53,7 +52,7 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
 
         this.log(savedUser);
         return new JoinUserResponseDto({
-            message: "User registration has been completed.", // Welcome
+            message: SUCCESS_MESSAGE.AUTH.JOIN_USER,
             data: {
                 accessToken,
                 refreshToken,

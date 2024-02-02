@@ -10,21 +10,12 @@ export class ResponseDto<T> implements IResponse<T> {
         if (data) this.data = data;
     }
 
-    @ApiProperty({
-        example: true,
-    })
+    @ApiProperty()
     success: boolean = true;
 
-    @ApiProperty({
-        example: 1000,
-    })
+    @ApiProperty()
     code: number = 1000;
 
-    @ApiProperty({
-        example: "This is a message.",
-    })
     message: string;
-
-    @ApiProperty()
     data?: T;
 }

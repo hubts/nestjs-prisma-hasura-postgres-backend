@@ -1,7 +1,12 @@
-import { IResponse } from "../interface";
+import { IResponse } from "..";
+
+type ERROR_KEY =
+    | "EMAIL_ALREADY_EXISTS"
+    | "NICKNAME_ALREADY_EXISTS"
+    | "WRONG_PASSWORD";
 
 export const ERROR: {
-    [key: string]: IResponse;
+    [key in ERROR_KEY]: IResponse;
 } = {
     EMAIL_ALREADY_EXISTS: {
         success: false,
