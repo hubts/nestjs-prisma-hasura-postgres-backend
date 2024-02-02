@@ -4,4 +4,8 @@ export const AuthRoute = {
         Name: "join-user",
         Permission: [],
     },
+    LoginUser: {
+        Name: "login-user",
+        Performance: [],
+    },
 };

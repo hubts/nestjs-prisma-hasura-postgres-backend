@@ -1,15 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty } from "class-validator";
-import { IsNickname, IsPassword } from "src/common/decorator";
+import { IsNotEmpty, IsEmail } from "class-validator";
+import { IsPassword } from "src/common/decorator";
 import { ResponseDto } from "src/common/dto";
 import {
-    IJoinUserInput,
-    IJoinUserOutput,
+    ILoginUserInput,
+    ILoginUserOutput,
     SUCCESS_MESSAGE,
 } from "src/shared/interface";
 import { Random } from "src/shared/util";
 
-export class JoinUserBodyDto implements IJoinUserInput {
+export class LoginUserBodyDto implements ILoginUserInput {
     @IsNotEmpty()
     @IsEmail()
     @ApiProperty({ example: Random.email() })
@@ -19,14 +19,9 @@ export class JoinUserBodyDto implements IJoinUserInput {
     @IsPassword()
     @ApiProperty({ example: Random.lowercase() })
     password: string;
-
-    @IsNotEmpty()
-    @IsNickname()
-    @ApiProperty({ example: Random.nickname() })
-    nickname: string;
 }
 
-class JoinUserResponseData implements IJoinUserOutput {
+class LoginUserResponseData implements ILoginUserOutput {
     @ApiProperty({ example: Random.lowercase(64) })
     accessToken: string;
 
@@ -34,7 +29,7 @@ class JoinUserResponseData implements IJoinUserOutput {
     refreshToken: string;
 }
 
-export class JoinUserResponseDto extends ResponseDto<JoinUserResponseData> {
-    message: string = SUCCESS_MESSAGE.AUTH.JOIN_USER;
-    data?: JoinUserResponseData;
+export class LoginUserResponseDto extends ResponseDto<LoginUserResponseData> {
+    message: string = SUCCESS_MESSAGE.AUTH.LOGIN_USER;
+    data?: LoginUserResponseData;
 }
