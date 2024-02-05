@@ -1,12 +1,15 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { Logger } from "@nestjs/common";
+
 import { LoginUserCommand } from "./login-user.command";
 import { LoginUserResponseDto } from "./login-user.dto";
-import { Logger } from "@nestjs/common";
 import { AuthService } from "../../domain";
+
 import { UserService } from "src/module/user/domain";
-import { ERROR, SUCCESS_MESSAGE } from "src/shared/interface";
+import { FAIL, SUCCESS_MESSAGE } from "src/shared/interface";
 import { CryptoExtension } from "src/shared/util";
 import { UserEntity } from "src/entity";
+import { FailedResponseDto } from "src/common/dto";
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
@@ -17,7 +20,9 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         private readonly userService: UserService
     ) {}
 
-    async execute(command: LoginUserCommand): Promise<LoginUserResponseDto> {
+    async execute(
+        command: LoginUserCommand
+    ): Promise<LoginUserResponseDto | FailedResponseDto> {
         const { email, password } = command.body;
 
         // Check email existence
@@ -25,7 +30,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
             where: { email },
         });
         if (!user) {
-            return ERROR.EMAIL_NOT_FOUND;
+            return new FailedResponseDto(FAIL.UNREGISTERED_EMAIL);
         }
 
         // Check password
@@ -34,7 +39,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
             user.password
         );
         if (!isPasswordCorrect) {
-            return ERROR.WRONG_PASSWORD;
+            return new FailedResponseDto(FAIL.WRONG_PASSWORD);
         }
 
         /**
@@ -55,7 +60,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
 
     log(user: UserEntity) {
         this.logger.log(
-            `User email { ${user.email} } is logged in (id = ${user.id})`
+            `User email { ${user.email} } is logged in (id = ${user.id}).`
         );
     }
 }

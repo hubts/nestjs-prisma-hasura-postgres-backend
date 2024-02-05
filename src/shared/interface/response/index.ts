@@ -1,3 +1,3 @@
 export * from "./response.interface";
-export * from "./error";
-export * from "./success.message";
+export * from "./fail.response";
+export * from "./success.response";

@@ -6,7 +6,8 @@ import { IUser } from "src/shared/entity";
 import { UserEntity } from "src/entity";
 import { Logger } from "@nestjs/common";
 import { AuthService } from "../../domain";
-import { ERROR, SUCCESS_MESSAGE } from "src/shared/interface";
+import { FAIL, SUCCESS_MESSAGE } from "src/shared/interface";
+import { FailedResponseDto } from "src/common/dto";
 
 @CommandHandler(JoinUserCommand)
 export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
@@ -25,7 +26,7 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
             where: { email },
         });
         if (existingEmail) {
-            return ERROR.EMAIL_ALREADY_EXISTS;
+            return new FailedResponseDto(FAIL.DUPLICATE_EMAIL);
         }
 
         // Check nickname duplication
@@ -33,7 +34,7 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
             where: { nickname },
         });
         if (existingNickname) {
-            return ERROR.NICKNAME_ALREADY_EXISTS;
+            return new FailedResponseDto(FAIL.DUPLICATE_NICKNAME);
         }
 
         /**

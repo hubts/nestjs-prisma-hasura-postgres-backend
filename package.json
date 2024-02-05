@@ -1,6 +1,6 @@
 {
     "name": "nestjs-easyfull-boilerplate",
-    "version": "0.0.28",
+    "version": "0.0.29",
     "description": "Easyfull boilerplate in NestJS",
     "author": "hubts",
     "private": true,
@@ -26,7 +26,8 @@
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "test:e2e": "jest --config ./test/jest-e2e.json",
         "git": "./script/skyrocket.sh",
-        "deploy": "./script/run.sh"
+        "deploy": "./script/run.sh",
+        "hasura:export": "cd hasura && ./script/metadata-export.sh"
     },
     "dependencies": {
         "@nestjs/axios": "^3.0.0",

@@ -26,6 +26,6 @@ export class UpdatePasswordResponseData implements IUpdatePasswordOutput {
 }
 
 export class UpdatePasswordResponseDto extends ResponseDto<UpdatePasswordResponseData> {
-    message: string = SUCCESS_MESSAGE.USER.UPDATE_PASSWORD;
+    message = SUCCESS_MESSAGE.USER.UPDATE_PASSWORD;
     data?: UpdatePasswordResponseData;
 }

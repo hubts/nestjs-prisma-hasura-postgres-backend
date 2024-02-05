@@ -1,0 +1,72 @@
+type Mutation {
+  joinUser(
+    joinUserBodyDtoInput: JoinUserBodyDtoInput!
+  ): JoinUserResponseDto
+}
+
+type Mutation {
+  loginUser(
+    loginUserBodyDtoInput: LoginUserBodyDtoInput!
+  ): LoginUserResponseDto
+}
+
+type Mutation {
+  updatePassword(
+    updatePasswordBodyDtoInput: UpdatePasswordBodyDtoInput!
+  ): UpdatePasswordResponseDto
+}
+
+input UpdatePasswordBodyDtoInput {
+  newPassword: String!
+  originalPassword: String!
+}
+
+input JoinUserBodyDtoInput {
+  email: String!
+  nickname: String!
+  password: String!
+}
+
+input LoginUserBodyDtoInput {
+  email: String!
+  password: String!
+}
+
+type UpdatePasswordResponseData {
+  id: String!
+}
+
+type UpdatePasswordResponseDto {
+  code: Float!
+  data: UpdatePasswordResponseData
+  message: String!
+  name: String!
+  success: Boolean!
+}
+
+type JoinUserResponseData {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type JoinUserResponseDto {
+  code: Float!
+  data: JoinUserResponseData
+  message: String!
+  name: String!
+  success: Boolean!
+}
+
+type LoginUserResponseData {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type LoginUserResponseDto {
+  code: Float!
+  data: LoginUserResponseData
+  message: String!
+  name: String!
+  success: Boolean!
+}
+

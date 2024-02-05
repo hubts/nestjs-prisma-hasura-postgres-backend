@@ -5,7 +5,8 @@ import { CryptoExtension } from "src/shared/util";
 import { UserService } from "../../domain";
 import { Logger } from "@nestjs/common";
 import { UserEntity } from "src/entity";
-import { ERROR, SUCCESS_MESSAGE } from "src/shared/interface";
+import { FAIL, SUCCESS_MESSAGE } from "src/shared/interface";
+import { FailedResponseDto } from "src/common/dto";
 
 @CommandHandler(UpdatePasswordCommand)
 export class UpdatePasswordHandler
@@ -27,7 +28,12 @@ export class UpdatePasswordHandler
             user.password
         );
         if (!isPasswordCorrect) {
-            return ERROR.WRONG_PASSWORD;
+            return new FailedResponseDto(FAIL.WRONG_PASSWORD);
+        }
+
+        // Check meaningless change
+        if (originalPassword === newPassword) {
+            return new FailedResponseDto(FAIL.SAME_PASSWORD);
         }
 
         /**

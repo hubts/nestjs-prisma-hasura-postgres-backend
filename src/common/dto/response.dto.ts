@@ -3,19 +3,23 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IResponse } from "src/shared/interface";
 
 export class ResponseDto<T> implements IResponse<T> {
-    constructor(input: { code?: number; message?: string; data?: T }) {
-        const { code, message, data } = input;
-        if (code) this.code = code;
-        if (message) this.message = message;
-        if (data) this.data = data;
-    }
-
-    @ApiProperty()
+    @ApiProperty() // NI: only for the pretty print in swagger
     success: boolean = true;
 
-    @ApiProperty()
+    @ApiProperty() // NI: only for the pretty print in swagger
     code: number = 1000;
 
+    @ApiProperty() // NI: only for the pretty print in swagger
+    name: string = "success";
+
+    @ApiProperty()
     message: string;
+
     data?: T;
+
+    constructor(args: Pick<ResponseDto<T>, "message" | "data">) {
+        const { message, data } = args;
+        this.message = message;
+        if (data) this.data = data;
+    }
 }

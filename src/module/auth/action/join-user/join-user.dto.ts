@@ -35,6 +35,6 @@ class JoinUserResponseData implements IJoinUserOutput {
 }
 
 export class JoinUserResponseDto extends ResponseDto<JoinUserResponseData> {
-    message: string = SUCCESS_MESSAGE.AUTH.JOIN_USER;
+    message = SUCCESS_MESSAGE.AUTH.JOIN_USER;
     data?: JoinUserResponseData;
 }

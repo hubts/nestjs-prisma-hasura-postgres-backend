@@ -1,8 +1,8 @@
 import { ApiTags } from "@nestjs/swagger";
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 
-import { ApiSpec } from "src/common/decorator";
+import { ApiFailedRes, ApiSpec } from "src/common/decorator";
 import { AuthRoute, AuthRouteName } from "./auth.route";
 import {
     JoinUserBodyDto,
@@ -12,6 +12,7 @@ import {
     LoginUserCommand,
     LoginUserResponseDto,
 } from "../action";
+import { FAIL } from "src/shared/interface";
 
 @ApiTags(AuthRouteName)
 @Controller(AuthRouteName)
@@ -20,10 +21,11 @@ export class AuthController {
 
     @Post(AuthRoute.JoinUser.Name)
     @ApiSpec(JoinUserResponseDto)
-    // @ApiErrorResponses([
-    //     ERROR.EMAIL_ALREADY_EXISTS,
-    //     ERROR.NICKNAME_ALREADY_EXISTS,
-    // ])
+    @ApiFailedRes(
+        HttpStatus.BAD_REQUEST,
+        FAIL.DUPLICATE_EMAIL,
+        FAIL.DUPLICATE_NICKNAME
+    )
     async joinUser(
         @Body() body: JoinUserBodyDto
     ): Promise<JoinUserResponseDto> {
@@ -32,7 +34,11 @@ export class AuthController {
 
     @Post(AuthRoute.LoginUser.Name)
     @ApiSpec(LoginUserResponseDto)
-    // @ApiErrorResponses([ERROR.EMAIL_NOT_FOUND, ERROR.WRONG_PASSWORD])
+    @ApiFailedRes(
+        HttpStatus.BAD_REQUEST,
+        FAIL.UNREGISTERED_EMAIL,
+        FAIL.WRONG_PASSWORD
+    )
     async loginUser(
         @Body() body: LoginUserBodyDto
     ): Promise<LoginUserResponseDto> {

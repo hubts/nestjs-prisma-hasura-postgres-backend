@@ -30,6 +30,6 @@ class LoginUserResponseData implements ILoginUserOutput {
 }
 
 export class LoginUserResponseDto extends ResponseDto<LoginUserResponseData> {
-    message: string = SUCCESS_MESSAGE.AUTH.LOGIN_USER;
+    message = SUCCESS_MESSAGE.AUTH.LOGIN_USER;
     data?: LoginUserResponseData;
 }
