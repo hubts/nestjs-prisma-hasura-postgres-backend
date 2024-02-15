@@ -25,6 +25,12 @@ main()
         "$endpoint/v1alpha1/pg_dump" \
         > "dumps/pgdump-$now.sql"
     
+    # Postgres dump options
+    # https://www.postgresql.org/docs/current/app-pgdump.html
+
+    # If the dump feature is not working correctly (502 or 504 error occurs by Hasura), use pg_dump command directly.
+    # pg_dump -h $HOST_IP -U $USERNAME $DB_NAME --column-inserts --data-only --schema=public > dump-$now.sql
+    
     if (( $? == 0 )); then
         log.done "PG Dumped from $endpoint"
     else
