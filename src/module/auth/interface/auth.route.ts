@@ -1,11 +1,13 @@
+import { IControllerRoute } from "src/common/interface";
+
 export const AuthRouteName = "auth";
-export const AuthRoute = {
+export const AuthRoute: IControllerRoute = {
     JoinUser: {
-        Name: "join-user",
-        Permission: [],
+        name: "join-user",
+        permissions: [],
     },
     LoginUser: {
-        Name: "login-user",
-        Performance: [],
+        name: "login-user",
+        permissions: [],
     },
 };

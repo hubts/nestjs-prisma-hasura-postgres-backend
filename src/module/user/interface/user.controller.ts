@@ -4,8 +4,7 @@ import { CommandBus } from "@nestjs/cqrs";
 
 import {
     ApiFailedRes,
-    ApiSpec,
-    JwtRolesAuth,
+    HasuraActionHandler,
     Requestor,
 } from "src/common/decorator";
 import { UserEntity } from "src/entity";
@@ -22,9 +21,11 @@ import { FAIL } from "src/shared/interface";
 export class UserController {
     constructor(private readonly commandBus: CommandBus) {}
 
-    @Post(UserRoute.UpdatePassword.Name)
-    @JwtRolesAuth(...UserRoute.UpdatePassword.Permission)
-    @ApiSpec(UpdatePasswordResponseDto)
+    @Post(UserRoute.updatePassword.name)
+    @HasuraActionHandler({
+        permissions: UserRoute.updatePassword.permissions,
+        responseType: UpdatePasswordResponseDto,
+    })
     @ApiFailedRes(
         HttpStatus.BAD_REQUEST,
         FAIL.WRONG_PASSWORD,
