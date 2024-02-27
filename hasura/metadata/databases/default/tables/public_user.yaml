@@ -1,3 +1,19 @@
 table:
   name: user
   schema: public
+select_permissions:
+  - role: _user
+    permission:
+      columns:
+        - createdAt
+        - deletedAt
+        - updatedAt
+        - id
+        - password
+        - role
+        - email
+        - nickname
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+    comment: ""

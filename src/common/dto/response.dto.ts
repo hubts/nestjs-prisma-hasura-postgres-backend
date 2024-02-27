@@ -1,16 +1,21 @@
-/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { ApiProperty } from "@nestjs/swagger";
 import { IResponse } from "src/shared/interface";
 
 export class ResponseDto<T> implements IResponse<T> {
-    @ApiProperty() // NI: only for the pretty print in swagger
-    success: boolean = true;
+    @ApiProperty({
+        type: Boolean,
+    }) // NI: only for the pretty print in swagger
+    success = true;
 
-    @ApiProperty() // NI: only for the pretty print in swagger
-    code: number = 1000;
+    @ApiProperty({
+        type: Number,
+    }) // NI: only for the pretty print in swagger
+    code = 1000;
 
-    @ApiProperty() // NI: only for the pretty print in swagger
-    name: string = "success";
+    @ApiProperty({
+        type: String,
+    }) // NI: only for the pretty print in swagger
+    name = "success";
 
     @ApiProperty()
     message: string;

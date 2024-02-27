@@ -2,7 +2,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 
-import { ApiFailedRes, ApiSpec } from "src/common/decorator";
+import { ApiFailedRes, HasuraActionHandler } from "src/common/decorator";
 import { AuthRoute, AuthRouteName } from "./auth.route";
 import {
     JoinUserBodyDto,
@@ -19,8 +19,11 @@ import { FAIL } from "src/shared/interface";
 export class AuthController {
     constructor(private readonly commandBus: CommandBus) {}
 
-    @Post(AuthRoute.JoinUser.Name)
-    @ApiSpec(JoinUserResponseDto)
+    @Post(AuthRoute.JoinUser.name)
+    @HasuraActionHandler({
+        permissions: AuthRoute.JoinUser.permissions,
+        responseType: JoinUserResponseDto,
+    })
     @ApiFailedRes(
         HttpStatus.BAD_REQUEST,
         FAIL.DUPLICATE_EMAIL,
@@ -32,8 +35,11 @@ export class AuthController {
         return await this.commandBus.execute(new JoinUserCommand(body));
     }
 
-    @Post(AuthRoute.LoginUser.Name)
-    @ApiSpec(LoginUserResponseDto)
+    @Post(AuthRoute.LoginUser.name)
+    @HasuraActionHandler({
+        permissions: AuthRoute.LoginUser.permissions,
+        responseType: LoginUserResponseDto,
+    })
     @ApiFailedRes(
         HttpStatus.BAD_REQUEST,
         FAIL.UNREGISTERED_EMAIL,
