@@ -1,11 +1,12 @@
 import {
     ConsoleLogger,
     ConsoleLoggerOptions,
+    Inject,
     Injectable,
 } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { CustomLoggerService } from "./custom-logger.service";
-import { ServerEnv } from "src/config";
+import { ServerConfig } from "src/config";
+import { ConfigType } from "@nestjs/config";
 
 @Injectable()
 export class CustomLogger extends ConsoleLogger {
@@ -14,15 +15,13 @@ export class CustomLogger extends ConsoleLogger {
     constructor(
         context: string,
         options: ConsoleLoggerOptions,
-        configService: ConfigService,
-        loggerService: CustomLoggerService
+        loggerService: CustomLoggerService,
+        @Inject(ServerConfig.KEY)
+        serverConfig: ConfigType<typeof ServerConfig>
     ) {
-        let environment = configService.get<ServerEnv>("ENV");
-        if (!environment) environment = ServerEnv.DEVELOPMENT;
-
         super(context, {
             ...options,
-            logLevels: loggerService.getLogLevels(environment),
+            logLevels: loggerService.getLogLevels(serverConfig.env),
         });
 
         this.loggerService = loggerService;

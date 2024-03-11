@@ -1,10 +1,11 @@
 import { PassportStrategy } from "@nestjs/passport";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { JwtConfig } from "src/config";
 import { UserService } from "src/module/user/domain";
 import { HasuraJwtPayload } from "src/shared/interface";
 import { UserEntity } from "src/entity";
+import { ConfigType } from "@nestjs/config";
 
 /**
  * Define a validation strategy for 'JwtAuthGuard'.
@@ -18,11 +19,15 @@ import { UserEntity } from "src/entity";
  */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private readonly userService: UserService) {
+    constructor(
+        @Inject(JwtConfig.KEY)
+        private readonly jwtConfig: ConfigType<typeof JwtConfig>,
+        private readonly userService: UserService
+    ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: JwtConfig().publicKey,
+            secretOrKey: jwtConfig.publicKey,
         });
     }
 

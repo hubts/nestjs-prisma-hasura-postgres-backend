@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { IAuthService, IIssueAuthTokensResult } from "./auth.service.interface";
 import { UserEntity } from "src/entity";
 import { HasuraJwtPayload } from "src/shared/interface";
@@ -7,11 +7,14 @@ import { JwtService } from "@nestjs/jwt";
 import { Random } from "src/shared/util";
 import { CACHE_KEY, REFRESH_TOKEN_LENGTH } from "src/shared/constant";
 import { CacheService } from "src/infrastructure";
-import { JwtConfig } from "src/config/jwt.config";
+import { JwtConfig } from "src/config/validated/jwt.config";
+import { ConfigType } from "@nestjs/config";
 
 @Injectable()
 export class AuthService implements IAuthService {
     constructor(
+        @Inject(JwtConfig.KEY)
+        private readonly jwtConfig: ConfigType<typeof JwtConfig>,
         private readonly jwtService: JwtService,
         private readonly cacheService: CacheService
     ) {}
@@ -54,7 +57,7 @@ export class AuthService implements IAuthService {
         await this.cacheService.set(
             refreshTokenKey,
             accessToken,
-            JwtConfig().refreshTokenExpiresIn
+            this.jwtConfig.refreshTokenExpiresIn
         );
 
         return {
