@@ -3,8 +3,9 @@ import { ConfigType } from "@nestjs/config";
 import {
     ThrottlerModuleOptions,
     ThrottlerOptionsFactory,
+    seconds,
 } from "@nestjs/throttler";
-import { ThrottlerConfig } from "../throttler.config";
+import { ThrottlerConfig } from "../validated/throttler.config";
 
 @Injectable()
 export class ThrottlerConfigService implements ThrottlerOptionsFactory {
@@ -17,11 +18,22 @@ export class ThrottlerConfigService implements ThrottlerOptionsFactory {
         this.config = config;
     }
 
-    createThrottlerOptions():
-        | ThrottlerModuleOptions
-        | Promise<ThrottlerModuleOptions> {
+    /**
+     * Throttler
+     * Link: https://docs.nestjs.com/security/rate-limiting
+     *
+     * The current version (v5) of throttler was updated with some changes.
+     * > It accepts throttler options as array instead of object.
+     * > It accepts 'ttl' in milliseconds. If you want to use seconds, use 'seconds' in this package.
+     */
+    createThrottlerOptions(): ThrottlerModuleOptions {
         return {
-            ...this.config,
+            throttlers: [
+                {
+                    ttl: seconds(this.config.ttl),
+                    limit: this.config.limit,
+                },
+            ],
         };
     }
 }

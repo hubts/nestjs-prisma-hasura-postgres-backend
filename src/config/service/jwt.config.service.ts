@@ -1,10 +1,12 @@
 import { JwtModuleOptions, JwtOptionsFactory } from "@nestjs/jwt";
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigType } from "@nestjs/config";
-import { JwtConfig } from "../jwt.config";
+import { JwtConfig } from "../validated/jwt.config";
+import { Algorithm } from "jsonwebtoken";
 
 @Injectable()
 export class JwtConfigService implements JwtOptionsFactory {
+    private JWT_ALGORITHM: Algorithm = "RS256";
     private config: ConfigType<typeof JwtConfig>;
 
     constructor(
@@ -14,16 +16,16 @@ export class JwtConfigService implements JwtOptionsFactory {
         this.config = config;
     }
 
-    createJwtOptions(): JwtModuleOptions | Promise<JwtModuleOptions> {
+    createJwtOptions(): JwtModuleOptions {
         return {
             privateKey: this.config.privateKey,
             publicKey: this.config.publicKey,
             signOptions: {
-                algorithm: "RS256",
+                algorithm: this.JWT_ALGORITHM,
                 expiresIn: this.config.accessTokenExpiresIn,
             },
             verifyOptions: {
-                algorithms: ["RS256"],
+                algorithms: [this.JWT_ALGORITHM],
             },
         };
     }

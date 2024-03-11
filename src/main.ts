@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+import { ServerConfig } from "src/config";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { Logger } from "@nestjs/common";
-
-import { AppModule } from "./app.module";
-
 import { json } from "body-parser";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
-import { ServerConfig } from "./config";
+
+import { AppModule } from "./app.module";
 import { setupSwagger } from "./common/swagger";
 import { CustomLogger } from "./common/logger";
 import { HealthCheckController } from "./module/health-check/health-check.controller";
+import { IServerConfig } from "./config";
 
 async function run() {
     const logger = new Logger("Main");
@@ -25,8 +26,7 @@ async function run() {
                 abortOnError: true,
             }
         );
-        const serverConfig = ServerConfig();
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const serverConfig = app.get<IServerConfig>(ServerConfig.KEY);
         const packageJson = require("../package.json");
 
         // Custom logger (with database saving)
@@ -75,7 +75,7 @@ async function run() {
         await app.listen(serverConfig.port, async () => {
             let log = `Application [ ${packageJson.name}:${packageJson.version} ] is successfully started\n`;
             log += `< Information >\n`;
-            log += `Env                 : ${serverConfig.environment}\n`;
+            log += `Env                 : ${serverConfig.env}\n`;
             log += `Application URL     : ${await app.getUrl()}\n`;
             log += `External endpoint   : ${serverConfig.externalEndpoint}\n`;
             log += `Swagger document    : ${serverConfig.externalEndpoint}/${swaggerPath}\n`;

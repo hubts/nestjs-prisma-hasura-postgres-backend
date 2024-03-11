@@ -1,7 +1,11 @@
-import { DatabaseConfig } from "./database.config";
-import { JwtConfig } from "./jwt.config";
-import { ServerConfig } from "./server.config";
-import { ThrottlerConfig } from "./throttler.config";
+import { DatabaseConfig } from "./validated/database.config";
+import { JwtConfig } from "./validated/jwt.config";
+import { ServerConfig } from "./validated/server.config";
+import { ThrottlerConfig } from "./validated/throttler.config";
+
+export * from "./config.interface";
+export * from "./service";
+export * from "./validated";
 
 export const configurations = [
     ServerConfig,
@@ -9,9 +13,3 @@ export const configurations = [
     DatabaseConfig,
     JwtConfig,
 ];
-
-export * from "./service";
-export * from "./database.config";
-export * from "./jwt.config";
-export * from "./server.config";
-export * from "./throttler.config";

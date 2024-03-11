@@ -32,6 +32,7 @@ const DomainModules = [
     imports: [
         ConfigModule.forRoot({
             isGlobal: true, // ConfigModule can be globally used in any module
+            expandVariables: true, // Supports environment variable expansion
             envFilePath: [".env"], // The environment file to be imported
             load: [...configurations], // Load configurations organized and separated into each config object
         }),
