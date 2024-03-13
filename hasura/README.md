@@ -1,39 +1,24 @@
 # Hasura
 
-**Hasura** is a database manager with the powerful features, such as instant GraphQL API, webhook trigger, serverless function, and so on.
+## What is this?
 
-# Setting
+Hasura is a database manager server with powerful features, such as instant GraphQL API, webhook trigger, serverless function, and so on. The basic GraphQL queries and mutations are automatically generated based on the database connected.
 
-See and fill '.env' file.
-
--   `CONTAINER_NAME` : name of container, no change recommended
--   `HASURA_PORT` : port number of external port
--   `HASURA_ADMIN_SECRET` : secret to connect to hasura with console/browser
--   `HASURA_GRAPHQL_DATABASE_URL` : database connection url (postgres://username:password@host:port/dbname)
-
-On the other hand, the configurations for hasura CLI are in 'config.yaml'. If you want to disable console to use CLI, change `HASURA_GRAPHQL_ENABLE_CONSOLE` as 'false' in 'docker-compose.yaml'. Then, use this command to run the console of hasura:
-
-```Bash
-$ hasura console
-```
-
-# Run
-
-If you want to export/apply metadata only, the running of script is not necessary. Move on to [here](#additional-scripts).
-
-```Bash
-$ ./run.sh
-```
-
-Hasura container would be started.
-
-# Description
+You can simply use Hasura server to monitor the data in database, but you can replace the functions of backend server, manage database events, or controls data access permissions.
 
 You can see the documentation of hasura in [official](https://hasura.io/docs/latest/index/).
 
-After starting, enter [localhost:8080](http://localhost:8080) in your browser to see hasura if port is 8080. If the hasura does not connect to a database automatically, you can connect to a database via console (See [documentation](https://hasura.io/docs/latest/databases/connect-db/index/)).
+## Setting
 
-When you want to handle the metadata of hasura or reflect changes to metadata in a file in real time using console, you should use 'Hasura CLI'. You can install the CLI using this command from [hasura-docs](https://hasura.io/docs/latest/hasura-cli/install-hasura-cli/):
+### Prerequisites
+
+#### Docker compose
+
+Hasura will run on docker container by our run script. In detail, `docker-compose` command will be used. Please check you can use `docker-command` command by the script.
+
+#### Hasura CLI
+
+When you want to handle the metadata of Hasura or reflect changes to metadata in a file in real time using console, you should use Hasura CLI. You can install the CLI using this command from [hasura-docs](https://hasura.io/docs/latest/hasura-cli/install-hasura-cli/):
 
 ```Bash
 $ curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
@@ -46,15 +31,92 @@ If there is the newest version, version check recommends a new version. You can 
 $ hasura update-cli
 ```
 
-Now, you can initialize hasura-cli that can be started to perform/manage metadata and migrations. This below command generates directories, 'metadata', 'migrations', and 'seeds'.
+Now, you can initialize hasura-cli that can be started to perform or manage metadata and migrations. This below command generates directories, 'metadata', 'migrations', and 'seeds'.
 
 ```Bash
 $ hasura init . # in this directory
 ```
 
-You can also initialize hasura as a new project with a new directory using just command 'hasura init'.
+You can also initialize Hasura as a new project with a new directory using the command.
 
-The console can export or apply the metadata manually using the implemented scripts. In '/metadata' directory, exported metadata are saved. Especially,
+### Set environment variables
+
+If you are starting without any settings, our run script will copy _.env.example_ file to _.env_ file, and the docker container will be started with the basic environment variables.
+
+To set your variables, copy _.env.example_ file to _.env_ file, and fill it.
+
+| Key                           | Description                                          |
+| ----------------------------- | ---------------------------------------------------- |
+| `CONTAINER_NAME`              | Name of running docker container                     |
+| `HASURA_PORT`                 | Port number outside docker container (default: 8080) |
+| `HASURA_ADMIN_SECRET`         | Admin secret (also, console login password)          |
+| `HASURA_GRAPHQL_DATABASE_URL` | Database connection URL                              |
+| `HASURA_GRAPHQL_JWT_SECRET`   | (Optional) JWT secret setting                        |
+
+The format of database connection URL with Postgres is here:
+
+```Plain
+postgres://username:password@host:port/dbname
+```
+
+-   `postgres://` : prefix that indicates Postgres database connection
+-   `username:password` : username and password of database
+-   `host:port` : database endpoint host and port number
+-   `dbname` : database name (2nd level) in postgres database (1st level)
+
+Alternatively, you can set the database connection URL manually in Hasura console(browser) after running.
+
+The `HASURA_GRAPHQL_JWT_SECRET` is JWT public key setting to verify access token issued by backend server. It is actually a value in JSON, but it must be expressed in a single line as value in _.env_ file.
+
+This is an example of JWT secret in JSON:
+
+```JSON
+{
+    "type": "RS256",
+    "key": "RSA_PUBLIC_KEY_MINIMUM_2048_BITS",
+    "claims_namespace": "claims",
+    "claims_format": "json"
+}
+```
+
+-   `type` : algorithm type of JWT (also, key type)
+-   `key` : public key used in backend server
+-   `claims_namespace` : property(key) namespace of JWT payload (server-handling data)
+-   `claims_format` : format of JWT payload (`json` recommended)
+
+In this example, `RS256` algorithm is used and RSA256 public key will be input (it can be generated by our _script/util/jwt-key-generation.sh_). The backend server will issue JWT based on the private key corresponding to the public key, and enclose JSON payload (data) into `claims` key property. Hasura server will verify input JWT in request header with the public key, and read `claims` property to get JWT payload.
+
+Eventually, `HASURA_GRAPHQL_JWT_SECRET` value will be a flatten string wrapped in quotation marks. See the example of _.env.example_ file.
+
+### Set docker-compose
+
+See _docker-compose.yaml_ file. The file contains the image version of Hasura from docker-hub, and some settings with environment variables. You can check the settings by looking at the names that match the environment variables.
+
+On the other hand, there are options that are set only here. These are the options that will be applied to Hasura server while running the image. Check the [official document](https://hasura.io/docs/latest/deployment/graphql-engine-flags/index/) for the options except for the options below to be mentioned.
+
+The `HASURA_GRAPHQL_UNAUTHORIZED_ROLE` value sets the name for the unauthorized role. It is the name of the role that is granted to 'anyone' when approached by anyone who does not have any roles (it is called 'anonymous'). If you set the permission for the 'anonymous' role, the anonymous will act under that role. If you want to change the name of anonymous role, change this option.
+
+The `HASURA_GRAPHQL_EXPERIMENTAL_FEATURES` value activates the experimental features of Hasura. The value, `inherited_roles`, sets the feature of inherited role, literally. Through this setting, inheritance between roles is possible, so that all the permission (authority) of one role can be inherited by another role as it is. That is, upper and lower roles can be set between various roles. We recommended that you use this option as it is.
+
+## Run
+
+If you want to export/apply metadata only, the running of script is not necessary. Move on to [here](#additional-scripts).
+
+```Bash
+$ ./run.sh
+```
+
+Hasura container would be started.
+
+## Description
+
+After starting the container, enter [localhost:8080](http://localhost:8080) in your browser to see Hasura console (if port is 8080). You can discover Hasura console with some features, GraphQL explorer (API), database manager (DATA), custom actions (ACTIONS), remote schemas, and database events (EVENTS).
+
+If you are entering 'DATA' menu, you can see the database connected and manage them. If Hasura does not connect to a database automatically, you can connect to a database via this console (See [documentation](https://hasura.io/docs/latest/databases/quickstart/#on-hasura-deployed-via-docker)).
+
+Now, Hasura can be used to set database migration, register actions to connect to webhook, and set permissions of query/mutation for roles (client requestors). Those settings are called 'metadata' in Hasura, and it can be imported and exported to be managed.
+
+Our scripts can export or apply the metadata manually based on Hasura CLI. In '/metadata' directory, exported metadata are saved. Especially,
 
 -   `/metadata/databases` : handle the database schema, table, and so on.
 -   `/metadata/databases/databases.yaml` : save the database connection configuration.
@@ -63,7 +125,7 @@ The console can export or apply the metadata manually using the implemented scri
 
 On the other hand, you can use Metadata APIs to handler metadata via API. Some of scripts described in next [section](#additional-scripts) are implemented with the API. See [documentation](https://hasura.io/docs/latest/api-reference/metadata-api/index/) to know more.
 
-# Additional Scripts
+## Additional Scripts
 
 ### `connect-database.sh`
 
@@ -71,7 +133,7 @@ Run to connect to 'postgres' using CURL command.
 
 Ensure that the environment variable, `HASURA_GRAPHQL_DATABASE_URL` was set.
 
-**Usage**
+#### Usage
 
 ```Bash
 $ ./script/connect-database.sh http://localhost:8080 qwerqwerqwer default
@@ -81,7 +143,7 @@ $ ./script/connect-database.sh http://localhost:8080 qwerqwerqwer default
 
 Run to export the metadata in endpoint to local directories.
 
-**Usage**
+#### Usage
 
 ```Bash
 $ ./script/metadata-export.sh http://localhost:8080 qwerqwerqwer
@@ -91,7 +153,7 @@ $ ./script/metadata-export.sh http://localhost:8080 qwerqwerqwer
 
 Run to apply the metadata in local directories to endpoint.
 
-**Usage**
+#### Usage
 
 ```Bash
 $ ./script/metadata-apply.sh http://localhost:8080 qwerqwerqwer
@@ -101,7 +163,7 @@ $ ./script/metadata-apply.sh http://localhost:8080 qwerqwerqwer
 
 Run to create(register) a new event trigger.
 
-**Usage**
+#### Usage
 
 ```Bash
 $ ./script/create-event.sh http://localhost:8080 qwerqwerqwer default public user user_handler http://127.0.0.1/webhook-api
