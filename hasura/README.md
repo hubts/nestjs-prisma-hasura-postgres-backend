@@ -6,7 +6,7 @@ Hasura is a database manager server with powerful features, such as instant Grap
 
 You can simply use Hasura server to monitor the data in database, but you can replace the functions of backend server, manage database events, or controls data access permissions.
 
-You can see the documentation of hasura in [official](https://hasura.io/docs/latest/index/).
+You can see the documentation of Hasura in [official](https://hasura.io/docs/latest/index/).
 
 ## Setting
 

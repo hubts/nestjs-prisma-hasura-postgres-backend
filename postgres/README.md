@@ -1,46 +1,46 @@
 # Postgres
 
-_Postgres_ is a relational database management system, open-source project.
+## What is this?
 
-# Setting
+Postgres is a relational database management system, open-source project.
 
-You can copy _.env.example_ file as _.env_ file to save settings. See and fill the file to set environment variables:
+You can see the documentation of Postgres in [official](https://www.postgresql.org/docs/).
 
--   `CONTAINER_NAME` : name of container.
--   `POSTGRES_PORT` : port number of external port.
--   `POSTGRES_DB` : database name, 'postgres' default.
--   `POSTGRES_USER` : username, 'postgres' default.
--   `POSTGRES_PASSWORD` : password to connect.
--   `POSTGRES_VOLUME_DIR` : directory name of postgres data volume.
+## Setting
 
-If you want to use the default settings in _.env.example_ file, just run the following step.
+### Prerequisites
 
-# Run
+#### Docker compose
 
-```Bash
-$ ./run.sh
-```
+Postgres will run on docker container by our run script. In detail, `docker-compose` command will be used. Please check you can use `docker-command` command by the script.
 
-A postgres container would be started.
+### Set environment variables
 
-If a permission error occurs, use this command:
+If you are starting without any settings, our run script will copy _.env.example_ file to _.env_ file, and the docker container will be started with the basic environment variables.
 
-```Bash
-$ chmod +x run.sh # or attach 'sudo' in front.
-```
+To set your variables, copy _.env.example_ file to _.env_ file, and fill it.
 
-# Description
+| Key                   | Description                                          |
+| --------------------- | ---------------------------------------------------- |
+| `CONTAINER_NAME`      | Name of running docker container                     |
+| `POSTGRES_PORT`       | Port number outside docker container (default: 8080) |
+| `POSTGRES_DB`         | Database name (default: postgres)                    |
+| `POSTGRES_USER`       | Database username (default: postgres)                |
+| `POSTGRES_PASSWORD`   | Database password to connect                         |
+| `POSTGRES_VOLUME_DIR` | Directory name of Postgres data volume               |
 
-See _docker-compose.yaml_.
+### Set docker-compose
 
-The environment variable `PGDATA` is a directory path to store data inside of a container. Thus, there is no need to change the patch if you do not want to customize.
+See _docker-compose.yaml_ file. The file contains the image version of Postgres from docker-hub, and some settings with environment variables. You can check the settings by looking at the names that match the environment variables.
 
-Two volumes are mounted, and the volumes are used for configuration update and data access. One volume mounts the path `POSTGRES_VOLUME_DIR` you wrote in _.env_ with the above `PGDATA`. The other volume mounts the configuration file named _postgresql.conf_ to copy and link it. When you run the script _run.sh_, configuration for postgres would be set with the file.
+In `environment` part, `PGDATA` is a directory path to store data inside of the running container.
+
+In `volumes` part, you can see two volumes are created and mounted. The volumes are used for configuration update and data access. One volume mounts the path you wrote to set with the above `PGDATA`. The other volume mounts the configuration file named _postgresql.conf_ to copy and link it. When you run the script _run.sh_, configuration for Postgres will be set by this file.
 
 If you want to change the configuration only, follow this process:
 
 1. Change the configuration file _postgresql.conf_.
-2. Restart docker using the command:
+2. Restart docker using this command:
 
 ```Bash
 $ docker restart $CONTAINER_NAME
@@ -48,13 +48,27 @@ $ docker restart $CONTAINER_NAME
 
 Do not use _run.sh_ script to change the configuration only, because the script removes the existing container. The change of configuration just requires restarting.
 
-# Additional Scripts
+## Run
 
-## _psql.sh_
+```Bash
+$ ./run.sh
+```
+
+Postgres container would be started.
+
+If a permission error occurs, use this command:
+
+```Bash
+$ chmod +x run.sh # or attach 'sudo' in front.
+```
+
+## Additional Scripts
+
+### _psql.sh_
 
 Run a `psql` command to use postgres SQL in a container.
 
-**Usage**
+#### Usage
 
 ```Bash
 $ ./script/psql.sh "SHOW max_connections;"
@@ -65,11 +79,11 @@ $ ./script/psql.sh "SHOW max_connections;"
 
 ```
 
-## _psql-access.sh_
+### _psql-access.sh_
 
 Run to access 'psql' command-line inside a container.
 
-**Usage**
+#### Usage
 
 ```Bash
 $ ./script/psql-access.sh
