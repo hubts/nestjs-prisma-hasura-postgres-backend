@@ -32,7 +32,7 @@ export class CustomLoggerService {
                 },
             });
         } catch (error) {
-            console.log(`ConsoleLogError: ${error}`);
+            console.error(`ConsoleLogError: ${error}`);
         }
     }
 
@@ -45,7 +45,7 @@ export class CustomLoggerService {
                 },
             });
         } catch (error) {
-            console.log(`ErrorLogError: ${error}`);
+            console.error(`ErrorLogError: ${error}`);
         }
     }
 }

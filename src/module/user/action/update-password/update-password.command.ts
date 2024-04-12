@@ -1,10 +1,10 @@
 import { ICommand } from "@nestjs/cqrs";
 import { UpdatePasswordBodyDto } from "./update-password.dto";
-import { UserEntity } from "src/entity";
+import { UserModel } from "../../domain/model/user.model";
 
 export class UpdatePasswordCommand implements ICommand {
     constructor(
-        readonly user: UserEntity,
+        readonly user: UserModel,
         readonly body: UpdatePasswordBodyDto
     ) {}
 }

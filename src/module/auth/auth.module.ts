@@ -3,10 +3,11 @@ import { JwtModule } from "@nestjs/jwt";
 import { CqrsModule } from "@nestjs/cqrs";
 
 import { AuthController } from "./interface/auth.controller";
-import { AuthService, JwtStrategy } from "./domain";
 import { AuthCommandHandlers } from "./action";
 import { UserModule } from "../user/user.module";
 import { JwtConfigService } from "src/config";
+import { AuthService } from "./domain/auth.service";
+import { JwtStrategy } from "./domain/jwt.strategy";
 
 const providers = [AuthService, ...AuthCommandHandlers, JwtStrategy];
 

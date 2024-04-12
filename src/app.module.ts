@@ -18,7 +18,9 @@ import { CustomLoggerModule } from "./common/logger";
 import { AppService } from "./module/app/app.service";
 import { UserModule } from "./module/user/user.module";
 import { AuthModule } from "./module/auth/auth.module";
-import { CacheModule } from "./infrastructure";
+import { CacheModule } from "./infrastructure/cache";
+import { DataSource, DataSourceOptions } from "typeorm";
+import { addTransactionalDataSource } from "typeorm-transactional";
 
 const DomainModules = [
     /**
@@ -36,7 +38,15 @@ const DomainModules = [
             envFilePath: [".env"], // The environment file to be imported
             load: [...configurations], // Load configurations organized and separated into each config object
         }),
-        TypeOrmModule.forRootAsync({ useClass: DatabaseConfigService }), // Database configuration imported
+        TypeOrmModule.forRootAsync({
+            useClass: DatabaseConfigService,
+            async dataSourceFactory(options?: DataSourceOptions) {
+                if (!options) {
+                    throw new Error("Invalid typeorm options");
+                }
+                return addTransactionalDataSource(new DataSource(options));
+            },
+        }), // Database configuration imported
         TypeOrmModule.forFeature([...entities]), // All entities are imported to synchronize in database (This helps create a repository of entities)
         ThrottlerModule.forRootAsync({ useClass: ThrottlerConfigService }), // Throttler configuration imported
         CustomLoggerModule, // Custom logger module to use logger in 'main.ts'

@@ -3,13 +3,12 @@ import { Logger } from "@nestjs/common";
 
 import { LoginUserCommand } from "./login-user.command";
 import { LoginUserResponseDto } from "./login-user.dto";
-import { AuthService } from "../../domain";
 
-import { UserService } from "src/module/user/domain";
 import { FAIL, SUCCESS_MESSAGE } from "src/shared/interface";
-import { CryptoExtension } from "src/shared/util";
-import { UserEntity } from "src/entity";
 import { FailedResponseDto } from "src/common/dto";
+import { UserService } from "src/module/user/domain/user.service";
+import { UserModel } from "src/module/user/domain/model/user.model";
+import { AuthService } from "../../domain/auth.service";
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
@@ -26,17 +25,15 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         const { email, password } = command.body;
 
         // Check email existence
-        const user = await this.userService.userRepo.findOne({
-            where: { email },
-        });
-        if (!user) {
+        const userModel = await this.userService.getUserByEmail(email);
+        if (!userModel) {
             return new FailedResponseDto(FAIL.UNREGISTERED_EMAIL);
         }
 
         // Check password
-        const isPasswordCorrect = CryptoExtension.comparePassword(
-            password,
-            user.password
+        const isPasswordCorrect = this.userService.checkPassword(
+            userModel,
+            password
         );
         if (!isPasswordCorrect) {
             return new FailedResponseDto(FAIL.WRONG_PASSWORD);
@@ -46,9 +43,9 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
          * Process
          */
         const { accessToken, refreshToken } =
-            await this.service.issueAuthTokens(user);
+            await this.service.issueAuthTokens(userModel);
 
-        this.log(user);
+        this.log(userModel);
         return new LoginUserResponseDto({
             message: SUCCESS_MESSAGE.AUTH.LOGIN_USER,
             data: {
@@ -58,9 +55,9 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         });
     }
 
-    log(user: UserEntity) {
+    log(userModel: UserModel) {
         this.logger.log(
-            `User email { ${user.email} } is logged in (id = ${user.id}).`
+            `Login successful: ${this.userService.summarize(userModel)}`
         );
     }
 }

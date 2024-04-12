@@ -2,10 +2,10 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { JwtConfig } from "src/config";
-import { UserService } from "src/module/user/domain";
 import { HasuraJwtPayload } from "src/shared/interface";
-import { UserEntity } from "src/entity";
 import { ConfigType } from "@nestjs/config";
+import { UserModel } from "src/module/user/domain/model/user.model";
+import { UserService } from "src/module/user/domain/user.service";
 
 /**
  * Define a validation strategy for 'JwtAuthGuard'.
@@ -21,7 +21,7 @@ import { ConfigType } from "@nestjs/config";
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
         @Inject(JwtConfig.KEY)
-        private readonly jwtConfig: ConfigType<typeof JwtConfig>,
+        jwtConfig: ConfigType<typeof JwtConfig>,
         private readonly userService: UserService
     ) {
         super({
@@ -31,20 +31,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: HasuraJwtPayload): Promise<UserEntity> {
+    async validate(payload: HasuraJwtPayload): Promise<UserModel> {
         const id = payload.claims["x-hasura-user-id"];
         const role = payload.claims["x-hasura-role"];
         if (!id || !role) {
             throw new UnauthorizedException("Unauthorized JWT claims");
         }
 
-        const user = await this.userService.userRepo.findOneBy({
-            id,
-        });
-        if (!user) {
+        const userModel = await this.userService.getUserById(id);
+        if (!userModel) {
             throw new UnauthorizedException("Unknown user ID");
         }
-
-        return user;
+        return userModel;
     }
 }

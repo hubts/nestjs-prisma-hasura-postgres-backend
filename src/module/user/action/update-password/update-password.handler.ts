@@ -1,12 +1,11 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { UpdatePasswordCommand } from "./update-password.command";
 import { UpdatePasswordResponseDto } from "./update-password.dto";
-import { CryptoExtension } from "src/shared/util";
-import { UserService } from "../../domain";
 import { Logger } from "@nestjs/common";
-import { UserEntity } from "src/entity";
 import { FAIL, SUCCESS_MESSAGE } from "src/shared/interface";
 import { FailedResponseDto } from "src/common/dto";
+import { UserService } from "../../domain/user.service";
+import { UserModel } from "../../domain/model/user.model";
 
 @CommandHandler(UpdatePasswordCommand)
 export class UpdatePasswordHandler
@@ -23,9 +22,9 @@ export class UpdatePasswordHandler
         const { originalPassword, newPassword } = command.body;
 
         // Check password
-        const isPasswordCorrect = CryptoExtension.comparePassword(
-            originalPassword,
-            user.password
+        const isPasswordCorrect = this.service.checkPassword(
+            user,
+            originalPassword
         );
         if (!isPasswordCorrect) {
             return new FailedResponseDto(FAIL.WRONG_PASSWORD);
@@ -39,13 +38,9 @@ export class UpdatePasswordHandler
         /**
          * Process
          */
-        const updatedUser = this.service.userRepo.create({
-            ...user,
-            password: newPassword,
-        });
-        await this.service.userRepo.update(user.id, updatedUser);
+        await this.service.updatePassword(user.id, newPassword);
 
-        this.log(updatedUser);
+        this.log(user);
         return new UpdatePasswordResponseDto({
             message: SUCCESS_MESSAGE.USER.UPDATE_PASSWORD,
             data: {
@@ -54,9 +49,11 @@ export class UpdatePasswordHandler
         });
     }
 
-    log(user: UserEntity) {
+    log(userModel: UserModel) {
         this.logger.log(
-            `User email { ${user.email} } changes a password newly (id = ${user.id}).`
+            `Password successfully changed by ${this.service.summarize(
+                userModel
+            )}`
         );
     }
 }

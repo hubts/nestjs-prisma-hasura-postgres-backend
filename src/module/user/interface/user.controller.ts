@@ -15,6 +15,7 @@ import {
     UpdatePasswordResponseDto,
 } from "../action";
 import { FAIL } from "src/shared/interface";
+import { Transactional } from "typeorm-transactional";
 
 @ApiTags(UserRouteName)
 @Controller(UserRouteName)
@@ -31,6 +32,7 @@ export class UserController {
         FAIL.WRONG_PASSWORD,
         FAIL.SAME_PASSWORD
     )
+    @Transactional()
     async updatePassword(
         @Requestor() user: UserEntity,
         @Body() body: UpdatePasswordBodyDto

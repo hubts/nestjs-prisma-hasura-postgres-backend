@@ -1,9 +1,9 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
-import { AuditEntity } from "../audit.entity";
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { AuditEntity } from "../common/audit.entity";
 import { IUser } from "src/shared/entity";
 import { UserRole } from "src/shared/enum";
 import { USER_PROPERTY_LENGTH } from "src/shared/constant";
-import { CryptoExtension } from "src/shared/util";
+import { UserProfileEntity } from "./user-profile.entity";
 
 @Entity("user")
 export class UserEntity extends AuditEntity implements IUser {
@@ -28,9 +28,13 @@ export class UserEntity extends AuditEntity implements IUser {
     })
     role: UserRole;
 
-    @BeforeInsert()
-    @BeforeUpdate()
-    setHashPassword() {
-        this.password = CryptoExtension.hashPassword(this.password);
-    }
+    /**
+     * Relation
+     */
+
+    @OneToOne(() => UserProfileEntity, profile => profile.user, {
+        cascade: true,
+    })
+    @JoinColumn()
+    profile: UserProfileEntity;
 }
