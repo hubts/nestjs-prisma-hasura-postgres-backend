@@ -1,5 +1,5 @@
 import { ExecutionContext, createParamDecorator } from "@nestjs/common";
-import { UserEntity } from "src/entity";
+import { UserModel } from "src/module/user/domain/model/user.model";
 
 /**
  * Decorator used to specify who is granted access.
@@ -7,7 +7,7 @@ import { UserEntity } from "src/entity";
 export const Requestor = createParamDecorator(
     (data: unknown, ctx: ExecutionContext) => {
         const request = ctx.switchToHttp().getRequest() as Request & {
-            user: UserEntity;
+            user: UserModel;
         };
         return request.user;
     }
