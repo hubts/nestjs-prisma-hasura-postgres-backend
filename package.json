@@ -1,6 +1,6 @@
 {
     "name": "nestjs-easyfull-boilerplate",
-    "version": "0.0.39",
+    "version": "0.0.40",
     "description": "Easyfull boilerplate in NestJS",
     "author": "hubts",
     "private": true,
@@ -59,6 +59,7 @@
         "rimraf": "^3.0.2",
         "rxjs": "^7.2.0",
         "typeorm": "^0.3.17",
+        "typeorm-transactional": "^0.5.0",
         "webpack": "^5.0.0"
     },
     "devDependencies": {

@@ -13,8 +13,10 @@ import { setupSwagger } from "./common/swagger";
 import { CustomLogger } from "./common/logger";
 import { HealthCheckController } from "./module/health-check/health-check.controller";
 import { IServerConfig } from "./config";
+import { initializeTransactionalContext } from "typeorm-transactional";
 
 async function run() {
+    initializeTransactionalContext();
     const logger = new Logger("Main");
 
     try {

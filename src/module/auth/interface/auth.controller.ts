@@ -13,6 +13,7 @@ import {
     LoginUserResponseDto,
 } from "../action";
 import { FAIL } from "src/shared/interface";
+import { Transactional } from "typeorm-transactional";
 
 @ApiTags(AuthRouteName)
 @Controller(AuthRouteName)
@@ -29,6 +30,7 @@ export class AuthController {
         FAIL.DUPLICATE_EMAIL,
         FAIL.DUPLICATE_NICKNAME
     )
+    @Transactional()
     async joinUser(
         @Body() body: JoinUserBodyDto
     ): Promise<JoinUserResponseDto> {
