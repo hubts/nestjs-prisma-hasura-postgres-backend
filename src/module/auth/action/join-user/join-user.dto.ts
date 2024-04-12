@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, IsPhoneNumber } from "class-validator";
 import { IsNickname, IsPassword } from "src/common/decorator";
 import { ResponseDto } from "src/common/dto";
 import {
@@ -24,6 +24,11 @@ export class JoinUserBodyDto implements IJoinUserInput {
     @IsNickname()
     @ApiProperty({ example: Random.nickname() })
     nickname: string;
+
+    @IsNotEmpty()
+    @IsPhoneNumber("KR")
+    @ApiProperty({ example: Random.phoneNumber() })
+    mobile: string;
 }
 
 class JoinUserResponseData implements IJoinUserOutput {

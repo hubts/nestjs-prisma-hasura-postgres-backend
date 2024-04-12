@@ -5,7 +5,8 @@ type FAIL_KEY =
     | "DUPLICATE_NICKNAME"
     | "WRONG_PASSWORD"
     | "UNREGISTERED_EMAIL"
-    | "SAME_PASSWORD";
+    | "SAME_PASSWORD"
+    | "DUPLICATE_MOBILE";
 
 export const FAIL: {
     readonly [key in FAIL_KEY]: Pick<IResponse, "name" | "code" | "message">;
@@ -34,5 +35,10 @@ export const FAIL: {
         code: 4005,
         name: "same password",
         message: "A new password is the same as before.",
+    },
+    DUPLICATE_MOBILE: {
+        code: 4006,
+        name: "duplicate mobile",
+        message: "This mobile number already registered.",
     },
 } as const;

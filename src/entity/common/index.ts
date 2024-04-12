@@ -5,5 +5,6 @@ import { ErrorLogEntity } from "./error-log.entity";
 export * from "./console-log.entity";
 export * from "./error-log.entity";
 export * from "./cache.entity";
+export * from "./audit.entity";
 
 export const CommonEntities = [ConsoleLogEntity, ErrorLogEntity, CacheEntity];

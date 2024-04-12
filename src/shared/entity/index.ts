@@ -1,2 +1,3 @@
-export * from "./audit.interface";
-export * from "./user";
+export * from "./common/audit";
+export * from "./user/user";
+export * from "./user/user-profile";

@@ -18,7 +18,7 @@ import { CustomLoggerModule } from "./common/logger";
 import { AppService } from "./module/app/app.service";
 import { UserModule } from "./module/user/user.module";
 import { AuthModule } from "./module/auth/auth.module";
-import { CacheModule } from "./infrastructure";
+import { CacheModule } from "./infrastructure/cache";
 
 const DomainModules = [
     /**

@@ -1,7 +1,6 @@
 import { CommonEntities } from "./common";
 import { UserEntities } from "./user";
 
-export * from "./audit.entity";
 export * from "./user";
 export * from "./common";
 

@@ -1,17 +1,16 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { IAuthService, IIssueAuthTokensResult } from "./auth.service.interface";
-import { UserEntity } from "src/entity";
 import { HasuraJwtPayload } from "src/shared/interface";
 import { UserRole } from "src/shared/enum";
 import { JwtService } from "@nestjs/jwt";
 import { Random } from "src/shared/util";
 import { CACHE_KEY, REFRESH_TOKEN_LENGTH } from "src/shared/constant";
-import { CacheService } from "src/infrastructure";
+import { CacheService } from "src/infrastructure/cache";
 import { JwtConfig } from "src/config/validated/jwt.config";
 import { ConfigType } from "@nestjs/config";
+import { UserModel } from "src/module/user/domain/model/user.model";
 
 @Injectable()
-export class AuthService implements IAuthService {
+export class AuthService {
     constructor(
         @Inject(JwtConfig.KEY)
         private readonly jwtConfig: ConfigType<typeof JwtConfig>,
@@ -32,18 +31,23 @@ export class AuthService implements IAuthService {
 
     /**
      * Issue a new access token and refresh token.
-     * @param target - Target(actor) authenticated.
+     * @param userModel - Target(actor) user model authenticated.
      * @returns A new access token and refresh token for target.
      */
-    async issueAuthTokens(target: UserEntity): Promise<IIssueAuthTokensResult> {
+    async issueAuthTokens(
+        userModel: Pick<UserModel, "id" | "role" | "email" | "nickname">
+    ): Promise<{
+        accessToken: string;
+        refreshToken: string;
+    }> {
         const payload: HasuraJwtPayload = {
             claims: {
                 "x-hasura-allowed-roles": Object.values(UserRole) as UserRole[],
-                "x-hasura-role": target.role,
-                "x-hasura-default-role": target.role,
-                "x-hasura-user-id": target.id,
-                email: target.email,
-                nickname: target.nickname,
+                "x-hasura-role": userModel.role,
+                "x-hasura-default-role": userModel.role,
+                "x-hasura-user-id": userModel.id,
+                email: userModel.email,
+                nickname: userModel.nickname,
             },
         };
         const accessToken = this.jwtService.sign(payload);
@@ -51,7 +55,7 @@ export class AuthService implements IAuthService {
         const refreshToken = Random.hex(REFRESH_TOKEN_LENGTH);
         const refreshTokenKey = this.getRefreshTokenKey(
             refreshToken,
-            target.email
+            userModel.email
         );
 
         await this.cacheService.set(

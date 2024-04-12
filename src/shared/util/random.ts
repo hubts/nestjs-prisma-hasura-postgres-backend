@@ -233,6 +233,12 @@ export class Random {
 
         return `${year}-${monthString}-${dayString}`;
     }
+
+    static phoneNumber(): string {
+        const ABCD = this.digits(4);
+        const EFGH = this.digits(4);
+        return `010-${ABCD}-${EFGH}`;
+    }
 }
 
 const NICKNAME_POOL = [
