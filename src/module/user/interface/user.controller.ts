@@ -7,7 +7,6 @@ import {
     HasuraActionHandler,
     Requestor,
 } from "src/common/decorator";
-import { UserEntity } from "src/entity";
 import { UserRoute, UserRouteName } from "./user.route";
 import {
     UpdatePasswordBodyDto,
@@ -16,6 +15,7 @@ import {
 } from "../action";
 import { FAIL } from "src/shared/interface";
 import { Transactional } from "typeorm-transactional";
+import { UserModel } from "../domain/model/user.model";
 
 @ApiTags(UserRouteName)
 @Controller(UserRouteName)
@@ -34,7 +34,7 @@ export class UserController {
     )
     @Transactional()
     async updatePassword(
-        @Requestor() user: UserEntity,
+        @Requestor() user: UserModel,
         @Body() body: UpdatePasswordBodyDto
     ): Promise<UpdatePasswordResponseDto> {
         return await this.commandBus.execute(
