@@ -1,8 +1,8 @@
-import { ClassSerializerInterceptor, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
+import { APP_FILTER, APP_GUARD, APP_PIPE } from "@nestjs/core";
 
 import { AppController } from "./module/app/app.controller";
 import { CustomValidationPipe } from "./common/pipe/custom-validation.pipe";

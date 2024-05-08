@@ -1,6 +1,6 @@
 {
     "name": "nestjs-easyfull-boilerplate",
-    "version": "0.0.46",
+    "version": "0.0.47",
     "description": "Easyfull boilerplate in NestJS",
     "author": "hubts",
     "private": true,
