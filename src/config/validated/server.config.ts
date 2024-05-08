@@ -1,11 +1,9 @@
 import { registerAs } from "@nestjs/config";
 import { IServerConfig, ServerEnv } from "../config.interface";
-import {
-    ConfigValidation,
-    NotEmptyEnum,
-    NotEmptyIntRange,
-    NotEmptyString,
-} from "../decorator";
+import { ConfigValidation } from "../decorator/config-validation.decorator";
+import { NotEmptyEnum } from "../decorator/not-empty-enum.decorator";
+import { NotEmptyIntRange } from "../decorator/not-empty-int.decorator";
+import { NotEmptyString } from "../decorator/not-empty-string.decorator";
 
 export const ServerConfig = registerAs("server", (): IServerConfig => {
     const config = new ServerConfigValidation();

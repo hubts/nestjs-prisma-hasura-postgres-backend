@@ -1,5 +1,5 @@
 import { registerDecorator, ValidationOptions } from "class-validator";
-import { USER_PROPERTY_LENGTH } from "src/shared/constant";
+import { USER_PROPERTY_LENGTH } from "src/shared/constant/user.constant";
 
 export function IsPassword(validationOptions?: ValidationOptions) {
     return function (object: Record<string, any>, propertyName: string) {

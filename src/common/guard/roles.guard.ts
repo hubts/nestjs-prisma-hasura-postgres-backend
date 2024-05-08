@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { UserRole } from "src/shared/enum";
+import { UserRole } from "src/shared/enum/user-role.enum";
 
 /**
  * RolesGuard detects the role of outside actor.

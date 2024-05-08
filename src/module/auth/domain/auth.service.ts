@@ -1,13 +1,14 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { HasuraJwtPayload } from "src/shared/interface";
-import { UserRole } from "src/shared/enum";
 import { JwtService } from "@nestjs/jwt";
-import { Random } from "src/shared/util";
-import { CACHE_KEY, REFRESH_TOKEN_LENGTH } from "src/shared/constant";
-import { CacheService } from "src/infrastructure/cache";
 import { JwtConfig } from "src/config/validated/jwt.config";
 import { ConfigType } from "@nestjs/config";
-import { UserModel } from "src/module/user/domain/model/user.model";
+import { REFRESH_TOKEN_LENGTH } from "src/shared/constant/auth.constant";
+import { CACHE_KEY } from "src/shared/constant/cache.constant";
+import { UserRole } from "src/shared/enum/user-role.enum";
+import { HasuraJwtPayload } from "src/shared/interface/hasura-jwt-payload.interface";
+import { Random } from "src/shared/util/random";
+import { CacheService } from "src/infrastructure/cache/cache.service";
+import { IUser } from "src/shared/entity/user";
 
 @Injectable()
 export class AuthService {
@@ -35,7 +36,7 @@ export class AuthService {
      * @returns A new access token and refresh token for target.
      */
     async issueAuthTokens(
-        userModel: Pick<UserModel, "id" | "role" | "email" | "nickname">
+        userModel: Pick<IUser, "id" | "role" | "email" | "nickname">
     ): Promise<{
         accessToken: string;
         refreshToken: string;

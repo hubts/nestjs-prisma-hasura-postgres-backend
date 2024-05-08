@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { UserModel } from "./model/user.model";
-import { CryptoExtension } from "src/shared/util";
 import { UserRepository } from "../repository/user.repository";
-import { UserProfileModel } from "./model/user-profile.model";
 import { UserProfileRepository } from "../repository/user-profile.repository";
+import { CryptoExtension } from "src/shared/util/crypto-extension";
+import { UserEntity } from "src/entity/user/user.entity";
+import { IUser } from "src/shared/entity/user";
+import { UserProfileEntity } from "src/entity/user/user-profile.entity";
 
 @Injectable()
 export class UserService {
@@ -16,102 +17,35 @@ export class UserService {
         return CryptoExtension.hashPassword(newPassword);
     }
 
-    summarize(user: UserModel): string {
+    checkPassword(userPassword: string, inputPassword: string): boolean {
+        return CryptoExtension.comparePassword(inputPassword, userPassword);
+    }
+
+    summarize(user: IUser): string {
         return `User (id = ${user.id}, email = ${user.email}, nickname = ${user.nickname})`;
     }
 
-    async existsBy(
-        where: Pick<UserModel, "email" | "nickname"> &
-            Pick<UserProfileModel, "mobile">
-    ): Promise<{
-        exists: boolean;
-        reason: "none" | "email" | "nickname" | "mobile";
-    }> {
-        const { email, nickname, mobile } = where;
-        // Email, Nickname
-        const duplicateUsers =
-            await this.userRepo.findManyByEmailOrNicknameToCheck({
-                email,
-                nickname,
-            });
-        if (!duplicateUsers.length) {
-            return {
-                exists: false,
-                reason: "none",
-            };
-        }
-        // Mobile
-        const duplicateUserByMobile =
-            await this.userProfileRepo.findOneByMobile(mobile);
-        if (!duplicateUserByMobile) {
-            return {
-                exists: false,
-                reason: "none",
-            };
-        }
-        return {
-            exists: true,
-            reason: duplicateUsers.find(user => user.email === email)
-                ? "email"
-                : duplicateUsers.find(user => user.nickname === nickname)
-                ? "nickname"
-                : !!duplicateUserByMobile
-                ? "mobile"
-                : "none",
-        };
+    async duplicationExistsBy(props: {
+        email: string;
+        nickname: string;
+        mobile: string;
+    }): Promise<UserEntity[]> {
+        return await this.userRepo.findManyByEmailOrNicknameOrMobile(props);
     }
 
-    async getUserById(id: string): Promise<UserModel | null> {
-        const userEntity = await this.userRepo.findOneBy({ id });
-        if (!userEntity) return null;
-        return UserModel.fromEntity(userEntity);
+    async getUserById(id: string): Promise<UserEntity | null> {
+        return await this.userRepo.findOneBy({ id });
     }
 
-    async getUserByEmail(email: string): Promise<UserModel | null> {
-        const userEntity = await this.userRepo.findOneByEmail(email);
-        if (!userEntity) return null;
-        return UserModel.fromEntity(userEntity);
+    async getUserByEmail(email: string): Promise<UserEntity | null> {
+        return await this.userRepo.findOneBy({ email });
     }
 
-    async createUser(
-        props: Pick<UserModel, "email" | "password" | "nickname"> &
-            Pick<UserProfileModel, "mobile">
-    ): Promise<UserModel> {
-        const { email, password, nickname, mobile } = props;
-        const newUserProfileModel = new UserProfileModel({
-            mobile,
-        });
-        const newUserModel = new UserModel(
-            {
-                email,
-                password: this.hashPassword(password),
-                nickname,
-            },
-            {
-                profile: newUserProfileModel,
-            }
-        );
-        const createdUserEntity = this.userRepo.create(newUserModel);
-        const savedUserEntity = await this.userRepo.save(createdUserEntity);
-        return UserModel.fromEntity(savedUserEntity);
-    }
-
-    async loginUser(
-        props: Pick<UserModel, "email" | "password">
-    ): Promise<UserModel | null> {
-        const { email, password } = props;
-        const userEntity = await this.userRepo.findOneByEmail(email);
-        if (!userEntity || !this.checkPassword(userEntity, password)) {
-            return null;
-        }
-        return UserModel.fromEntity(userEntity);
-    }
-
-    checkPassword(
-        user: Pick<UserModel, "password">,
-        inputPassword: string
-    ): boolean {
-        return CryptoExtension.comparePassword(inputPassword, user.password);
+    async login(email: string, password: string): Promise<UserEntity | null> {
+        const user = await this.getUserByEmail(email);
+        if (!user) return null;
+        else if (!this.checkPassword(password, user.password)) return null;
+        return user;
     }
 
     async updatePassword(userId: string, newPassword: string): Promise<void> {

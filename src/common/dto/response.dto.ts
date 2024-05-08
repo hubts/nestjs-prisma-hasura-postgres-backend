@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IResponse } from "src/shared/interface";
+import { FailureCode } from "src/shared/response/failure-code";
+import { IResponse, SuccessCode } from "src/shared/response/response.interface";
 
 export class ResponseDto<T> implements IResponse<T> {
     @ApiProperty({
@@ -10,7 +11,7 @@ export class ResponseDto<T> implements IResponse<T> {
     @ApiProperty({
         type: Number,
     }) // NI: only for the pretty print in swagger
-    code = 1000;
+    code: typeof SuccessCode | FailureCode = 1000;
 
     @ApiProperty({
         type: String,
@@ -22,9 +23,7 @@ export class ResponseDto<T> implements IResponse<T> {
 
     data?: T;
 
-    constructor(args: Pick<ResponseDto<T>, "message" | "data">) {
-        const { message, data } = args;
-        this.message = message;
+    constructor(data?: T) {
         if (data) this.data = data;
     }
 }

@@ -1,11 +1,11 @@
 import { PassportStrategy } from "@nestjs/passport";
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { JwtConfig } from "src/config";
-import { HasuraJwtPayload } from "src/shared/interface";
 import { ConfigType } from "@nestjs/config";
-import { UserModel } from "src/module/user/domain/model/user.model";
 import { UserService } from "src/module/user/domain/user.service";
+import { HasuraJwtPayload } from "src/shared/interface/hasura-jwt-payload.interface";
+import { JwtConfig } from "src/config/validated/jwt.config";
+import { IUser } from "src/shared/entity/user";
 
 /**
  * Define a validation strategy for 'JwtAuthGuard'.
@@ -31,7 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: HasuraJwtPayload): Promise<UserModel> {
+    async validate(payload: HasuraJwtPayload): Promise<IUser> {
         const id = payload.claims["x-hasura-user-id"];
         const role = payload.claims["x-hasura-role"];
         if (!id || !role) {

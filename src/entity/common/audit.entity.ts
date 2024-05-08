@@ -1,4 +1,4 @@
-import { IAudit } from "src/shared/entity";
+import { IAudit } from "src/shared/entity/audit";
 import {
     CreateDateColumn,
     DeleteDateColumn,

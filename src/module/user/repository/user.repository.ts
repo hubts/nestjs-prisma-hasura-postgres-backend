@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { UserProfileEntity } from "src/entity/user/user-profile.entity";
+import { UserEntity } from "src/entity/user/user.entity";
 import { DataSource, Repository } from "typeorm";
-import { UserEntity } from "src/entity";
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {
@@ -8,18 +9,22 @@ export class UserRepository extends Repository<UserEntity> {
         super(UserEntity, dataSource.createEntityManager());
     }
 
-    async findManyByEmailOrNicknameToCheck(
-        props: Pick<UserEntity, "email" | "nickname">
-    ): Promise<Pick<UserEntity, "email" | "nickname">[]> {
-        const { email, nickname } = props;
-        return await this.find({
-            select: { email: true, nickname: true },
-            where: [{ email }, { nickname }],
-        });
-    }
-
-    async findOneByEmail(email: string): Promise<UserEntity | null> {
-        return await this.findOneBy({ email });
+    async findManyByEmailOrNicknameOrMobile(props: {
+        email: string;
+        nickname: string;
+        mobile: string;
+    }) {
+        const { email, nickname, mobile } = props;
+        return (await this.find({
+            select: {
+                email: true,
+                nickname: true,
+                profile: {
+                    mobile: true,
+                },
+            },
+            where: [{ email }, { nickname }, { profile: { mobile } }],
+        })) satisfies (UserEntity & { profile: UserProfileEntity })[];
     }
 
     async updatePassword(id: string, newPassword: string) {

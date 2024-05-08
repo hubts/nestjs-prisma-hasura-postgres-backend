@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { ServerConfig } from "src/config";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { Logger } from "@nestjs/common";
@@ -9,11 +8,12 @@ import compression from "compression";
 import morgan from "morgan";
 
 import { AppModule } from "./app.module";
-import { setupSwagger } from "./common/swagger";
-import { CustomLogger } from "./common/logger";
 import { HealthCheckController } from "./module/health-check/health-check.controller";
-import { IServerConfig } from "./config";
 import { initializeTransactionalContext } from "typeorm-transactional";
+import { CustomLogger } from "./common/logger/custom.logger";
+import { setupSwagger } from "./common/swagger/setup";
+import { IServerConfig } from "./config/config.interface";
+import { ServerConfig } from "./config/validated/server.config";
 
 async function run() {
     initializeTransactionalContext();

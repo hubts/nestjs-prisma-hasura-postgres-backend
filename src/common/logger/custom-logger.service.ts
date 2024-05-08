@@ -1,15 +1,17 @@
 import { Injectable, LogLevel } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
-import { IConsoleLog, IErrorLog } from "./interface";
-import { ServerEnv } from "src/config";
-import { ConsoleLogEntity, ErrorLogEntity } from "src/entity";
+import { ConsoleLogEntity } from "src/entity/common/console-log.entity";
+import { ErrorLogEntity } from "src/entity/common/error-log.entity";
+import { IConsoleLog } from "./interface/console-log.interface";
+import { IErrorLog } from "./interface/error-log.interface";
+import { ServerEnv } from "src/config/config.interface";
 
 @Injectable()
 export class CustomLoggerService {
     private consoleLogRepo: Repository<ConsoleLogEntity>;
     private errorLogRepo: Repository<ErrorLogEntity>;
 
-    constructor(readonly dataSource: DataSource) {
+    constructor(dataSource: DataSource) {
         this.consoleLogRepo = dataSource.getRepository(ConsoleLogEntity);
         this.errorLogRepo = dataSource.getRepository(ErrorLogEntity);
     }

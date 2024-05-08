@@ -1,10 +1,8 @@
 import { registerAs } from "@nestjs/config";
 import { IJwtConfig } from "../config.interface";
-import {
-    ConfigValidation,
-    NotEmptyIntFrom,
-    NotEmptyString,
-} from "../decorator";
+import { ConfigValidation } from "../decorator/config-validation.decorator";
+import { NotEmptyIntFrom } from "../decorator/not-empty-int.decorator";
+import { NotEmptyString } from "../decorator/not-empty-string.decorator";
 
 export const JwtConfig = registerAs("jwt", (): IJwtConfig => {
     const config = new JwtConfigValidation();

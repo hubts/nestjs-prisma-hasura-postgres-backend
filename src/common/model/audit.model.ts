@@ -1,5 +1,5 @@
-import { IAudit } from "src/shared/entity";
-import { Random } from "src/shared/util";
+import { IAudit } from "src/shared/entity/audit";
+import { Random } from "src/shared/util/random";
 
 export class AuditModel implements IAudit {
     id: string;

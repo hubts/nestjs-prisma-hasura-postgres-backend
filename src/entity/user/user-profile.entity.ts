@@ -1,7 +1,7 @@
 import { Column, Entity, OneToOne } from "typeorm";
 import { AuditEntity } from "../common/audit.entity";
-import { IUserProfile } from "src/shared/entity";
 import { UserEntity } from "./user.entity";
+import { IUserProfile } from "src/shared/entity/user-profile";
 
 @Entity("user_profile")
 export class UserProfileEntity extends AuditEntity implements IUserProfile {
@@ -13,5 +13,5 @@ export class UserProfileEntity extends AuditEntity implements IUserProfile {
      */
 
     @OneToOne(() => UserEntity, user => user.profile)
-    user: UserEntity;
+    user?: UserEntity;
 }

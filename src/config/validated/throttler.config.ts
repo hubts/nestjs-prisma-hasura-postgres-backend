@@ -1,6 +1,7 @@
 import { registerAs } from "@nestjs/config";
 import { IThrottlerConfig } from "../config.interface";
-import { ConfigValidation, NotEmptyIntFrom } from "../decorator";
+import { ConfigValidation } from "../decorator/config-validation.decorator";
+import { NotEmptyIntFrom } from "../decorator/not-empty-int.decorator";
 
 export const ThrottlerConfig = registerAs("throttler", (): IThrottlerConfig => {
     const config = new ThrottlerConfigValidation();

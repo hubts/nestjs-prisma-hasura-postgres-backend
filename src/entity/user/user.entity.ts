@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { AuditEntity } from "../common/audit.entity";
-import { IUser } from "src/shared/entity";
-import { UserRole } from "src/shared/enum";
-import { USER_PROPERTY_LENGTH } from "src/shared/constant";
 import { UserProfileEntity } from "./user-profile.entity";
+import { USER_PROPERTY_LENGTH } from "src/shared/constant/user.constant";
+import { IUser } from "src/shared/entity/user";
+import { UserRole } from "src/shared/enum/user-role.enum";
 
 @Entity("user")
 export class UserEntity extends AuditEntity implements IUser {
@@ -36,5 +36,5 @@ export class UserEntity extends AuditEntity implements IUser {
         cascade: true,
     })
     @JoinColumn()
-    profile: UserProfileEntity;
+    profile?: UserProfileEntity;
 }

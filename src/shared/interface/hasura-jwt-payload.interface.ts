@@ -1,4 +1,4 @@
-import { UserRole } from "../enum";
+import { UserRole } from "../enum/user-role.enum";
 
 export interface HasuraJwtPayload {
     claims: {

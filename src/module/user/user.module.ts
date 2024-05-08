@@ -1,13 +1,12 @@
 import { Module } from "@nestjs/common";
-import { UserController } from "./interface/user.controller";
+import { UserController } from "./user.controller";
 import { UserService } from "./domain/user.service";
-import { UserCommandHandlers } from "./action";
 import { CqrsModule } from "@nestjs/cqrs";
 import { UserRepository } from "./repository/user.repository";
 import { UserProfileRepository } from "./repository/user-profile.repository";
 
 const repositories = [UserRepository, UserProfileRepository];
-const providers = [UserService, ...UserCommandHandlers, ...repositories];
+const providers = [UserService, ...repositories];
 
 @Module({
     imports: [CqrsModule],

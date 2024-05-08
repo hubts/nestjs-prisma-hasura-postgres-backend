@@ -7,20 +7,18 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { AppController } from "./module/app/app.controller";
 import { CustomValidationPipe } from "./common/pipe/custom-validation.pipe";
 import { HealthCheckModule } from "./module/health-check/health-check.module";
-import {
-    DatabaseConfigService,
-    ThrottlerConfigService,
-    configurations,
-} from "./config";
-import { entities } from "./entity";
-import { HttpExceptionFilter } from "./common/error";
-import { CustomLoggerModule } from "./common/logger";
+import { configurations } from "./config/configurations";
 import { AppService } from "./module/app/app.service";
 import { UserModule } from "./module/user/user.module";
 import { AuthModule } from "./module/auth/auth.module";
-import { CacheModule } from "./infrastructure/cache";
 import { DataSource, DataSourceOptions } from "typeorm";
 import { addTransactionalDataSource } from "typeorm-transactional";
+import { HttpExceptionFilter } from "./common/error/http-exception.filter";
+import { CustomLoggerModule } from "./common/logger/custom-logger.module";
+import { DatabaseConfigService } from "./config/service/database.config.service";
+import { ThrottlerConfigService } from "./config/service/throttler.config.service";
+import { entities } from "./entity/entities";
+import { CacheModule } from "./infrastructure/cache/cache.module";
 
 const DomainModules = [
     /**
@@ -60,7 +58,7 @@ const DomainModules = [
         // Globally used providers with 'APP_' prefix
         { provide: APP_GUARD, useClass: ThrottlerGuard },
         { provide: APP_PIPE, useClass: CustomValidationPipe },
-        { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },
+        // { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },
         { provide: APP_FILTER, useClass: HttpExceptionFilter },
     ],
 })

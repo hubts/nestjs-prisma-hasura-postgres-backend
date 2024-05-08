@@ -1,11 +1,9 @@
 import { registerAs } from "@nestjs/config";
 import { IDatabaseConfig } from "../config.interface";
-import {
-    ConfigValidation,
-    NotEmptyBoolean,
-    NotEmptyIntRange,
-    NotEmptyString,
-} from "../decorator";
+import { ConfigValidation } from "../decorator/config-validation.decorator";
+import { NotEmptyBoolean } from "../decorator/not-empty-boolean.decorator";
+import { NotEmptyIntRange } from "../decorator/not-empty-int.decorator";
+import { NotEmptyString } from "../decorator/not-empty-string.decorator";
 
 export const DatabaseConfig = registerAs("database", (): IDatabaseConfig => {
     const config = new DatabaseConfigValidation();

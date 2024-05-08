@@ -1,5 +1,5 @@
 import { LogLevel } from "@nestjs/common";
-import { IConsoleLog } from "src/common/logger/interface";
+import { IConsoleLog } from "src/common/logger/interface/console-log.interface";
 import {
     Column,
     CreateDateColumn,

@@ -5,8 +5,8 @@ import {
     Injectable,
 } from "@nestjs/common";
 import { CustomLoggerService } from "./custom-logger.service";
-import { ServerConfig } from "src/config";
 import { ConfigType } from "@nestjs/config";
+import { ServerConfig } from "src/config/validated/server.config";
 
 @Injectable()
 export class CustomLogger extends ConsoleLogger {
@@ -30,9 +30,11 @@ export class CustomLogger extends ConsoleLogger {
     log(message: string, context?: string) {
         super.log.apply(this, [message, context]);
     }
+
     debug(message: string, context?: string) {
         super.debug.apply(this, [message, context]);
     }
+
     verbose(message: string, context?: string, stack?: string) {
         super.verbose.apply(this, [message, context]);
         this.loggerService.createConsoleLog({
@@ -42,6 +44,7 @@ export class CustomLogger extends ConsoleLogger {
             trace: stack ?? null,
         });
     }
+
     warn(message: string, context?: string, stack?: string) {
         super.warn.apply(this, [message, context]);
         this.loggerService.createConsoleLog({
@@ -51,6 +54,7 @@ export class CustomLogger extends ConsoleLogger {
             trace: stack ?? null,
         });
     }
+
     error(message: string, context?: string, stack?: string, silent?: boolean) {
         if (!silent) {
             super.error.apply(this, [message, stack]);

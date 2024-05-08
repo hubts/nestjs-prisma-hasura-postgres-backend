@@ -1,4 +1,4 @@
-import { IErrorLog } from "src/common/logger/interface";
+import { IErrorLog } from "src/common/logger/interface/error-log.interface";
 import {
     Column,
     CreateDateColumn,

@@ -7,7 +7,7 @@ import {
     InternalServerErrorException,
 } from "@nestjs/common";
 import { Request, Response } from "express";
-import { CustomLogger } from "../logger";
+import { CustomLogger } from "../logger/custom.logger";
 
 /**
  * HttpExceptionFilter filters error (or exception) from codes.

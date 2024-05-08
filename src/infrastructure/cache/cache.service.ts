@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { DataSource, LessThanOrEqual, Like, Repository } from "typeorm";
 import { ICacheService, KeyValue } from "./cache.interface";
-import { CacheEntity } from "src/entity";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { TimeExtension } from "src/shared/util";
+import { CacheEntity } from "src/entity/common/cache.entity";
+import { TimeExtension } from "src/shared/util/time-extension";
 
 @Injectable()
 export class CacheService implements ICacheService {
