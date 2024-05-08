@@ -3,7 +3,7 @@ import { UserRole } from "../enum/user-role.enum";
 import { IActionRoute } from "../interface/action-route.type";
 import { IResponse } from "../response/response.interface";
 
-export const UserRoute: IActionRoute<UserAction> = {
+export const UserRoute: IActionRoute<IUserAction> = {
     prefix: "users",
     subPath: {
         updatePassword: {
@@ -13,7 +13,7 @@ export const UserRoute: IActionRoute<UserAction> = {
     },
 };
 
-export interface UserAction {
+export interface IUserAction {
     updatePassword: (
         user: IUser,
         input: IUpdatePasswordInput

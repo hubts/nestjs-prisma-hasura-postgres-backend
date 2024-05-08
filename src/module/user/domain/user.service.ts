@@ -1,57 +1,60 @@
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "../repository/user.repository";
-import { UserProfileRepository } from "../repository/user-profile.repository";
-import { CryptoExtension } from "src/shared/util/crypto-extension";
-import { UserEntity } from "src/entity/user/user.entity";
 import { IUser } from "src/shared/entity/user";
-import { UserProfileEntity } from "src/entity/user/user-profile.entity";
+import { checkPassword } from "./check-password";
+import { checkUserExists } from "./check-user-exists";
+import { createUser } from "./create-user";
 
 @Injectable()
 export class UserService {
-    constructor(
-        private readonly userRepo: UserRepository,
-        private readonly userProfileRepo: UserProfileRepository
-    ) {}
-
-    private hashPassword(newPassword: string): string {
-        return CryptoExtension.hashPassword(newPassword);
-    }
-
-    checkPassword(userPassword: string, inputPassword: string): boolean {
-        return CryptoExtension.comparePassword(inputPassword, userPassword);
-    }
+    constructor(private readonly userRepo: UserRepository) {}
 
     summarize(user: IUser): string {
         return `User (id = ${user.id}, email = ${user.email}, nickname = ${user.nickname})`;
     }
 
-    async duplicationExistsBy(props: {
+    async existsBy(where: {
         email: string;
         nickname: string;
         mobile: string;
-    }): Promise<UserEntity[]> {
-        return await this.userRepo.findManyByEmailOrNicknameOrMobile(props);
+    }): Promise<ReturnType<typeof checkUserExists>> {
+        const users = await this.userRepo.findManyByEmailOrNicknameOrMobile(
+            where
+        );
+        const flatten = users.map(user => {
+            return {
+                email: user.email,
+                nickname: user.nickname,
+                mobile: user.profile.mobile,
+            };
+        });
+        return checkUserExists(flatten, where);
     }
 
-    async getUserById(id: string): Promise<UserEntity | null> {
+    async getUserById(id: string): Promise<IUser | null> {
         return await this.userRepo.findOneBy({ id });
     }
 
-    async getUserByEmail(email: string): Promise<UserEntity | null> {
+    async getUserByEmail(email: string): Promise<IUser | null> {
         return await this.userRepo.findOneBy({ email });
     }
 
-    async login(email: string, password: string): Promise<UserEntity | null> {
-        const user = await this.getUserByEmail(email);
-        if (!user) return null;
-        else if (!this.checkPassword(password, user.password)) return null;
-        return user;
+    async join(props: {
+        email: string;
+        password: string;
+        nickname: string;
+        mobile: string;
+    }): Promise<IUser> {
+        const newUser = createUser(props);
+        return await this.userRepo.save(newUser);
     }
 
-    async updatePassword(userId: string, newPassword: string): Promise<void> {
-        await this.userRepo.updatePassword(
-            userId,
-            this.hashPassword(newPassword)
-        );
+    async login(email: string, password: string): Promise<IUser | null> {
+        const user = await this.getUserByEmail(email);
+        return user && checkPassword(user.password, password) ? user : null;
+    }
+
+    async updatePassword(id: string, newPassword: string): Promise<void> {
+        await this.userRepo.update(id, { password: newPassword });
     }
 }

@@ -24,10 +24,11 @@ export class UserRepository extends Repository<UserEntity> {
                 },
             },
             where: [{ email }, { nickname }, { profile: { mobile } }],
-        })) satisfies (UserEntity & { profile: UserProfileEntity })[];
-    }
-
-    async updatePassword(id: string, newPassword: string) {
-        await this.update(id, { password: newPassword });
+            relations: {
+                profile: true,
+            },
+        })) as (Pick<UserEntity, "email" | "nickname"> & {
+            profile: Pick<UserProfileEntity, "mobile">;
+        })[];
     }
 }

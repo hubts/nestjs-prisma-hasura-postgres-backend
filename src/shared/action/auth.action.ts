@@ -1,7 +1,7 @@
 import { IActionRoute } from "../interface/action-route.type";
 import { IResponse } from "../response/response.interface";
 
-export const AuthRoute: IActionRoute<AuthAction> = {
+export const AuthRoute: IActionRoute<IAuthAction> = {
     prefix: "auth",
     subPath: {
         joinUser: {
@@ -15,7 +15,7 @@ export const AuthRoute: IActionRoute<AuthAction> = {
     },
 };
 
-export interface AuthAction {
+export interface IAuthAction {
     joinUser: (input: IJoinUserInput) => Promise<IResponse<ITokenOutput>>;
     loginUser: (input: ILoginUserInput) => Promise<IResponse<ITokenOutput>>;
 }

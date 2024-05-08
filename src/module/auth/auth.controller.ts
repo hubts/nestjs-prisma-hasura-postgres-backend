@@ -2,7 +2,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { Body, Controller } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 
-import { AuthAction, AuthRoute } from "src/shared/action/auth.action";
+import { IAuthAction, AuthRoute } from "src/shared/action/auth.action";
 import { JoinUserBodyDto } from "./action/join-user/body.dto";
 import { JoinUserResponseDto } from "./action/join-user/response.dto";
 import { JoinUserCommand } from "./action/join-user/command";
@@ -14,7 +14,7 @@ import { LoginUserResponseDto } from "./action/login-user/response.dto";
 
 @ApiTags(AuthRoute.prefix)
 @Controller(AuthRoute.prefix)
-export class AuthController implements AuthAction {
+export class AuthController implements IAuthAction {
     constructor(private readonly commandBus: CommandBus) {}
 
     @HasuraAction({
@@ -22,7 +22,7 @@ export class AuthController implements AuthAction {
         successType: JoinUserResponseDto,
         transactional: true,
     })
-    // @FailedRes([])
+    @FailedRes(["DUPLICATE_EMAIL", "DUPLICATE_NICKNAME", "DUPLICATE_MOBILE"])
     async joinUser(@Body() body: JoinUserBodyDto) {
         return await this.commandBus.execute(new JoinUserCommand(body));
     }
@@ -31,7 +31,7 @@ export class AuthController implements AuthAction {
         method: AuthRoute.subPath.loginUser,
         successType: LoginUserResponseDto,
     })
-    // @FailedRes([])
+    @FailedRes(["UNREGISTERED_EMAIL", "WRONG_PASSWORD"])
     async loginUser(@Body() body: LoginUserBodyDto) {
         return await this.commandBus.execute(new LoginUserCommand(body));
     }

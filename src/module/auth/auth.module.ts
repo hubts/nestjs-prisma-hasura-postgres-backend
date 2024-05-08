@@ -8,8 +8,9 @@ import { AuthService } from "./domain/auth.service";
 import { JwtStrategy } from "./domain/jwt.strategy";
 import { JoinUserHandler } from "./action/join-user/handler";
 import { JwtConfigService } from "src/config/service/jwt.config.service";
+import { LoginUserHandler } from "./action/login-user/handler";
 
-const providers = [AuthService, JoinUserHandler, JwtStrategy];
+const providers = [AuthService, JwtStrategy, JoinUserHandler, LoginUserHandler];
 
 @Module({
     imports: [
