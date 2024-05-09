@@ -6,7 +6,7 @@ import { IResponse } from "src/shared/response/response.interface";
 
 export const FailedRes = (
     failures: FailureCodeName[],
-    status: HttpStatus = HttpStatus.BAD_REQUEST
+    status: HttpStatus = HttpStatus.CREATED
 ) => {
     return applyDecorators(
         ApiResponse({

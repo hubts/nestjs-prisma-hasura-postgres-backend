@@ -6,7 +6,7 @@ import { LoginUserResponseDto } from "./response.dto";
 
 import { UserService } from "src/module/user/domain/user.service";
 import { AuthService } from "../../domain/auth.service";
-import { FailedResponseDto } from "src/common/dto/failed.response.dto";
+import { FailureRes } from "src/common/dto/failure.res";
 import { IUser } from "src/shared/entity/user";
 import { checkPassword } from "src/module/user/domain/check-password";
 
@@ -27,13 +27,13 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         // 조건 1: User 존재 확인
         const user = await this.userService.getUserByEmail(email);
         if (!user) {
-            return new FailedResponseDto("UNREGISTERED_EMAIL");
+            return new FailureRes("UNREGISTERED_EMAIL");
         }
 
         // 조건 2: 비밀번호 확인
         const isPasswordCorrect = checkPassword(user.password, password);
         if (!isPasswordCorrect) {
-            return new FailedResponseDto("WRONG_PASSWORD");
+            return new FailureRes("WRONG_PASSWORD");
         }
 
         /** 실행부 */

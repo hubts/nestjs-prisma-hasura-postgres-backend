@@ -6,7 +6,7 @@ import { Logger } from "@nestjs/common";
 import { UserService } from "src/module/user/domain/user.service";
 import { AuthService } from "../../domain/auth.service";
 import { IUser } from "src/shared/entity/user";
-import { FailedResponseDto } from "src/common/dto/failed.response.dto";
+import { FailureRes } from "src/common/dto/failure.res";
 
 @CommandHandler(JoinUserCommand)
 export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
@@ -31,11 +31,11 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
         if (duplication.exists) {
             switch (duplication.reason) {
                 case "email":
-                    return new FailedResponseDto("DUPLICATE_EMAIL");
+                    return new FailureRes("DUPLICATE_EMAIL");
                 case "nickname":
-                    return new FailedResponseDto("DUPLICATE_NICKNAME");
+                    return new FailureRes("DUPLICATE_NICKNAME");
                 case "mobile":
-                    return new FailedResponseDto("DUPLICATE_MOBILE");
+                    return new FailureRes("DUPLICATE_MOBILE");
             }
         }
 

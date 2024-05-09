@@ -3,7 +3,7 @@ import { UpdatePasswordCommand } from "./command";
 import { Logger } from "@nestjs/common";
 import { UpdatePasswordResponseDto } from "./response.dto";
 import { UserService } from "../../domain/user.service";
-import { FailedResponseDto } from "src/common/dto/failed.response.dto";
+import { FailureRes } from "src/common/dto/failure.res";
 import { checkPassword } from "../../domain/check-password";
 import { IUser } from "src/shared/entity/user";
 
@@ -25,7 +25,7 @@ export class UpdatePasswordHandler
 
         // 조건 1: 기존 비밀번호와 동일 여부 확인
         if (originalPassword === newPassword) {
-            return new FailedResponseDto("SAME_PASSWORD");
+            return new FailureRes("SAME_PASSWORD");
         }
 
         // 조건 2: 비밀번호 확인
@@ -34,7 +34,7 @@ export class UpdatePasswordHandler
             originalPassword
         );
         if (!isPasswordCorrect) {
-            return new FailedResponseDto("WRONG_PASSWORD");
+            return new FailureRes("WRONG_PASSWORD");
         }
 
         /** 실행부 */

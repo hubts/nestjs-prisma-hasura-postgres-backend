@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import {
-    ApiCreatedResponse,
     ApiOkResponse,
     ApiOperation,
     ApiResponseMetadata,
@@ -24,10 +23,14 @@ export const HasuraAction = (input: {
         /**
          * 1. 해당 메소드에 설정된 Route 정보를 기반으로 Post 메소드를 설정.
          * 이곳에서 Post 메소드 데코레이터를 설정하기 때문에, '@nestjs/swagger' 패키지가 성공 방환값으로 200을 자동 생성시킴.
-         * 따라서, 200 반환값을 이용하지 않음을 기재하여 Swagger에서 노출 시 혼동되지 않도록 함.
+         * 따라서, 200 상태 코드를 성공으로 이용하도록 함. (실제로는 201 상태 코드가 반환됨)
          */
         Post(method.name)(target, key, descriptor);
-        ApiOkResponse({ description: "no use" })(target, key, descriptor);
+        if (successType) {
+            ApiOkResponse({
+                type: successType,
+            })(target, key, descriptor);
+        }
 
         // 2. 해당 메소드의 이름을 Actions 이름으로 설정 (설정하지 않는 경우 컨트롤러의 이름이 붙게 됨).
         ApiOperation({
@@ -39,14 +42,7 @@ export const HasuraAction = (input: {
             JwtRolesAuth(...method.roles)(target, key, descriptor);
         }
 
-        // 4. 만약 해당 메소드의 성공 반환값이 있다면, 201(POST) 반환값을 설정.
-        if (successType) {
-            ApiCreatedResponse({
-                type: successType,
-            })(target, key, descriptor);
-        }
-
-        // 5. 만약 해당 메소드의 실행이 트랜잭션 사용을 요구한다면, 트랜잭션을 설정
+        // 4. 만약 해당 메소드의 실행이 트랜잭션 사용을 요구한다면, 트랜잭션을 설정
         if (transactional) {
             Transactional()(target, key, descriptor);
         }
