@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { FailureCode } from "src/shared/response/failure-code";
 import {
-    IResponse,
+    ResponseCode,
     SuccessCode,
     SuccessName,
-} from "src/shared/response/response.interface";
+} from "src/shared/response/response.code";
+import { IResponse } from "src/shared/response/response.interface";
 
 export class SuccessRes<T> implements IResponse<T> {
     @ApiProperty({
@@ -16,13 +16,13 @@ export class SuccessRes<T> implements IResponse<T> {
         type: Number,
         example: SuccessCode,
     }) // NI: only for the pretty print in swagger
-    code: typeof SuccessCode | FailureCode = SuccessCode;
+    code: ResponseCode = SuccessCode;
 
     @ApiProperty({
         type: String,
         example: SuccessName,
     }) // NI: only for the pretty print in swagger
-    name = SuccessName;
+    name: string = SuccessName;
 
     @ApiProperty()
     message: string;

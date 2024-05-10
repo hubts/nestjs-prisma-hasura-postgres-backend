@@ -1,3 +1,4 @@
+import { CryptoExtension } from "src/shared/util/crypto-extension";
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "../repository/user.repository";
 import { IUser } from "src/shared/entity/user";
@@ -55,6 +56,8 @@ export class UserService {
     }
 
     async updatePassword(id: string, newPassword: string): Promise<void> {
-        await this.userRepo.update(id, { password: newPassword });
+        await this.userRepo.update(id, {
+            password: CryptoExtension.hashPassword(newPassword),
+        });
     }
 }

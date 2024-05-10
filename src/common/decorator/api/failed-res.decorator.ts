@@ -1,11 +1,11 @@
 import { HttpStatus, applyDecorators } from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
 import { asFailure } from "src/shared/response/as-failure";
-import { FailureCodeName } from "src/shared/response/failure-code";
+import { FailureName } from "src/shared/response/response.code";
 import { IResponse } from "src/shared/response/response.interface";
 
 export const FailedRes = (
-    failures: FailureCodeName[],
+    failureNames: FailureName[],
     status: HttpStatus = HttpStatus.CREATED
 ) => {
     return applyDecorators(
@@ -13,7 +13,7 @@ export const FailedRes = (
             status,
             content: {
                 "application/json": {
-                    examples: failures.reduce(
+                    examples: failureNames.reduce(
                         (list, schema) => {
                             const failure = asFailure(schema);
                             list[failure.name] = {

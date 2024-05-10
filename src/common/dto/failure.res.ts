@@ -1,14 +1,14 @@
 import { asFailure } from "src/shared/response/as-failure";
-import { FailureCode, FailureCodeName } from "src/shared/response/failure-code";
-import { IResponse, SuccessCode } from "src/shared/response/response.interface";
+import { FailureName, ResponseCode } from "src/shared/response/response.code";
+import { IResponse } from "src/shared/response/response.interface";
 
 export class FailureRes implements Omit<IResponse, "data"> {
     success = false;
-    code: typeof SuccessCode | FailureCode;
+    code: ResponseCode;
     name: string;
     message: string;
 
-    constructor(name: FailureCodeName) {
+    constructor(name: FailureName) {
         const failure = asFailure(name);
         this.code = failure.code;
         this.name = failure.name;

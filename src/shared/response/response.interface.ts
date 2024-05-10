@@ -1,10 +1,8 @@
-import { FailureCode } from "./failure-code";
+import { ResponseCode } from "./response.code";
 
-export const SuccessCode = 1000;
-export const SuccessName = "success";
 export interface IResponse<T = undefined> {
     success: boolean;
-    code: typeof SuccessCode | FailureCode;
+    code: ResponseCode;
     name: string;
     message: string;
     data?: T;

@@ -28,6 +28,7 @@ export const HasuraAction = (input: {
         Post(method.name)(target, key, descriptor);
         if (successType) {
             ApiOkResponse({
+                description: "Actual status code will be 201(CREATED).",
                 type: successType,
             })(target, key, descriptor);
         }

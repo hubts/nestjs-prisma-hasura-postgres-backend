@@ -1,7 +1,7 @@
-import { FailureCodeName } from "./failure-code";
+import { FailureName } from "./response.code";
 
 export const FAILURE_MESSAGE: {
-    [key in FailureCodeName]: string;
+    [key in FailureName]: string;
 } = {
     // USER
     DUPLICATE_EMAIL: "This email already exists.",
