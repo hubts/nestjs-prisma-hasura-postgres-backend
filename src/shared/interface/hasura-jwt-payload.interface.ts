@@ -1,10 +1,10 @@
-import { UserRole } from "../enum/user-role.enum";
+import { Role } from "@prisma/client";
 
 export interface HasuraJwtPayload {
     claims: {
-        "x-hasura-allowed-roles": UserRole[];
-        "x-hasura-default-role": UserRole;
-        "x-hasura-role": UserRole;
+        "x-hasura-allowed-roles": Role[];
+        "x-hasura-default-role": Role;
+        "x-hasura-role": Role;
         "x-hasura-user-id": string;
         email: string;
         nickname: string;

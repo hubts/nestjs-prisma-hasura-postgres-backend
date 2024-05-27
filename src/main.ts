@@ -9,14 +9,12 @@ import morgan from "morgan";
 
 import { AppModule } from "./app.module";
 import { HealthCheckController } from "./module/health-check/health-check.controller";
-import { initializeTransactionalContext } from "typeorm-transactional";
 import { CustomLogger } from "./common/logger/custom.logger";
 import { setupSwagger } from "./common/swagger/setup";
 import { IServerConfig } from "./config/config.interface";
 import { ServerConfig } from "./config/validated/server.config";
 
 async function run() {
-    initializeTransactionalContext();
     const logger = new Logger("Main");
 
     try {

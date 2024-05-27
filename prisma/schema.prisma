@@ -15,6 +15,34 @@ datasource db {
     extensions = [pgcrypto]
 }
 
+// Common models
+
+model Cache {
+    key       String   @id
+    value     String
+    ttl       Int
+    expiredAt DateTime @db.Timestamptz
+}
+
+model ConsoleLog {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now()) @db.Timestamptz
+    message   String
+    context   String
+    level     String
+    trace     String?
+}
+
+model ErrorLog {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now()) @db.Timestamptz
+    message   String
+    context   String
+    trace     String?
+}
+
+// Domain models
+
 model User {
     id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     createdAt DateTime  @default(now()) @db.Timestamptz
@@ -22,6 +50,7 @@ model User {
     deletedAt DateTime? @db.Timestamptz
     email     String    @unique @db.VarChar
     password  String    @db.VarChar
+    nickname  String    @unique @db.VarChar
     role      Role      @default(USER)
     Profile   Profile?
 }

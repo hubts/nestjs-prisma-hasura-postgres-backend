@@ -1,20 +1,12 @@
 import { Injectable, LogLevel } from "@nestjs/common";
-import { DataSource, Repository } from "typeorm";
-import { ConsoleLogEntity } from "src/entity/common/console-log.entity";
-import { ErrorLogEntity } from "src/entity/common/error-log.entity";
 import { IConsoleLog } from "./interface/console-log.interface";
 import { IErrorLog } from "./interface/error-log.interface";
 import { ServerEnv } from "src/config/config.interface";
+import { CustomLoggerRepository } from "./custom-logger.repository";
 
 @Injectable()
 export class CustomLoggerService {
-    private consoleLogRepo: Repository<ConsoleLogEntity>;
-    private errorLogRepo: Repository<ErrorLogEntity>;
-
-    constructor(dataSource: DataSource) {
-        this.consoleLogRepo = dataSource.getRepository(ConsoleLogEntity);
-        this.errorLogRepo = dataSource.getRepository(ErrorLogEntity);
-    }
+    constructor(private log: CustomLoggerRepository) {}
 
     getLogLevels(environment: ServerEnv): LogLevel[] {
         if (environment === ServerEnv.PRODUCTION) {
@@ -27,11 +19,11 @@ export class CustomLoggerService {
 
     async createConsoleLog(log: IConsoleLog): Promise<void> {
         try {
-            const newLog = this.consoleLogRepo.create(log);
-            await this.consoleLogRepo.save(newLog, {
-                data: {
-                    isCreatingLogs: true,
-                },
+            await this.log.console({
+                message: log.message,
+                context: log.context,
+                level: log.level,
+                trace: log.trace,
             });
         } catch (error) {
             console.error(`ConsoleLogError: ${error}`);
@@ -40,11 +32,10 @@ export class CustomLoggerService {
 
     async createErrorLog(log: IErrorLog): Promise<void> {
         try {
-            const newLog = this.errorLogRepo.create(log);
-            await this.errorLogRepo.save(newLog, {
-                data: {
-                    isCreatingLogs: true,
-                },
+            await this.log.error({
+                message: log.message,
+                context: log.context,
+                trace: log.trace,
             });
         } catch (error) {
             console.error(`ErrorLogError: ${error}`);

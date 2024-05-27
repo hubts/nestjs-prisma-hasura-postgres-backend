@@ -4,11 +4,10 @@ import { JwtConfig } from "src/config/validated/jwt.config";
 import { ConfigType } from "@nestjs/config";
 import { REFRESH_TOKEN_LENGTH } from "src/shared/constant/auth.constant";
 import { CACHE_KEY } from "src/shared/constant/cache.constant";
-import { UserRole } from "src/shared/enum/user-role.enum";
 import { HasuraJwtPayload } from "src/shared/interface/hasura-jwt-payload.interface";
 import { Random } from "src/shared/util/random";
 import { CacheService } from "src/infrastructure/cache/cache.service";
-import { IUser } from "src/shared/entity/user";
+import { Role, User } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -36,19 +35,19 @@ export class AuthService {
      * @returns A new access token and refresh token for target.
      */
     async issueAuthTokens(
-        userModel: Pick<IUser, "id" | "role" | "email" | "nickname">
+        userProps: Pick<User, "id" | "role" | "email" | "nickname">
     ): Promise<{
         accessToken: string;
         refreshToken: string;
     }> {
         const payload: HasuraJwtPayload = {
             claims: {
-                "x-hasura-allowed-roles": Object.values(UserRole) as UserRole[],
-                "x-hasura-role": userModel.role,
-                "x-hasura-default-role": userModel.role,
-                "x-hasura-user-id": userModel.id,
-                email: userModel.email,
-                nickname: userModel.nickname,
+                "x-hasura-allowed-roles": Object.values(Role) as Role[],
+                "x-hasura-role": userProps.role,
+                "x-hasura-default-role": userProps.role,
+                "x-hasura-user-id": userProps.id,
+                email: userProps.email,
+                nickname: userProps.nickname,
             },
         };
         const accessToken = this.jwtService.sign(payload);
@@ -56,7 +55,7 @@ export class AuthService {
         const refreshToken = Random.hex(REFRESH_TOKEN_LENGTH);
         const refreshTokenKey = this.getRefreshTokenKey(
             refreshToken,
-            userModel.email
+            userProps.email
         );
 
         await this.cacheService.set(

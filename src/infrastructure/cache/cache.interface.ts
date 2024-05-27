@@ -15,7 +15,7 @@ export interface ICacheService {
     getAllKeyValues(pattern: string): Promise<KeyValue[]>;
     set(key: string, value: string, ttl?: number): Promise<Date>;
     del(key: string): Promise<void>;
-    expire(key: string, ttl: number): Promise<Date>;
+    renew(key: string, ttl: number): Promise<Date>;
     verify(key: string, expected: string): Promise<boolean>;
 }
 

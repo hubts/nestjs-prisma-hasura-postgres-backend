@@ -5,7 +5,7 @@ import { ConfigType } from "@nestjs/config";
 import { UserService } from "src/module/user/domain/user.service";
 import { HasuraJwtPayload } from "src/shared/interface/hasura-jwt-payload.interface";
 import { JwtConfig } from "src/config/validated/jwt.config";
-import { IUser } from "src/shared/entity/user";
+import { User } from "@prisma/client";
 
 /**
  * Define a validation strategy for 'JwtAuthGuard'.
@@ -31,17 +31,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: HasuraJwtPayload): Promise<IUser> {
+    async validate(payload: HasuraJwtPayload): Promise<User> {
         const id = payload.claims["x-hasura-user-id"];
         const role = payload.claims["x-hasura-role"];
         if (!id || !role) {
             throw new UnauthorizedException("Unauthorized JWT claims");
         }
 
-        const userModel = await this.userService.getUserById(id);
-        if (!userModel) {
+        const user = await this.userService.getUserById(id);
+        if (!user) {
             throw new UnauthorizedException("Unknown user ID");
         }
-        return userModel;
+        return user;
     }
 }

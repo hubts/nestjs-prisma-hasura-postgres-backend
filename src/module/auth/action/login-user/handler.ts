@@ -7,8 +7,8 @@ import { LoginUserResponseDto } from "./response.dto";
 import { UserService } from "src/module/user/domain/user.service";
 import { AuthService } from "../../domain/auth.service";
 import { FailureRes } from "src/common/dto/failure.res";
-import { IUser } from "src/shared/entity/user";
 import { checkPassword } from "src/module/user/domain/check-password";
+import { User } from "@prisma/client";
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
@@ -50,7 +50,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         });
     }
 
-    log(user: IUser) {
+    log(user: User) {
         this.logger.log(`User login: ${this.userService.summarize(user)}`);
     }
 }

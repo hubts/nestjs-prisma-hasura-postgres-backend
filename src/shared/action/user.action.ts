@@ -1,5 +1,4 @@
-import { IUser } from "../entity/user";
-import { UserRole } from "../enum/user-role.enum";
+import { Role, User } from "@prisma/client";
 import { IActionRoute } from "../interface/action-route.type";
 import { IResponse } from "../response/response.interface";
 
@@ -8,14 +7,14 @@ export const UserRoute: IActionRoute<IUserAction> = {
     subPath: {
         updatePassword: {
             name: "update-password",
-            roles: [UserRole.USER],
+            roles: [Role.USER],
         },
     },
 };
 
 export interface IUserAction {
     updatePassword: (
-        user: IUser,
+        user: User,
         input: IUpdatePasswordInput
     ) => Promise<IResponse>;
 }

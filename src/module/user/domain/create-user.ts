@@ -1,23 +1,24 @@
-import { createAudit } from "src/shared/entity/audit";
-import { IUser } from "src/shared/entity/user";
-import { IUserProfile } from "src/shared/entity/user-profile";
-import { UserRole } from "src/shared/enum/user-role.enum";
+import { Prisma } from "@prisma/client";
 import { CryptoExtension } from "src/shared/util/crypto-extension";
+import { Random } from "src/shared/util/random";
 
-export const createUser = (
-    props: Pick<IUser, "email" | "password" | "nickname"> &
-        Pick<IUserProfile, "mobile">
-): IUser => {
+export const createUser = (props: {
+    email: string;
+    password: string;
+    nickname: string;
+    mobile: string;
+}) => {
     const { email, password, nickname, mobile } = props;
-    const newUser: IUser = {
-        ...createAudit(),
-        role: UserRole.USER,
+    const newUser: Prisma.UserCreateInput = {
+        id: Random.uuid(),
         email,
         password: CryptoExtension.hashPassword(password),
         nickname,
-        profile: {
-            ...createAudit(),
-            mobile,
+        Profile: {
+            create: {
+                id: Random.uuid(),
+                mobile,
+            },
         },
     };
     return newUser;

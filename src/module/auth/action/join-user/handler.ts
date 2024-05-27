@@ -5,16 +5,18 @@ import { JoinUserResponseDto } from "./response.dto";
 import { Logger } from "@nestjs/common";
 import { UserService } from "src/module/user/domain/user.service";
 import { AuthService } from "../../domain/auth.service";
-import { IUser } from "src/shared/entity/user";
 import { FailureRes } from "src/common/dto/failure.res";
+import { User } from "@prisma/client";
+import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 
 @CommandHandler(JoinUserCommand)
 export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
     private logger = new Logger(JoinUserHandler.name);
 
     constructor(
-        private readonly authService: AuthService,
-        private readonly userService: UserService
+        private prisma: PrismaService,
+        private authService: AuthService,
+        private userService: UserService
     ) {}
 
     async execute(command: JoinUserCommand): Promise<JoinUserResponseDto> {
@@ -41,6 +43,9 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
 
         /** 실행부 */
 
+        // 유저의 새로운 회원가입은 우선적으로 수행되어도 되기 때문에, 트랜잭션을 적용하지 않는다.
+        // (로그인 토큰 발행에서 발생하는 에러로 인해 유저 정보의 등록이 막히는 것보다 유저의 불편한 재입력을 제거하는 것이 낫다.)
+
         // 실행 1: User 신규 생성
         const newUser = await this.userService.join({
             email,
@@ -61,7 +66,7 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
         });
     }
 
-    log(user: IUser) {
+    log(user: User) {
         this.logger.log(
             `New user arrived: ${this.userService.summarize(user)}`
         );

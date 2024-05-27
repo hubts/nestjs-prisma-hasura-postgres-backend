@@ -10,7 +10,6 @@ import {
     HealthCheckService,
     HttpHealthIndicator,
     HealthCheck,
-    TypeOrmHealthIndicator,
     MemoryHealthIndicator,
 } from "@nestjs/terminus";
 
@@ -22,7 +21,6 @@ export class HealthCheckController implements OnApplicationBootstrap {
     constructor(
         private readonly health: HealthCheckService,
         private readonly http: HttpHealthIndicator,
-        private readonly database: TypeOrmHealthIndicator,
         private readonly memory: MemoryHealthIndicator
     ) {}
 
@@ -76,7 +74,6 @@ export class HealthCheckController implements OnApplicationBootstrap {
                 this.http.pingCheck("http", "https://google.com", {
                     timeout: 3000,
                 }),
-            () => this.database.pingCheck("database", { timeout: 3000 }),
             () => this.memory.checkHeap("heap-memory", 2 * 1024 * 1024 * 1024), // 2 GB
         ]);
     }

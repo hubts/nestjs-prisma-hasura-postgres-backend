@@ -1,9 +1,14 @@
-import { IUser } from "src/shared/entity/user";
-import { IUserProfile } from "src/shared/entity/user-profile";
-
 export const checkUserExists = (
-    users: (Pick<IUser, "email" | "nickname"> & Pick<IUserProfile, "mobile">)[],
-    where: Pick<IUser, "email" | "nickname"> & Pick<IUserProfile, "mobile">
+    users: {
+        email: string;
+        nickname: string;
+        mobile: string | undefined;
+    }[],
+    where: {
+        email: string;
+        nickname: string;
+        mobile: string;
+    }
 ): {
     exists: boolean;
     reason?: "email" | "nickname" | "mobile" | undefined;

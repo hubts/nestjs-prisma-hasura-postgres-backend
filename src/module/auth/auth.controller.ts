@@ -20,7 +20,6 @@ export class AuthController implements IAuthAction {
     @HasuraAction({
         method: AuthRoute.subPath.joinUser,
         successType: JoinUserResponseDto,
-        transactional: true,
     })
     @FailedRes(["DUPLICATE_EMAIL", "DUPLICATE_NICKNAME", "DUPLICATE_MOBILE"])
     async joinUser(@Body() body: JoinUserBodyDto) {

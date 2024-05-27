@@ -1,14 +1,14 @@
 {
-    "name": "nestjs-easyfull-boilerplate",
-    "version": "0.0.52",
-    "description": "Easyfull boilerplate in NestJS",
+    "name": "nestjs-prisma-hasura-postgres-backend",
+    "version": "0.0.1",
+    "description": "Full Backend in NestJS with Prisma, Hasura, and Postgres",
     "author": "hubts",
     "private": true,
     "license": "MIT",
     "main": "index.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/hubts/nestjs-easyfull-boilerplate.git"
+        "url": "https://github.com/hubts/nestjs-prisma-hasura-postgres-backend.git"
     },
     "scripts": {
         "prepare": "husky install",
@@ -27,7 +27,13 @@
         "test:e2e": "jest --config ./test/jest-e2e.json",
         "git": "./script/skyrocket.sh",
         "deploy": "./script/run.sh",
-        "hasura:export": "cd hasura && ./script/metadata-export.sh"
+        "hasura:export": "cd hasura && ./script/metadata-export.sh",
+        "hasura:apply": "cd hasura && ./script/metadata-apply.sh",
+        "prisma:sync": "prisma generate",
+        "prisma:push": "prisma db push",
+        "prisma:pull": "prisma db pull",
+        "prisma:migrate": "prisma migrate dev --name",
+        "prisma:migrate-create-only": "prisma migrate dev --create-only --name"
     },
     "dependencies": {
         "@nestjs/axios": "^3.0.0",
@@ -42,7 +48,6 @@
         "@nestjs/swagger": "^7.1.14",
         "@nestjs/terminus": "^10.1.1",
         "@nestjs/throttler": "^5.0.1",
-        "@nestjs/typeorm": "^10.0.0",
         "@prisma/client": "^5.14.0",
         "axios": "^1.5.1",
         "bcrypt": "^5.1.0",
@@ -54,12 +59,9 @@
         "morgan": "^1.10.0",
         "passport": "^0.7.0",
         "passport-jwt": "^4.0.1",
-        "pg": "^8.8.0",
         "reflect-metadata": "^0.1.13",
         "rimraf": "^3.0.2",
         "rxjs": "^7.2.0",
-        "typeorm": "^0.3.17",
-        "typeorm-transactional": "^0.5.0",
         "webpack": "^5.0.0"
     },
     "devDependencies": {

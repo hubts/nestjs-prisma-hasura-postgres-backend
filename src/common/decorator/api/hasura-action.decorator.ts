@@ -7,14 +7,12 @@ import {
 import { JwtRolesAuth } from "../auth/jwt-roles-auth.decorator";
 import { Post } from "@nestjs/common";
 import { IActionRoute } from "src/shared/interface/action-route.type";
-import { Transactional } from "typeorm-transactional";
 
 export const HasuraAction = (input: {
     method: IActionRoute<any>["subPath"][0];
     successType?: ApiResponseMetadata["type"];
-    transactional?: boolean;
 }): MethodDecorator => {
-    const { method, successType, transactional } = input;
+    const { method, successType } = input;
     return <T>(
         target: Object,
         key: string | symbol,
@@ -41,11 +39,6 @@ export const HasuraAction = (input: {
         // 3. 만약 해당 메소드의 실행 권한이 필요하다면, 권한을 설정.
         if (method.roles.length) {
             JwtRolesAuth(...method.roles)(target, key, descriptor);
-        }
-
-        // 4. 만약 해당 메소드의 실행이 트랜잭션 사용을 요구한다면, 트랜잭션을 설정
-        if (transactional) {
-            Transactional()(target, key, descriptor);
         }
 
         return descriptor; // 데코레이터의 명시적 사용 이후 반환

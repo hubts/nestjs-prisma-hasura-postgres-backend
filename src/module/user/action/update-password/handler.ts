@@ -5,7 +5,7 @@ import { UpdatePasswordResponseDto } from "./response.dto";
 import { UserService } from "../../domain/user.service";
 import { FailureRes } from "src/common/dto/failure.res";
 import { checkPassword } from "../../domain/check-password";
-import { IUser } from "src/shared/entity/user";
+import { User } from "@prisma/client";
 
 @CommandHandler(UpdatePasswordCommand)
 export class UpdatePasswordHandler
@@ -47,7 +47,7 @@ export class UpdatePasswordHandler
         return new UpdatePasswordResponseDto();
     }
 
-    log(user: IUser) {
+    log(user: User) {
         this.logger.log(
             `Update user password: ${this.userService.summarize(user)}`
         );

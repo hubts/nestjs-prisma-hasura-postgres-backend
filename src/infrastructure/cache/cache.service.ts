@@ -1,60 +1,50 @@
 import { Injectable } from "@nestjs/common";
-import { DataSource, LessThanOrEqual, Like, Repository } from "typeorm";
-import { ICacheService, KeyValue } from "./cache.interface";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { CacheEntity } from "src/entity/common/cache.entity";
+
+import { CacheRepository } from "./cache.repository";
+import { ICacheService, KeyValue } from "./cache.interface";
 import { TimeExtension } from "src/shared/util/time-extension";
 
 @Injectable()
 export class CacheService implements ICacheService {
-    private readonly cache: Repository<CacheEntity>;
     private DEFAULT_SET_TTL = 30;
 
-    constructor(dataSource: DataSource) {
-        this.cache = dataSource.getRepository(CacheEntity);
-    }
+    constructor(private cache: CacheRepository) {}
 
     @Cron(CronExpression.EVERY_SECOND)
     private expireSchedule(): void {
-        this.cache.delete({
-            expiredAt: LessThanOrEqual(new Date()),
-        });
+        this.cache.expire();
     }
 
     async keys(pattern?: string): Promise<string[]> {
-        const rows = await this.cache.find({
-            select: { key: true },
-            where: { key: Like(`%${pattern}%`) },
-        });
+        const rows = await this.cache.findKeys(pattern);
         return rows.map(row => row.key);
     }
 
     async exists(key: string): Promise<boolean> {
-        return await this.cache.exist({ where: { key } });
+        return await this.cache.exist(key);
     }
 
-    async count(pattern = ""): Promise<number> {
-        return await this.cache.count({
-            where: { key: Like(`%${pattern}%`) },
-        });
+    async count(pattern?: string): Promise<number> {
+        return await this.cache.count(pattern);
     }
 
     async get(key: string): Promise<string | null> {
-        const data = await this.cache.findOneBy({ key });
-        if (!data) return null;
-        return data.value;
+        const result = await this.cache.findValue(key);
+        if (!result) return null;
+        return result.value;
     }
 
     async ttl(key: string): Promise<number> {
-        const data = await this.cache.findOneBy({ key });
-        if (!data) return 0;
-        return data.ttl;
+        const result = await this.cache.findValue(key);
+        if (!result) return 0;
+        return result.ttl;
     }
 
     async expiredAt(key: string): Promise<Date> {
-        const data = await this.cache.findOneBy({ key });
-        if (!data) return new Date();
-        return data.expiredAt;
+        const result = await this.cache.findValue(key);
+        if (!result) return new Date();
+        return result.expiredAt;
     }
 
     async getAllKeyValues(pattern = ""): Promise<KeyValue[]> {
@@ -74,35 +64,27 @@ export class CacheService implements ICacheService {
         const expiredAt = new Date(
             new Date().getTime() + ttl * TimeExtension.ONE_SECOND_IN_MS
         );
-        await this.cache.upsert(
-            {
-                key,
-                value,
-                ttl,
-                expiredAt,
-            },
-            ["key"]
-        );
+        await this.cache.upsert({
+            key,
+            value,
+            ttl,
+            expiredAt,
+        });
         return expiredAt;
     }
 
     async del(key: string): Promise<void> {
-        const data = await this.cache.findOneBy({ key });
-        if (!data) return;
         await this.cache.delete(key);
     }
 
-    async expire(key: string, ttl: number): Promise<Date> {
-        const data = await this.cache.findOneBy({ key });
+    async renew(key: string, ttl: number): Promise<Date> {
+        const data = await this.cache.findValue(key);
         if (!data) return new Date();
 
         const expiredAt = new Date(
             new Date().getTime() + ttl * TimeExtension.ONE_SECOND_IN_MS
         );
-        await this.cache.update(data.key, {
-            ttl,
-            expiredAt,
-        });
+        await this.cache.renew(data.key, ttl, expiredAt);
         return expiredAt;
     }
 

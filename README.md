@@ -48,7 +48,7 @@ Moreover, this _NestJS_ boilerplate has **monolithic architecture** to aim for p
 | Package Manager | yarn                              |
 | Architecture    | Monolith, CQRS                    |
 | Documentation   | Swagger                           |
-| ORM             | TypeORM                           |
+| ORM             | Prisma                            |
 | Database        | Postgres                          |
 | GraphQL Engine  | Hasura                            |
 | Interaction     | Hasura Query & Actions            |
