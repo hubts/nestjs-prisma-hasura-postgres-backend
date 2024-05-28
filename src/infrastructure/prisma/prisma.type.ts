@@ -1,5 +1,4 @@
-import { PrismaService } from "./prisma.service";
+import { PrismaClient } from "@prisma/client";
+import * as runtime from "@prisma/client/runtime/library";
 
-export type PrismaTxType = Parameters<
-    Parameters<PrismaService["$transaction"]>[0]
->[0];
+export type PrismaTxClient = Omit<PrismaClient, runtime.ITXClientDenyList>;

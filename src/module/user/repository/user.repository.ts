@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
-import { PrismaTxType } from "src/infrastructure/prisma/prisma.type";
 
 @Injectable()
 export class UserRepository {
@@ -33,11 +32,13 @@ export class UserRepository {
         });
     }
 
-    async createUser(input: Prisma.UserCreateInput, tx?: PrismaTxType) {
-        return await (tx ?? this.prisma).user.create({ data: input });
+    async createUser(input: Prisma.UserCreateInput) {
+        return await PrismaService.getTransaction().user.create({
+            data: input,
+        });
     }
 
-    async updateUser(args: Prisma.UserUpdateArgs, tx?: PrismaTxType) {
-        return await (tx ?? this.prisma).user.update(args);
+    async updateUser(args: Prisma.UserUpdateArgs) {
+        return await PrismaService.getTransaction().user.update(args);
     }
 }

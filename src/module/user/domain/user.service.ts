@@ -5,7 +5,6 @@ import { checkPassword } from "./check-password";
 import { checkUserExists } from "./check-user-exists";
 import { createUser } from "./create-user";
 import { User } from "@prisma/client";
-import { PrismaTxType } from "src/infrastructure/prisma/prisma.type";
 
 @Injectable()
 export class UserService {
@@ -41,17 +40,14 @@ export class UserService {
         return await this.userRepo.findUnique({ email });
     }
 
-    async join(
-        props: {
-            email: string;
-            password: string;
-            nickname: string;
-            mobile: string;
-        },
-        tx?: PrismaTxType
-    ): Promise<User> {
+    async join(props: {
+        email: string;
+        password: string;
+        nickname: string;
+        mobile: string;
+    }): Promise<User> {
         const newUser = createUser(props);
-        return await this.userRepo.createUser(newUser, tx);
+        return await this.userRepo.createUser(newUser);
     }
 
     async login(email: string, password: string): Promise<User | null> {

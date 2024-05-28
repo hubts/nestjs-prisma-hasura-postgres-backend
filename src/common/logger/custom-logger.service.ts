@@ -1,8 +1,7 @@
 import { Injectable, LogLevel } from "@nestjs/common";
-import { IConsoleLog } from "./interface/console-log.interface";
-import { IErrorLog } from "./interface/error-log.interface";
 import { ServerEnv } from "src/config/config.interface";
 import { CustomLoggerRepository } from "./custom-logger.repository";
+import { IConsoleLog, IErrorLog } from "./interface/log.interface";
 
 @Injectable()
 export class CustomLoggerService {
@@ -20,6 +19,7 @@ export class CustomLoggerService {
     async createConsoleLog(log: IConsoleLog): Promise<void> {
         try {
             await this.log.console({
+                id: log.id,
                 message: log.message,
                 context: log.context,
                 level: log.level,
@@ -33,6 +33,7 @@ export class CustomLoggerService {
     async createErrorLog(log: IErrorLog): Promise<void> {
         try {
             await this.log.error({
+                id: log.id,
                 message: log.message,
                 context: log.context,
                 trace: log.trace,

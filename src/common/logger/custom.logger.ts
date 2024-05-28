@@ -4,9 +4,10 @@ import {
     Inject,
     Injectable,
 } from "@nestjs/common";
-import { CustomLoggerService } from "./custom-logger.service";
 import { ConfigType } from "@nestjs/config";
+import { CustomLoggerService } from "./custom-logger.service";
 import { ServerConfig } from "src/config/validated/server.config";
+import { Random } from "src/shared/util/random";
 
 @Injectable()
 export class CustomLogger extends ConsoleLogger {
@@ -36,8 +37,10 @@ export class CustomLogger extends ConsoleLogger {
     }
 
     verbose(message: string, context?: string, stack?: string) {
+        const id = Random.uuid();
         super.verbose.apply(this, [message, context]);
         this.loggerService.createConsoleLog({
+            id,
             message,
             level: "verbose",
             context: context ?? this.context ?? "unknown",
@@ -46,28 +49,33 @@ export class CustomLogger extends ConsoleLogger {
     }
 
     warn(message: string, context?: string, stack?: string) {
+        const id = Random.uuid();
         super.warn.apply(this, [message, context]);
         this.loggerService.createConsoleLog({
+            id,
             message,
             level: "warn",
-            context: context ?? "unknown",
+            context: context ?? this.context ?? "unknown",
             trace: stack ?? null,
         });
     }
 
     error(message: string, context?: string, stack?: string, silent?: boolean) {
+        const id = Random.uuid();
         if (!silent) {
-            super.error.apply(this, [message, stack]);
+            super.error.apply(this, [`${message} (Error ID = ${id})`, stack]);
             this.loggerService.createConsoleLog({
+                id,
                 message,
                 level: "error",
-                context: context ?? "unknown",
+                context: context ?? this.context ?? "unknown",
                 trace: stack ?? null,
             });
         }
         this.loggerService.createErrorLog({
+            id,
             message,
-            context: context ?? "unknown",
+            context: context ?? this.context ?? "unknown",
             trace: stack ?? null,
         });
     }
