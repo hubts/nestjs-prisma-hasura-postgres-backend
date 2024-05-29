@@ -6,11 +6,25 @@ import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 export class UserRepository {
     constructor(private prisma: PrismaService) {}
 
-    async findUnique(where: Prisma.UserWhereUniqueInput) {
+    async findUser(where: Prisma.UserWhereUniqueInput) {
         return await this.prisma.user.findUnique({ where });
     }
 
-    async findManyByEmailOrNicknameOrMobile(props: {
+    async findUserByMobile(mobile: string) {
+        return await this.prisma.user.findFirst({
+            where: { Profile: { mobile } },
+        });
+    }
+
+    async findManyUsers(where: Prisma.UserWhereInput) {
+        return await this.prisma.user.findMany({ where });
+    }
+
+    async findProfile(userId: string) {
+        return await this.prisma.profile.findUnique({ where: { userId } });
+    }
+
+    async findManyUsersByEmailOrNicknameOrMobile(props: {
         email: string;
         nickname: string;
         mobile: string;
@@ -32,13 +46,24 @@ export class UserRepository {
         });
     }
 
-    async createUser(input: Prisma.UserCreateInput) {
-        return await PrismaService.getTransaction().user.create({
-            data: input,
+    async createUser(data: Prisma.UserCreateInput) {
+        return await PrismaService.getTransaction().user.create({ data });
+    }
+
+    async updateUser(id: string, data: Prisma.UserUpdateInput) {
+        return await PrismaService.getTransaction().user.update({
+            where: { id },
+            data,
         });
     }
 
-    async updateUser(args: Prisma.UserUpdateArgs) {
-        return await PrismaService.getTransaction().user.update(args);
+    async updateProfileByUserId(
+        userId: string,
+        data: Prisma.ProfileUpdateInput
+    ) {
+        return await PrismaService.getTransaction().profile.update({
+            where: { userId },
+            data,
+        });
     }
 }

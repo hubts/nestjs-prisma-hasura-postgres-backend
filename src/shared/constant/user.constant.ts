@@ -4,12 +4,6 @@ export const USER_PROPERTY_LENGTH: {
         MAX: number;
     };
 } = {
-    NICKNAME: {
-        MIN: 4,
-        MAX: 20,
-    },
-    PASSWORD: {
-        MIN: 4,
-        MAX: 20,
-    },
+    NICKNAME: { MIN: 4, MAX: 20 },
+    PASSWORD: { MIN: 4, MAX: 20 },
 };

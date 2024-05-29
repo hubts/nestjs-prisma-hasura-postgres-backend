@@ -1,3 +1,3 @@
 table:
-  name: console_log
+  name: ConsoleLog
   schema: public

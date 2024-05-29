@@ -7,8 +7,8 @@ import { LoginUserResponseDto } from "./response.dto";
 import { UserService } from "src/module/user/domain/user.service";
 import { AuthService } from "../../domain/auth.service";
 import { FailureRes } from "src/common/dto/failure.res";
-import { checkPassword } from "src/module/user/domain/check-password";
 import { User } from "@prisma/client";
+import { checkUserPassword } from "src/module/user/domain/user-password-manager";
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
@@ -31,7 +31,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         }
 
         // 조건 2: 비밀번호 확인
-        const isPasswordCorrect = checkPassword(user.password, password);
+        const isPasswordCorrect = checkUserPassword(user.password, password);
         if (!isPasswordCorrect) {
             return new FailureRes("WRONG_PASSWORD");
         }

@@ -4,8 +4,8 @@ import { Logger } from "@nestjs/common";
 import { UpdatePasswordResponseDto } from "./response.dto";
 import { UserService } from "../../domain/user.service";
 import { FailureRes } from "src/common/dto/failure.res";
-import { checkPassword } from "../../domain/check-password";
 import { User } from "@prisma/client";
+import { checkUserPassword } from "../../domain/user-password-manager";
 
 @CommandHandler(UpdatePasswordCommand)
 export class UpdatePasswordHandler
@@ -29,7 +29,7 @@ export class UpdatePasswordHandler
         }
 
         // 조건 2: 비밀번호 확인
-        const isPasswordCorrect = checkPassword(
+        const isPasswordCorrect = checkUserPassword(
             user.password,
             originalPassword
         );

@@ -9,6 +9,10 @@ export const UserRoute: IActionRoute<IUserAction> = {
             name: "update-password",
             roles: [Role.USER],
         },
+        updateMobile: {
+            name: "update-mobile",
+            roles: [Role.USER],
+        },
     },
 };
 
@@ -17,9 +21,14 @@ export interface IUserAction {
         user: User,
         input: IUpdatePasswordInput
     ) => Promise<IResponse>;
+    updateMobile: (user: User, input: IUpdateMobileInput) => Promise<IResponse>;
 }
 
 export interface IUpdatePasswordInput {
     originalPassword: string;
     newPassword: string;
+}
+
+export interface IUpdateMobileInput {
+    mobile: string;
 }

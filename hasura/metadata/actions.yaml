@@ -2,7 +2,7 @@ actions:
   - name: joinUser
     definition:
       kind: synchronous
-      handler: http://192.168.10.21:7777
+      handler: http://localhost:7777
       forward_client_headers: true
       request_transform:
         body:
@@ -11,14 +11,14 @@ actions:
         method: POST
         query_params: {}
         template_engine: Kriti
-        url: '{{$base_url}}/auth/join-user'
+        url: '{{$base_url}}/auth/user/join'
         version: 2
     permissions:
       - role: anonymous
   - name: loginUser
     definition:
       kind: synchronous
-      handler: http://192.168.10.21:7777
+      handler: http://localhost:7777
       forward_client_headers: true
       request_transform:
         body:
@@ -27,14 +27,30 @@ actions:
         method: POST
         query_params: {}
         template_engine: Kriti
-        url: '{{$base_url}}/auth/login-user'
+        url: '{{$base_url}}/auth/user/login'
         version: 2
     permissions:
       - role: anonymous
+  - name: updateMobile
+    definition:
+      kind: synchronous
+      handler: http://localhost:7777
+      forward_client_headers: true
+      request_transform:
+        body:
+          action: transform
+          template: '{{$body.input.updateMobileBodyDtoInput}}'
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        url: '{{$base_url}}/users/update-mobile'
+        version: 2
+    permissions:
+      - role: USER
   - name: updatePassword
     definition:
       kind: synchronous
-      handler: http://192.168.10.21:7777
+      handler: http://localhost:7777
       forward_client_headers: true
       request_transform:
         body:
@@ -46,18 +62,18 @@ actions:
         url: '{{$base_url}}/users/update-password'
         version: 2
     permissions:
-      - role: _user
+      - role: USER
 custom_types:
   enums: []
   input_objects:
     - name: UpdatePasswordBodyDtoInput
+    - name: UpdateMobileBodyDtoInput
     - name: JoinUserBodyDtoInput
     - name: LoginUserBodyDtoInput
   objects:
-    - name: UpdatePasswordResponseData
     - name: UpdatePasswordResponseDto
-    - name: JoinUserResponseData
+    - name: UpdateMobileResponseDto
     - name: JoinUserResponseDto
-    - name: LoginUserResponseData
+    - name: TokenData
     - name: LoginUserResponseDto
   scalars: []
