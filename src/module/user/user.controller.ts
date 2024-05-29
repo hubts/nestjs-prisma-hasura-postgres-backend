@@ -10,6 +10,9 @@ import { UpdatePasswordBodyDto } from "./action/update-password/body.dto";
 import { UpdatePasswordResponseDto } from "./action/update-password/response.dto";
 import { FailedRes } from "src/common/decorator/api/failed-res.decorator";
 import { User } from "@prisma/client";
+import { UpdateMobileBodyDto } from "./action/update-mobile/body.dto";
+import { UpdateMobileResponseDto } from "./action/update-mobile/response.dto";
+import { UpdateMobileCommand } from "./action/update-mobile/command";
 
 @ApiTags(UserRoute.prefix)
 @Controller(UserRoute.prefix)
@@ -27,6 +30,20 @@ export class UserController implements IUserAction {
     ): Promise<UpdatePasswordResponseDto> {
         return await this.commandBus.execute(
             new UpdatePasswordCommand(user, body)
+        );
+    }
+
+    @HasuraAction({
+        method: UserRoute.subPath.updateMobile,
+        successType: UpdateMobileResponseDto,
+    })
+    @FailedRes(["DUPLICATE_MOBILE"])
+    async updateMobile(
+        @Requestor() user: User,
+        @Body() body: UpdateMobileBodyDto
+    ): Promise<UpdateMobileResponseDto> {
+        return await this.commandBus.execute(
+            new UpdateMobileCommand(user, body)
         );
     }
 }

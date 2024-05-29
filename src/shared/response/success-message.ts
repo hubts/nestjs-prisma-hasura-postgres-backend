@@ -5,5 +5,6 @@ export const SUCCESS_MESSAGE = {
     },
     USER: {
         UPDATE_PASSWORD: "User password has been completely updated.",
+        UPDATE_MOBILE: "User mobile has been completely updated.",
     },
 };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { JoinUserCommand } from "./command";
 import { JoinUserResponseDto } from "./response.dto";
@@ -7,14 +6,12 @@ import { UserService } from "src/module/user/domain/user.service";
 import { AuthService } from "../../domain/auth.service";
 import { FailureRes } from "src/common/dto/failure.res";
 import { User } from "@prisma/client";
-import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 
 @CommandHandler(JoinUserCommand)
 export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
     private logger = new Logger(JoinUserHandler.name);
 
     constructor(
-        private prisma: PrismaService,
         private authService: AuthService,
         private userService: UserService
     ) {}
@@ -31,7 +28,7 @@ export class JoinUserHandler implements ICommandHandler<JoinUserCommand> {
             mobile,
         });
         if (duplication.exists) {
-            switch (duplication.reason) {
+            switch (duplication.firstReason) {
                 case "email":
                     return new FailureRes("DUPLICATE_EMAIL");
                 case "nickname":

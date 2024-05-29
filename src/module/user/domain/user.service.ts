@@ -1,10 +1,8 @@
-import { CryptoExtension } from "src/shared/util/crypto-extension";
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "../repository/user.repository";
-import { checkPassword } from "./check-password";
-import { checkUserExists } from "./check-user-exists";
-import { createUser } from "./create-user";
 import { User } from "@prisma/client";
+import { checkUserPropsExist } from "./check-user-props-exist";
+import { checkUserPassword, hashUserPassword } from "./user-password-manager";
 
 @Injectable()
 export class UserService {
@@ -18,26 +16,27 @@ export class UserService {
         email: string;
         nickname: string;
         mobile: string;
-    }): Promise<ReturnType<typeof checkUserExists>> {
-        const users = await this.userRepo.findManyByEmailOrNicknameOrMobile(
-            where
-        );
-        const flatten = users.map(user => {
-            return {
-                email: user.email,
-                nickname: user.nickname,
-                mobile: user.Profile?.mobile,
-            };
-        });
-        return checkUserExists(flatten, where);
+    }): Promise<ReturnType<typeof checkUserPropsExist>> {
+        const users =
+            await this.userRepo.findManyUsersByEmailOrNicknameOrMobile(where);
+        const flatten = users.map(user => ({
+            email: user.email,
+            nickname: user.nickname,
+            mobile: user.Profile?.mobile,
+        }));
+        return checkUserPropsExist(flatten, where);
     }
 
     async getUserById(id: string): Promise<User | null> {
-        return await this.userRepo.findUnique({ id });
+        return await this.userRepo.findUser({ id });
     }
 
     async getUserByEmail(email: string): Promise<User | null> {
-        return await this.userRepo.findUnique({ email });
+        return await this.userRepo.findUser({ email });
+    }
+
+    async getUserByMobile(mobile: string): Promise<User | null> {
+        return await this.userRepo.findUserByMobile(mobile);
     }
 
     async join(props: {
@@ -46,23 +45,33 @@ export class UserService {
         nickname: string;
         mobile: string;
     }): Promise<User> {
-        const newUser = createUser(props);
-        return await this.userRepo.createUser(newUser);
+        const { email, password, nickname, mobile } = props;
+        return await this.userRepo.createUser({
+            email,
+            password: hashUserPassword(password),
+            nickname,
+            Profile: {
+                create: {
+                    mobile,
+                },
+            },
+        });
     }
 
     async login(email: string, password: string): Promise<User | null> {
         const user = await this.getUserByEmail(email);
-        return user && checkPassword(user.password, password) ? user : null;
+        return user && checkUserPassword(user.password, password) ? user : null;
     }
 
     async updatePassword(id: string, newPassword: string): Promise<void> {
-        await this.userRepo.updateUser({
-            where: {
-                id,
-            },
-            data: {
-                password: CryptoExtension.hashPassword(newPassword),
-            },
+        await this.userRepo.updateUser(id, {
+            password: hashUserPassword(newPassword),
+        });
+    }
+
+    async updateMobile(userId: string, newMobile: string): Promise<void> {
+        await this.userRepo.updateProfileByUserId(userId, {
+            mobile: newMobile,
         });
     }
 }

@@ -1,4 +1,4 @@
-export const checkUserExists = (
+export const checkUserPropsExist = (
     users: {
         email: string;
         nickname: string;
@@ -11,7 +11,7 @@ export const checkUserExists = (
     }
 ): {
     exists: boolean;
-    reason?: "email" | "nickname" | "mobile" | undefined;
+    firstReason?: "email" | "nickname" | "mobile" | undefined;
 } => {
     if (!users.length) {
         return {
@@ -22,7 +22,7 @@ export const checkUserExists = (
     const { email, nickname, mobile } = where;
     return {
         exists: true,
-        reason: users.find(user => user.email === email)
+        firstReason: users.find(user => user.email === email)
             ? "email"
             : users.find(user => user.nickname === nickname)
             ? "nickname"

@@ -11,6 +11,12 @@ type Mutation {
 }
 
 type Mutation {
+  updateMobile(
+    updateMobileBodyDtoInput: UpdateMobileBodyDtoInput!
+  ): UpdateMobileResponseDto
+}
+
+type Mutation {
   updatePassword(
     updatePasswordBodyDtoInput: UpdatePasswordBodyDtoInput!
   ): UpdatePasswordResponseDto
@@ -21,8 +27,13 @@ input UpdatePasswordBodyDtoInput {
   originalPassword: String!
 }
 
+input UpdateMobileBodyDtoInput {
+  mobile: String!
+}
+
 input JoinUserBodyDtoInput {
   email: String!
+  mobile: String!
   nickname: String!
   password: String!
 }
@@ -32,39 +43,36 @@ input LoginUserBodyDtoInput {
   password: String!
 }
 
-type UpdatePasswordResponseData {
-  id: String!
-}
-
 type UpdatePasswordResponseDto {
   code: Float!
-  data: UpdatePasswordResponseData
   message: String!
   name: String!
   success: Boolean!
 }
 
-type JoinUserResponseData {
-  accessToken: String!
-  refreshToken: String!
+type UpdateMobileResponseDto {
+  code: Float!
+  message: String!
+  name: String!
+  success: Boolean!
 }
 
 type JoinUserResponseDto {
   code: Float!
-  data: JoinUserResponseData
+  data: TokenData
   message: String!
   name: String!
   success: Boolean!
 }
 
-type LoginUserResponseData {
+type TokenData {
   accessToken: String!
   refreshToken: String!
 }
 
 type LoginUserResponseDto {
   code: Float!
-  data: LoginUserResponseData
+  data: TokenData
   message: String!
   name: String!
   success: Boolean!
