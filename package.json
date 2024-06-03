@@ -1,6 +1,6 @@
 {
     "name": "nestjs-prisma-hasura-postgres-backend",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Full Backend in NestJS with Prisma, Hasura, and Postgres",
     "author": "hubts",
     "private": true,
@@ -62,6 +62,7 @@
         "reflect-metadata": "^0.1.13",
         "rimraf": "^3.0.2",
         "rxjs": "^7.2.0",
+        "swagger-themes": "^1.4.3",
         "webpack": "^5.0.0"
     },
     "devDependencies": {
@@ -109,7 +110,7 @@
             "json",
             "ts"
         ],
-        "rootDir": "src",
+        "rootDir": ".",
         "testRegex": ".*\\.spec\\.ts$",
         "transform": {
             "^.+\\.(t|j)s$": "ts-jest"
@@ -120,7 +121,7 @@
         "coverageDirectory": "../coverage",
         "testEnvironment": "node",
         "moduleNameMapper": {
-            "^src/(.*)$": "<rootDir>/$1"
+            "^src/(.*)$": "<rootDir>/src/$1"
         }
     }
 }

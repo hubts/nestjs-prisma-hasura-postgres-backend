@@ -1,8 +1,7 @@
-import { SwaggerThemePath } from "./theme";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import * as fs from "fs";
 import { SwaggerSetupOptions } from "./interface";
+import { SwaggerTheme, SwaggerThemeNameEnum } from "swagger-themes";
 
 export function setupSwagger(
     app: NestExpressApplication,
@@ -11,6 +10,7 @@ export function setupSwagger(
     const { path, serverUrl, localhostPort, title, description, version } =
         options;
 
+    // Setup the configurations.
     const swaggerConfig = new DocumentBuilder();
     if (serverUrl) {
         swaggerConfig.addServer(serverUrl);
@@ -36,10 +36,14 @@ export function setupSwagger(
         app,
         swaggerConfig.build()
     );
-    // NOTE: You can change the theme of swagger web-site in here
-    const swaggerTheme = fs.readFileSync(SwaggerThemePath.Muted).toString();
+
+    // NOTE: You can change the style of swagger from here.
+    const theme = new SwaggerTheme();
+    const style = theme.getBuffer(SwaggerThemeNameEnum.ONE_DARK);
+
+    // Finally
     SwaggerModule.setup(path, app, swaggerDocument, {
         explorer: true,
-        customCss: swaggerTheme,
+        customCss: style,
     });
 }
