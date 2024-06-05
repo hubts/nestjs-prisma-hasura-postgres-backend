@@ -4,8 +4,8 @@ import { SuccessResponseDto } from "src/common/dto/success-response.dto";
 
 // Options interface
 interface SuccessResOptions {
-    status: HttpStatus;
-    description: string;
+    status?: HttpStatus;
+    description?: string;
 }
 
 /**

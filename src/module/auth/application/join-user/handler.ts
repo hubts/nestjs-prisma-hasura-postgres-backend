@@ -4,18 +4,15 @@ import { Logger } from "@nestjs/common";
 import { UserService } from "src/module/user/domain/user.service";
 import { AuthService } from "../../domain/auth.service";
 import { User } from "@prisma/client";
-import { FailureResponseDto } from "src/common/dto/failure-response.dto";
 import { SUCCESS_MESSAGE } from "src/shared/response/constants/success-message";
 import { SuccessResponseDto } from "src/common/dto/success-response.dto";
 import { AuthTokenDto } from "../../dto/auth-token.dto";
+import { ExpectedFailureException } from "src/common/error/exception/expected-failure.exception";
 
 @CommandHandler(JoinUserCommand)
 export class JoinUserHandler
     implements
-        ICommandHandler<
-            JoinUserCommand,
-            SuccessResponseDto<AuthTokenDto> | FailureResponseDto
-        >
+        ICommandHandler<JoinUserCommand, SuccessResponseDto<AuthTokenDto>>
 {
     private logger = new Logger(JoinUserHandler.name);
 
@@ -26,7 +23,7 @@ export class JoinUserHandler
 
     async execute(
         command: JoinUserCommand
-    ): Promise<SuccessResponseDto<AuthTokenDto> | FailureResponseDto> {
+    ): Promise<SuccessResponseDto<AuthTokenDto>> {
         const { email, nickname, password, mobile } = command.dto;
 
         /** 조건부 */
@@ -40,11 +37,11 @@ export class JoinUserHandler
         if (duplication.exists) {
             switch (duplication.firstReason) {
                 case "email":
-                    return new FailureResponseDto("DUPLICATE_EMAIL");
+                    throw new ExpectedFailureException("DUPLICATE_EMAIL");
                 case "nickname":
-                    return new FailureResponseDto("DUPLICATE_NICKNAME");
+                    throw new ExpectedFailureException("DUPLICATE_NICKNAME");
                 case "mobile":
-                    return new FailureResponseDto("DUPLICATE_MOBILE");
+                    throw new ExpectedFailureException("DUPLICATE_MOBILE");
             }
         }
 

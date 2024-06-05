@@ -1,5 +1,5 @@
 import { ApiTags } from "@nestjs/swagger";
-import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 
 import { JoinUserCommand } from "./application/join-user/command";
@@ -22,10 +22,7 @@ export class AuthController implements IAuthApi {
     @Post(AuthRoute.subPath.joinUser.name)
     @JwtRolesAuth(AuthRoute.subPath.joinUser.roles)
     @SuccessRes(SUCCESS_MESSAGE.AUTH.JOIN_USER, AuthTokenDto)
-    @FailureRes(
-        ["DUPLICATE_EMAIL", "DUPLICATE_NICKNAME", "DUPLICATE_MOBILE"],
-        HttpStatus.BAD_REQUEST
-    )
+    @FailureRes(["DUPLICATE_EMAIL", "DUPLICATE_NICKNAME", "DUPLICATE_MOBILE"])
     async joinUser(
         @Body() body: UserJoinDto
     ): Promise<SuccessResponseDto<AuthTokenDto>> {
@@ -35,10 +32,7 @@ export class AuthController implements IAuthApi {
     @Post(AuthRoute.subPath.loginUser.name)
     @JwtRolesAuth(AuthRoute.subPath.loginUser.roles)
     @SuccessRes(SUCCESS_MESSAGE.AUTH.LOGIN_USER, AuthTokenDto)
-    @FailureRes(
-        ["UNREGISTERED_EMAIL", "WRONG_PASSWORD"],
-        HttpStatus.BAD_REQUEST
-    )
+    @FailureRes(["UNREGISTERED_EMAIL", "WRONG_PASSWORD"])
     async loginUser(
         @Body() body: UserLoginDto
     ): Promise<SuccessResponseDto<AuthTokenDto>> {

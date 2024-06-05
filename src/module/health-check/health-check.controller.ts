@@ -11,17 +11,22 @@ import {
     HttpHealthIndicator,
     HealthCheck,
     MemoryHealthIndicator,
+    PrismaHealthIndicator,
 } from "@nestjs/terminus";
+import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 
 @ApiTags("HealthCheck")
 @Controller("health")
 export class HealthCheckController implements OnApplicationBootstrap {
     private readonly logger = new Logger("Healthy🔋");
+    private readonly httpTestLink = "https://google.com";
 
     constructor(
         private readonly health: HealthCheckService,
         private readonly http: HttpHealthIndicator,
-        private readonly memory: MemoryHealthIndicator
+        private readonly memory: MemoryHealthIndicator,
+        private readonly prisma: PrismaHealthIndicator,
+        private readonly prismaService: PrismaService
     ) {}
 
     async onApplicationBootstrap() {
@@ -71,9 +76,10 @@ export class HealthCheckController implements OnApplicationBootstrap {
     async checkConnections() {
         return await this.health.check([
             () =>
-                this.http.pingCheck("http", "https://google.com", {
+                this.http.pingCheck("http", this.httpTestLink, {
                     timeout: 3000,
                 }),
+            () => this.prisma.pingCheck("prisma", this.prismaService),
             () => this.memory.checkHeap("heap-memory", 2 * 1024 * 1024 * 1024), // 2 GB
         ]);
     }

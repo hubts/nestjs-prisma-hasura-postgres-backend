@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IUserInfoResult, IUserResource } from "src/shared/api/user.api";
 import { Random } from "src/shared/util/random";
 
-class InfoDto implements IUserInfoResult {
+export class InfoDto implements IUserInfoResult {
     @ApiProperty({
         description: "User ID",
         example: Random.uuid(),

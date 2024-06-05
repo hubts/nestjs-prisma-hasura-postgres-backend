@@ -7,18 +7,15 @@ import { UserService } from "src/module/user/domain/user.service";
 import { AuthService } from "../../domain/auth.service";
 import { User } from "@prisma/client";
 import { checkUserPassword } from "src/module/user/domain/user-password-manager";
-import { FailureResponseDto } from "src/common/dto/failure-response.dto";
 import { SUCCESS_MESSAGE } from "src/shared/response/constants/success-message";
 import { SuccessResponseDto } from "src/common/dto/success-response.dto";
 import { AuthTokenDto } from "../../dto/auth-token.dto";
+import { ExpectedFailureException } from "src/common/error/exception/expected-failure.exception";
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserHandler
     implements
-        ICommandHandler<
-            LoginUserCommand,
-            SuccessResponseDto<AuthTokenDto> | FailureResponseDto
-        >
+        ICommandHandler<LoginUserCommand, SuccessResponseDto<AuthTokenDto>>
 {
     private logger = new Logger(LoginUserHandler.name);
 
@@ -29,7 +26,7 @@ export class LoginUserHandler
 
     async execute(
         command: LoginUserCommand
-    ): Promise<SuccessResponseDto<AuthTokenDto> | FailureResponseDto> {
+    ): Promise<SuccessResponseDto<AuthTokenDto>> {
         const { email, password } = command.dto;
 
         /** 조건부 */
@@ -37,13 +34,13 @@ export class LoginUserHandler
         // 조건 1: User 존재 확인
         const user = await this.userService.getUserByEmail(email);
         if (!user) {
-            return new FailureResponseDto("UNREGISTERED_EMAIL");
+            throw new ExpectedFailureException("UNREGISTERED_EMAIL");
         }
 
         // 조건 2: 비밀번호 확인
         const isPasswordCorrect = checkUserPassword(user.password, password);
         if (!isPasswordCorrect) {
-            return new FailureResponseDto("WRONG_PASSWORD");
+            throw new ExpectedFailureException("WRONG_PASSWORD");
         }
 
         /** 실행부 */

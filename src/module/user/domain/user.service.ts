@@ -27,6 +27,10 @@ export class UserService {
         return checkUserPropsExist(flatten, where);
     }
 
+    async getUserWithProfileById(id: string) {
+        return await this.userRepo.findUserWithProfileById(id);
+    }
+
     async getUserById(id: string): Promise<User | null> {
         return await this.userRepo.findUser({ id });
     }

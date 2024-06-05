@@ -15,6 +15,7 @@ import { CustomLoggerModule } from "./common/logger/custom-logger.module";
 import { ThrottlerConfigService } from "./config/service/throttler.config.service";
 import { CacheModule } from "./infrastructure/cache/cache.module";
 import { PrismaModule } from "./infrastructure/prisma/prisma.module";
+import { ExpectedExceptionFilter } from "./common/error/expected-exception.filter";
 
 const DomainModules = [
     /**
@@ -45,7 +46,8 @@ const DomainModules = [
         // Globally used providers with 'APP_' prefix
         { provide: APP_GUARD, useClass: ThrottlerGuard },
         { provide: APP_PIPE, useClass: CustomValidationPipe },
-        { provide: APP_FILTER, useClass: HttpExceptionFilter },
+        { provide: APP_FILTER, useClass: HttpExceptionFilter }, // Second filter
+        { provide: APP_FILTER, useClass: ExpectedExceptionFilter }, // First filter
     ],
 })
 export class AppModule {}

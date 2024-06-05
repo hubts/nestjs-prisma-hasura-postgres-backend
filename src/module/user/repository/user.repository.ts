@@ -24,6 +24,13 @@ export class UserRepository {
         return await this.prisma.profile.findUnique({ where: { userId } });
     }
 
+    async findUserWithProfileById(id: string) {
+        return await this.prisma.user.findFirst({
+            where: { id },
+            include: { Profile: true },
+        });
+    }
+
     async findManyUsersByEmailOrNicknameOrMobile(props: {
         email: string;
         nickname: string;
