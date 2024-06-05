@@ -3,15 +3,9 @@ import { UserController } from "./user.controller";
 import { UserService } from "./domain/user.service";
 import { CqrsModule } from "@nestjs/cqrs";
 import { UserRepository } from "./repository/user.repository";
-import { UpdatePasswordHandler } from "./action/update-password/handler";
-import { UpdateMobileHandler } from "./action/update-mobile/handler";
+import { GetUserInfoByIdHandler } from "./application/get-user-info-by-id/handler";
 
-const providers = [
-    UserService,
-    UserRepository,
-    UpdatePasswordHandler,
-    UpdateMobileHandler,
-];
+const providers = [UserService, UserRepository, GetUserInfoByIdHandler];
 
 @Module({
     imports: [CqrsModule],

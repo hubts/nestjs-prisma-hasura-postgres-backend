@@ -6,9 +6,9 @@ import { AuthController } from "./auth.controller";
 import { UserModule } from "../user/user.module";
 import { AuthService } from "./domain/auth.service";
 import { JwtStrategy } from "./domain/jwt.strategy";
-import { JoinUserHandler } from "./action/join-user/handler";
+import { JoinUserHandler } from "./application/join-user/handler";
 import { JwtConfigService } from "src/config/service/jwt.config.service";
-import { LoginUserHandler } from "./action/login-user/handler";
+import { LoginUserHandler } from "./application/login-user/handler";
 
 const providers = [AuthService, JwtStrategy, JoinUserHandler, LoginUserHandler];
 

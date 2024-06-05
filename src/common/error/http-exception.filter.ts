@@ -45,6 +45,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         >httpException.getResponse();
         const { statusCode, message, error } = httpResponse;
         const cause = httpException.cause;
+        console.log("httpResponse", httpResponse);
+        console.log("cause", cause);
 
         /**
          * Save error log.

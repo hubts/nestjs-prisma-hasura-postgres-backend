@@ -1,6 +1,6 @@
 {
     "name": "nestjs-prisma-hasura-postgres-backend",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Full Backend in NestJS with Prisma, Hasura, and Postgres",
     "author": "hubts",
     "private": true,
@@ -45,7 +45,7 @@
         "@nestjs/passport": "^10.0.3",
         "@nestjs/platform-express": "^10.2.7",
         "@nestjs/schedule": "^4.0.0",
-        "@nestjs/swagger": "^7.1.14",
+        "@nestjs/swagger": "^7.3.1",
         "@nestjs/terminus": "^10.1.1",
         "@nestjs/throttler": "^5.0.1",
         "@prisma/client": "^5.14.0",

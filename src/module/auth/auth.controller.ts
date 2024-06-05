@@ -1,37 +1,47 @@
 import { ApiTags } from "@nestjs/swagger";
-import { Body, Controller } from "@nestjs/common";
+import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 
-import { IAuthAction, AuthRoute } from "src/shared/action/auth.action";
-import { JoinUserBodyDto } from "./action/join-user/body.dto";
-import { JoinUserResponseDto } from "./action/join-user/response.dto";
-import { JoinUserCommand } from "./action/join-user/command";
-import { FailedRes } from "src/common/decorator/api/failed-res.decorator";
-import { HasuraAction } from "src/common/decorator/api/hasura-action.decorator";
-import { LoginUserBodyDto } from "./action/login-user/body.dto";
-import { LoginUserCommand } from "./action/login-user/command";
-import { LoginUserResponseDto } from "./action/login-user/response.dto";
+import { JoinUserCommand } from "./application/join-user/command";
+import { LoginUserCommand } from "./application/login-user/command";
+import { UserJoinDto } from "./dto/user-join.dto";
+import { SuccessResponseDto } from "src/common/dto/success-response.dto";
+import { AuthTokenDto } from "./dto/auth-token.dto";
+import { JwtRolesAuth } from "src/common/decorator/auth/jwt-roles-auth.decorator";
+import { SuccessRes } from "src/common/decorator/api/success-res.decorator";
+import { SUCCESS_MESSAGE } from "src/shared/response/constants/success-message";
+import { FailureRes } from "src/common/decorator/api/failure-res.decorator";
+import { UserLoginDto } from "./dto/user-login.dto";
+import { AuthRoute, IAuthApi } from "src/shared/api/auth.api";
 
 @ApiTags(AuthRoute.prefix)
 @Controller(AuthRoute.prefix)
-export class AuthController implements IAuthAction {
+export class AuthController implements IAuthApi {
     constructor(private readonly commandBus: CommandBus) {}
 
-    @HasuraAction({
-        method: AuthRoute.subPath.joinUser,
-        successType: JoinUserResponseDto,
-    })
-    @FailedRes(["DUPLICATE_EMAIL", "DUPLICATE_NICKNAME", "DUPLICATE_MOBILE"])
-    async joinUser(@Body() body: JoinUserBodyDto) {
+    @Post(AuthRoute.subPath.joinUser.name)
+    @JwtRolesAuth(AuthRoute.subPath.joinUser.roles)
+    @SuccessRes(SUCCESS_MESSAGE.AUTH.JOIN_USER, AuthTokenDto)
+    @FailureRes(
+        ["DUPLICATE_EMAIL", "DUPLICATE_NICKNAME", "DUPLICATE_MOBILE"],
+        HttpStatus.BAD_REQUEST
+    )
+    async joinUser(
+        @Body() body: UserJoinDto
+    ): Promise<SuccessResponseDto<AuthTokenDto>> {
         return await this.commandBus.execute(new JoinUserCommand(body));
     }
 
-    @HasuraAction({
-        method: AuthRoute.subPath.loginUser,
-        successType: LoginUserResponseDto,
-    })
-    @FailedRes(["UNREGISTERED_EMAIL", "WRONG_PASSWORD"])
-    async loginUser(@Body() body: LoginUserBodyDto) {
+    @Post(AuthRoute.subPath.loginUser.name)
+    @JwtRolesAuth(AuthRoute.subPath.loginUser.roles)
+    @SuccessRes(SUCCESS_MESSAGE.AUTH.LOGIN_USER, AuthTokenDto)
+    @FailureRes(
+        ["UNREGISTERED_EMAIL", "WRONG_PASSWORD"],
+        HttpStatus.BAD_REQUEST
+    )
+    async loginUser(
+        @Body() body: UserLoginDto
+    ): Promise<SuccessResponseDto<AuthTokenDto>> {
         return await this.commandBus.execute(new LoginUserCommand(body));
     }
 }

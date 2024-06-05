@@ -9,7 +9,7 @@ import { Role } from "@prisma/client";
  * A bundle of decorators that verify user access.
  * @param roles - Roles of the user to allow access.
  */
-export function JwtRolesAuth(...roles: Role[]) {
+export function JwtRolesAuth(roles: Role[]) {
     if (roles.length) {
         return applyDecorators(
             Roles(...roles),
