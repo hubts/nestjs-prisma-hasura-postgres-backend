@@ -18,6 +18,8 @@ export const RESPONSE_CODE = {
     4005: "SAME_PASSWORD",
     4006: "UNREGISTERED_EMAIL",
     4007: "USER_NOT_FOUND",
+    4008: "INVALID_REFRESH_TOKEN",
+    4009: "UNAUTORIZED_ACCESS",
 
     /**
      * Error codes (Expected, but errors)

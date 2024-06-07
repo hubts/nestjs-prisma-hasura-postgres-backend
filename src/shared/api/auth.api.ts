@@ -1,4 +1,4 @@
-import { IApiRoute } from "../interface/api-route.type";
+import { IApiRoute } from "./interface/api-route.type";
 import { IResponse } from "../response/interface/response.interface";
 
 export const AuthRoute: IApiRoute<IAuthApi> = {
@@ -12,12 +12,19 @@ export const AuthRoute: IApiRoute<IAuthApi> = {
             name: "user/login",
             roles: [],
         },
+        refreshUser: {
+            name: "user/refresh",
+            roles: [],
+        },
     },
 };
 
 export interface IAuthApi {
     joinUser: (input: IUserJoinDto) => Promise<IResponse<IAuthTokenResult>>;
     loginUser: (input: IUserLoginDto) => Promise<IResponse<IAuthTokenResult>>;
+    refreshUser: (
+        input: IUserRefreshDto
+    ) => Promise<IResponse<IAuthTokenResult>>;
 }
 
 export interface IUserLoginDto {
@@ -28,6 +35,11 @@ export interface IUserLoginDto {
 export interface IUserJoinDto extends IUserLoginDto {
     nickname: string;
     mobile: string;
+}
+
+export interface IUserRefreshDto {
+    refreshToken: string;
+    id: string;
 }
 
 export interface IAuthTokenResult {

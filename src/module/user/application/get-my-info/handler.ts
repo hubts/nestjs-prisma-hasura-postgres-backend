@@ -3,7 +3,7 @@ import { GetMyInfoCommand } from "./command";
 import { SuccessResponseDto } from "src/common/dto/success-response.dto";
 import { MyUserInfoDto } from "../../dto/my-info.dto";
 import { UserService } from "../../domain/user.service";
-import { SUCCESS_MESSAGE } from "src/shared/response/constants/success-message";
+import { SUCCESS_MESSAGE } from "src/shared/response/constant/success-message";
 import { ExpectedFailureException } from "src/common/error/exception/expected-failure.exception";
 
 @CommandHandler(GetMyInfoCommand)

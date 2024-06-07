@@ -1,5 +1,5 @@
 import { Role, User } from "@prisma/client";
-import { IApiRoute } from "../interface/api-route.type";
+import { IApiRoute } from "./interface/api-route.type";
 import { IResponse } from "../response/interface/response.interface";
 
 export const UserRoute: IApiRoute<IUserApi> = {
@@ -15,7 +15,7 @@ export const UserRoute: IApiRoute<IUserApi> = {
         },
         getMyInfo: {
             name: "me",
-            roles: [Role.USER],
+            roles: [Role.ADMIN],
         },
     },
 };

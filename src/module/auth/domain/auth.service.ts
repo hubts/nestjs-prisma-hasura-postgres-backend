@@ -2,12 +2,16 @@ import { Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { JwtConfig } from "src/config/validated/jwt.config";
 import { ConfigType } from "@nestjs/config";
-import { REFRESH_TOKEN_LENGTH } from "src/shared/constant/auth.constant";
-import { CACHE_KEY } from "src/shared/constant/cache.constant";
-import { HasuraJwtPayload } from "src/shared/interface/hasura-jwt-payload.interface";
+import { Role } from "@prisma/client";
+
 import { Random } from "src/shared/util/random";
 import { CacheService } from "src/infrastructure/cache/cache.service";
-import { Role, User } from "@prisma/client";
+import { JwtPayload } from "src/shared/api/interface/jwt-payload.interface";
+import {
+    REFRESH_TOKEN_KEY_PREFIX,
+    REFRESH_TOKEN_LENGTH,
+} from "../constant/token.constant";
+import { CryptoExtension } from "src/shared/util/crypto-extension";
 
 @Injectable()
 export class AuthService {
@@ -19,46 +23,42 @@ export class AuthService {
     ) {}
 
     /**
+     * (Private)
      * Get a refresh token key.
      * The key may not be unique according to random refresh token within the user.
      * @param refreshToken - A refresh token.
-     * @param email - An email of user.
-     * @returns Refresh token key to be set.
+     * @param id - A unique identifier.
+     * @returns The hash of refresh token key.
      */
-    getRefreshTokenKey(refreshToken: string, email: string): string {
-        return `${CACHE_KEY.REFRESH_TOKEN_PREFIX}:${refreshToken}:${email}`;
+    private getRefreshTokenKey(refreshToken: string, id: string): string {
+        return CryptoExtension.hashPassword(
+            `${REFRESH_TOKEN_KEY_PREFIX}:${refreshToken}:${id}`
+        );
     }
 
     /**
      * Issue a new access token and refresh token.
-     * @param userModel - Target(actor) user model authenticated.
+     * @param props - Properties of target(actor) model authenticated.
      * @returns A new access token and refresh token for target.
      */
-    async issueAuthTokens(
-        userProps: Pick<User, "id" | "role" | "email" | "nickname">
-    ): Promise<{
+    issueAuthTokens(props: { id: string; role: Role; nickname: string }): {
         accessToken: string;
         refreshToken: string;
-    }> {
-        const payload: HasuraJwtPayload = {
-            claims: {
-                "x-hasura-allowed-roles": Object.values(Role) as Role[],
-                "x-hasura-role": userProps.role,
-                "x-hasura-default-role": userProps.role,
-                "x-hasura-user-id": userProps.id,
-                email: userProps.email,
-                nickname: userProps.nickname,
-            },
+    } {
+        const { id, role, nickname } = props;
+
+        // Access token
+        const payload: JwtPayload = {
+            id,
+            role,
+            nickname,
         };
         const accessToken = this.jwtService.sign(payload);
 
+        // Refresh token
         const refreshToken = Random.hex(REFRESH_TOKEN_LENGTH);
-        const refreshTokenKey = this.getRefreshTokenKey(
-            refreshToken,
-            userProps.email
-        );
-
-        await this.cacheService.set(
+        const refreshTokenKey = this.getRefreshTokenKey(refreshToken, id);
+        this.cacheService.set(
             refreshTokenKey,
             accessToken,
             this.jwtConfig.refreshTokenExpiresIn
@@ -68,5 +68,19 @@ export class AuthService {
             accessToken,
             refreshToken,
         };
+    }
+
+    /**
+     * Verify a refresh token.
+     * @param refreshToken - A refresh token issued.
+     * @param id - A unique identifier.
+     * @returns True if the refresh token is valid, otherwise false.
+     */
+    async verifyRefreshToken(
+        refreshToken: string,
+        id: string
+    ): Promise<boolean> {
+        const refreshTokenKey = this.getRefreshTokenKey(refreshToken, id);
+        return await this.cacheService.exists(refreshTokenKey);
     }
 }

@@ -1,20 +1,23 @@
 import { PassportStrategy } from "@nestjs/passport";
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { ExtractJwt, Strategy } from "passport-jwt";
 import { ConfigType } from "@nestjs/config";
-import { UserService } from "src/module/user/domain/user.service";
-import { HasuraJwtPayload } from "src/shared/interface/hasura-jwt-payload.interface";
+import { ExtractJwt, Strategy } from "passport-jwt";
+
 import { JwtConfig } from "src/config/validated/jwt.config";
 import { User } from "@prisma/client";
+import { JwtPayload } from "src/shared/api/interface/jwt-payload.interface";
+import { UserService } from "src/module/user/domain/user.service";
 
 /**
  * Define a validation strategy for 'JwtAuthGuard'.
+ *
+ * After the validation of JwtAuthGuard,
  *
  * As defined at constructor, JWT is extracted from 'Request'.
  * The token is confirmed by secret(public key), and transformed as payload.
  * Then, the valid user would be found, and returned.
  *
- * @param {HasuraJwtPayload} payload - The payload relayed from Hasura server (extracted by).
+ * @param {JwtPayload} payload - The payload relayed from Hasura server (extracted by).
  * @return {User} The valid user (return is saved at 'user' field of 'Request' as 'request.user').
  */
 @Injectable()
@@ -31,11 +34,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: HasuraJwtPayload): Promise<User> {
-        const id = payload.claims["x-hasura-user-id"];
-        const role = payload.claims["x-hasura-role"];
+    async validate(payload: JwtPayload): Promise<User> {
+        const { id, role } = payload;
         if (!id || !role) {
-            throw new UnauthorizedException("Unauthorized JWT claims");
+            throw new UnauthorizedException("Invalid JWT payload");
         }
 
         const user = await this.userService.getUserById(id);

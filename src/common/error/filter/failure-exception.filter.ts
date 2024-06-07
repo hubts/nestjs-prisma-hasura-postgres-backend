@@ -1,11 +1,11 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from "@nestjs/common";
 import { Request, Response } from "express";
-import { CustomLogger } from "../logger/custom.logger";
-import { ExpectedFailureException } from "./exception/expected-failure.exception";
+import { CustomLogger } from "../../logger/custom.logger";
+import { ExpectedFailureException } from "../exception/expected-failure.exception";
 import { IResponse } from "src/shared/response/interface/response.interface";
 
 @Catch(ExpectedFailureException)
-export class ExpectedExceptionFilter
+export class FailureExceptionFilter
     implements ExceptionFilter<ExpectedFailureException>
 {
     constructor(private logger: CustomLogger) {}
@@ -18,11 +18,10 @@ export class ExpectedExceptionFilter
 
         const status = exception.getStatus();
         const cause = <IResponse<null>>exception.cause;
-        const { message } = cause;
 
         // Error log saved, however, does not print by silent mode.
         this.logger.error(
-            message,
+            cause.message,
             JSON.stringify({
                 statusCode: status,
                 token: request.headers?.authorization,
@@ -35,7 +34,11 @@ export class ExpectedExceptionFilter
 
         // Return
         response.status(status).json({
-            ...cause,
+            success: cause.success,
+            code: cause.code,
+            message: cause.message,
+            name: cause.name,
+            data: cause.data,
             extensions: {
                 ip: request.ip,
                 path,

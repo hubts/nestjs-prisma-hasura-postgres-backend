@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { Role } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 
 /**
  * RolesGuard detects the role of outside actor.
@@ -25,18 +25,25 @@ export class RolesGuard implements CanActivate {
         }
 
         /**
-         * Inherited roles
+         * Inherited roles (if exists)
          */
 
         /**
          * Process
          */
+
         const request = context.switchToHttp().getRequest();
-        const user = request.user;
+        const user = request.user as User;
         if (!user) {
-            throw new UnauthorizedException("Unauthorized user access");
+            // This error occurs when JWT was not extracted.
+            // However, this guard is called after the extracting.
+            // Then, this condition may not be needed.
+            throw new UnauthorizedException("JWT not found");
         }
 
+        /**
+         * If this returns false, 403 Forbidden error occurs.
+         */
         return roles.some(role => role === user.role);
     }
 }

@@ -7,7 +7,7 @@ import {
     InternalServerErrorException,
 } from "@nestjs/common";
 import { Request, Response } from "express";
-import { CustomLogger } from "../logger/custom.logger";
+import { CustomLogger } from "../../logger/custom.logger";
 
 /**
  * HttpExceptionFilter filters error (or exception) from codes.
@@ -45,8 +45,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         >httpException.getResponse();
         const { statusCode, message, error } = httpResponse;
         const cause = httpException.cause;
-        console.log("httpResponse", httpResponse);
-        console.log("cause", cause);
 
         /**
          * Save error log.
@@ -69,9 +67,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
             this.logger.error(
                 message,
                 JSON.stringify({
+                    statusCode,
                     token: request.headers?.authorization,
                     body: request.body,
-                    statusCode,
                     error,
                     cause,
                 }),

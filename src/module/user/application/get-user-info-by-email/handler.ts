@@ -4,7 +4,7 @@ import { SuccessResponseDto } from "src/common/dto/success-response.dto";
 import { UserInfoDto } from "../../dto/user-info.dto";
 import { UserService } from "../../domain/user.service";
 import { ExpectedFailureException } from "src/common/error/exception/expected-failure.exception";
-import { SUCCESS_MESSAGE } from "src/shared/response/constants/success-message";
+import { SUCCESS_MESSAGE } from "src/shared/response/constant/success-message";
 
 @CommandHandler(GetUserInfoByEmailCommand)
 export class GetUserInfoByEmailHandler

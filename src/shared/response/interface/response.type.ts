@@ -1,4 +1,4 @@
-import { RESPONSE_CODE } from "../constants/response.code";
+import { RESPONSE_CODE } from "../constant/response.code";
 
 // Type of response code and name
 export type ResponseCode = keyof typeof RESPONSE_CODE;

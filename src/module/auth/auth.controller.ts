@@ -9,10 +9,12 @@ import { SuccessResponseDto } from "src/common/dto/success-response.dto";
 import { AuthTokenDto } from "./dto/auth-token.dto";
 import { JwtRolesAuth } from "src/common/decorator/auth/jwt-roles-auth.decorator";
 import { SuccessRes } from "src/common/decorator/api/success-res.decorator";
-import { SUCCESS_MESSAGE } from "src/shared/response/constants/success-message";
+import { SUCCESS_MESSAGE } from "src/shared/response/constant/success-message";
 import { FailureRes } from "src/common/decorator/api/failure-res.decorator";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { AuthRoute, IAuthApi } from "src/shared/api/auth.api";
+import { UserRefreshDto } from "./dto/user-refresh.dto";
+import { RefreshUserCommand } from "./application/refresh-user/command";
 
 @ApiTags(AuthRoute.prefix)
 @Controller(AuthRoute.prefix)
@@ -37,5 +39,15 @@ export class AuthController implements IAuthApi {
         @Body() body: UserLoginDto
     ): Promise<SuccessResponseDto<AuthTokenDto>> {
         return await this.commandBus.execute(new LoginUserCommand(body));
+    }
+
+    @Post(AuthRoute.subPath.refreshUser.name)
+    @JwtRolesAuth(AuthRoute.subPath.refreshUser.roles)
+    @SuccessRes(SUCCESS_MESSAGE.AUTH.LOGIN_USER, AuthTokenDto)
+    @FailureRes(["USER_NOT_FOUND", "INVALID_REFRESH_TOKEN"])
+    async refreshUser(
+        @Body() body: UserRefreshDto
+    ): Promise<SuccessResponseDto<AuthTokenDto>> {
+        return await this.commandBus.execute(new RefreshUserCommand(body));
     }
 }

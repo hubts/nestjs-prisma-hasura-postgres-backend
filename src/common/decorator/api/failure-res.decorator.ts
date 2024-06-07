@@ -4,10 +4,13 @@ import { IResponse } from "src/shared/response/interface/response.interface";
 import { FailureName } from "src/shared/response/interface/response.type";
 import { asFailureResponse } from "src/shared/response/util/as-failure-response";
 
-export const FailureRes = (failureNames: FailureName[]) => {
+export const FailureRes = (
+    failureNames: FailureName[],
+    status = HttpStatus.BAD_REQUEST
+) => {
     return applyDecorators(
         ApiResponse({
-            status: HttpStatus.BAD_REQUEST,
+            status,
             content: {
                 "application/json": {
                     examples: failureNames.reduce(

@@ -7,7 +7,7 @@ import { UserService } from "src/module/user/domain/user.service";
 import { AuthService } from "../../domain/auth.service";
 import { User } from "@prisma/client";
 import { checkUserPassword } from "src/module/user/domain/user-password-manager";
-import { SUCCESS_MESSAGE } from "src/shared/response/constants/success-message";
+import { SUCCESS_MESSAGE } from "src/shared/response/constant/success-message";
 import { SuccessResponseDto } from "src/common/dto/success-response.dto";
 import { AuthTokenDto } from "../../dto/auth-token.dto";
 import { ExpectedFailureException } from "src/common/error/exception/expected-failure.exception";
@@ -47,7 +47,7 @@ export class LoginUserHandler
 
         // 실행 1: 로그인 토큰 발행
         const { accessToken, refreshToken } =
-            await this.authService.issueAuthTokens(user);
+            this.authService.issueAuthTokens(user);
 
         // 종료
         this.log(user);

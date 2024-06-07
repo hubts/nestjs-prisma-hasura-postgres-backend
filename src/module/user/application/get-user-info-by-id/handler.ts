@@ -3,7 +3,7 @@ import { GetUserInfoByIdCommand } from "./command";
 import { UserService } from "../../domain/user.service";
 import { UserInfoDto } from "../../dto/user-info.dto";
 import { SuccessResponseDto } from "src/common/dto/success-response.dto";
-import { SUCCESS_MESSAGE } from "src/shared/response/constants/success-message";
+import { SUCCESS_MESSAGE } from "src/shared/response/constant/success-message";
 import { ExpectedFailureException } from "src/common/error/exception/expected-failure.exception";
 
 @CommandHandler(GetUserInfoByIdCommand)

@@ -1,5 +1,5 @@
-import { RESPONSE_CODE } from "../constants/response.code";
-import { FAILURE_MESSAGE } from "../constants/failure-message";
+import { RESPONSE_CODE } from "../constant/response.code";
+import { FAILURE_MESSAGE } from "../constant/failure-message";
 import { IResponse } from "../interface/response.interface";
 import { FailureCode, FailureName } from "../interface/response.type";
 

@@ -75,12 +75,14 @@ async function run() {
         await app.listen(serverConfig.port, async () => {
             let log = `Application [ ${packageJson.name}:${packageJson.version} ] is successfully started\n`;
             log += `< Information >\n`;
-            log += `Env                 : ${serverConfig.env}\n`;
-            log += `Application URL     : ${await app.getUrl()}\n`;
-            log += `External endpoint   : ${serverConfig.externalEndpoint}\n`;
-            log += `Swagger document    : ${serverConfig.externalEndpoint}/${swaggerPath}\n`;
-            log += `Healthy (overview)  : ${status.overview ? "✅" : "🚫"}\n`;
-            log += `Healthy (details)   : ${Object.keys(status.details)
+            log += `🌏 Env                 : ${serverConfig.env}\n`;
+            log += `🌏 Application URL     : ${await app.getUrl()}\n`;
+            log += `🌏 External endpoint   : ${serverConfig.externalEndpoint}\n`;
+            log += `🌏 Swagger document    : ${serverConfig.externalEndpoint}/${swaggerPath}\n`;
+            log += `🌏 Healthy (overview)  : ${
+                status.overview ? "✅" : "🚫"
+            }\n`;
+            log += `🌏 Healthy (details)   : ${Object.keys(status.details)
                 .map(key => `${key} ( ${status.details[key] ? "✅" : "🚫"} )`)
                 .join(", ")}`;
 
