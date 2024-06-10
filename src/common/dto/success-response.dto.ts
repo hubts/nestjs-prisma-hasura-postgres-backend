@@ -8,16 +8,20 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class SuccessResponseDto<T = null> implements IResponse<T> {
     @ApiProperty({
+        type: Boolean,
         example: true,
+        description: "Success or not",
     })
     success = true;
 
     @ApiProperty({
+        type: String,
         example: SuccessCode,
     })
     code = SuccessCode as ResponseCode;
 
     @ApiProperty({
+        type: String,
         example: SuccessName,
     })
     name = SuccessName;

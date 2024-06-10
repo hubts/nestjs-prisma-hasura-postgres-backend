@@ -59,7 +59,7 @@ export class HealthCheckController implements OnApplicationBootstrap {
 
     @Get()
     @ApiOperation({
-        summary: "Knocking to Check request headers and server settings",
+        summary: "Knocking to Check request headers and server setting.",
     })
     knock(@Req() req: Request) {
         return {

@@ -4,7 +4,7 @@ import { IResponse } from "../interface/response.interface";
 import { FailureCode, FailureName } from "../interface/response.type";
 
 export const asFailureResponse = (name: FailureName): IResponse<null> => {
-    const code = Number(
+    const code = String(
         Object.entries(RESPONSE_CODE).find(([, val]) => val === name)?.[0] ?? 0
     ) as FailureCode;
     const message = FAILURE_MESSAGE[name];

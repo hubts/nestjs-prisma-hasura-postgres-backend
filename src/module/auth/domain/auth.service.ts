@@ -31,9 +31,7 @@ export class AuthService {
      * @returns The hash of refresh token key.
      */
     private getRefreshTokenKey(refreshToken: string, id: string): string {
-        return CryptoExtension.hashPassword(
-            `${REFRESH_TOKEN_KEY_PREFIX}:${refreshToken}:${id}`
-        );
+        return `${REFRESH_TOKEN_KEY_PREFIX}:${refreshToken}:${id}`;
     }
 
     /**
@@ -59,8 +57,8 @@ export class AuthService {
         const refreshToken = Random.hex(REFRESH_TOKEN_LENGTH);
         const refreshTokenKey = this.getRefreshTokenKey(refreshToken, id);
         this.cacheService.set(
-            refreshTokenKey,
-            accessToken,
+            refreshToken,
+            CryptoExtension.hashPassword(refreshTokenKey),
             this.jwtConfig.refreshTokenExpiresIn
         );
 
@@ -80,7 +78,10 @@ export class AuthService {
         refreshToken: string,
         id: string
     ): Promise<boolean> {
+        const value = await this.cacheService.get(refreshToken);
+        if (!value) return false;
+
         const refreshTokenKey = this.getRefreshTokenKey(refreshToken, id);
-        return await this.cacheService.exists(refreshTokenKey);
+        return CryptoExtension.comparePassword(refreshTokenKey, value);
     }
 }

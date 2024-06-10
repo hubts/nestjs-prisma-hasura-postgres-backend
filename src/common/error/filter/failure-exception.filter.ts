@@ -35,11 +35,12 @@ export class FailureExceptionFilter
         // Return
         response.status(status).json({
             success: cause.success,
-            code: cause.code,
             message: cause.message,
+            code: cause.code,
             name: cause.name,
             data: cause.data,
             extensions: {
+                cause,
                 ip: request.ip,
                 path,
                 timestamp: new Date().toISOString(),

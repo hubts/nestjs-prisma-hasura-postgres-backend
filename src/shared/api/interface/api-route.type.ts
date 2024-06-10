@@ -6,6 +6,8 @@ export type IApiRoute<T> = {
         [key in keyof T]: {
             name: string;
             roles: Role[];
+            summary: string;
+            description: string[];
         };
     };
 };

@@ -17,6 +17,7 @@ import { UserEmailParam } from "./dto/user-email.param";
 import { GetUserInfoByEmailCommand } from "./application/get-user-info-by-email/command";
 import { MyUserInfoDto } from "./dto/my-info.dto";
 import { GetMyInfoCommand } from "./application/get-my-info/command";
+import { ApiSpec } from "src/common/decorator/api/api-spec.decorator";
 
 @ApiTags(UserRoute.prefix)
 @Controller(UserRoute.prefix)
@@ -25,8 +26,16 @@ export class UserController implements IUserApi {
 
     @Get(UserRoute.subPath.getUserInfoById.name)
     @JwtRolesAuth(UserRoute.subPath.getUserInfoById.roles)
-    @SuccessRes(SUCCESS_MESSAGE.USER.FOUND, UserInfoDto)
-    @FailureRes(["USER_NOT_FOUND"])
+    @ApiSpec({
+        summary: UserRoute.subPath.getUserInfoById.summary,
+        description: UserRoute.subPath.getUserInfoById.description,
+    })
+    @SuccessRes(SUCCESS_MESSAGE.USER.FOUND, UserInfoDto, {
+        description: "Get public information of user by ID.",
+    })
+    @FailureRes([
+        { name: "USER_NOT_FOUND", description: "If user does not exist." },
+    ])
     async getUserInfoById(
         @Param() params: UserIdParam
     ): Promise<SuccessResponseDto<UserInfoDto>> {
@@ -37,8 +46,16 @@ export class UserController implements IUserApi {
 
     @Get(UserRoute.subPath.getUserInfoByEmail.name)
     @JwtRolesAuth(UserRoute.subPath.getUserInfoByEmail.roles)
-    @SuccessRes(SUCCESS_MESSAGE.USER.FOUND, UserInfoDto)
-    @FailureRes(["USER_NOT_FOUND"])
+    @ApiSpec({
+        summary: UserRoute.subPath.getUserInfoByEmail.summary,
+        description: UserRoute.subPath.getUserInfoByEmail.description,
+    })
+    @SuccessRes(SUCCESS_MESSAGE.USER.FOUND, UserInfoDto, {
+        description: "Get public information of user by email.",
+    })
+    @FailureRes([
+        { name: "USER_NOT_FOUND", description: "If user does not exist." },
+    ])
     async getUserInfoByEmail(
         @Param() params: UserEmailParam
     ): Promise<SuccessResponseDto<UserInfoDto>> {
@@ -49,7 +66,13 @@ export class UserController implements IUserApi {
 
     @Get(UserRoute.subPath.getMyInfo.name)
     @JwtRolesAuth(UserRoute.subPath.getMyInfo.roles)
-    @SuccessRes(SUCCESS_MESSAGE.USER.FOUND, MyUserInfoDto)
+    @ApiSpec({
+        summary: UserRoute.subPath.getMyInfo.summary,
+        description: UserRoute.subPath.getMyInfo.description,
+    })
+    @SuccessRes(SUCCESS_MESSAGE.USER.FOUND, MyUserInfoDto, {
+        description: "Get my user information.",
+    })
     async getMyInfo(
         @Requestor() user: User
     ): Promise<SuccessResponseDto<MyUserInfoDto>> {

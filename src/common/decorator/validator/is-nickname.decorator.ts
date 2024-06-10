@@ -1,5 +1,8 @@
 import { registerDecorator, ValidationOptions } from "class-validator";
-import { USER_PROPERTY_LENGTH } from "src/shared/constant/user.constant";
+import {
+    USER_PROPERTY_LENGTH,
+    USER_PROPERTY_PATTERN,
+} from "src/shared/constant/user.constant";
 
 export function IsNickname(validationOptions?: ValidationOptions) {
     return function (object: Record<string, any>, propertyName: string) {
@@ -13,9 +16,7 @@ export function IsNickname(validationOptions?: ValidationOptions) {
             },
             validator: {
                 validate(value: string): boolean {
-                    const pattern = new RegExp(
-                        `^[a-z|0-9]{${USER_PROPERTY_LENGTH.NICKNAME.MIN},${USER_PROPERTY_LENGTH.NICKNAME.MAX}}$`
-                    );
+                    const pattern = new RegExp(USER_PROPERTY_PATTERN.NICKNAME);
                     return pattern.test(value);
                 },
             },
