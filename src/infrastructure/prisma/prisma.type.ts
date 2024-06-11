@@ -1,5 +1,5 @@
-import { Prisma } from "@prisma/client";
-// import * as runtime from "@prisma/client/runtime/library";
+import { ExtendedPrismaClient } from "./extended-prisma-client";
 
-export type PrismaTxClient = Prisma.TransactionClient;
-// Omit<PrismaClient, runtime.ITXClientDenyList>;
+export type PrismaTxClient = Parameters<
+    Parameters<ExtendedPrismaClient["$transaction"]>[0]
+>[0];

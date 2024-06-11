@@ -4,28 +4,30 @@ import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 
 @Injectable()
 export class UserRepository {
-    constructor(private prisma: PrismaService) {}
+    constructor(private readonly prisma: PrismaService) {}
 
     async findUser(where: Prisma.UserWhereUniqueInput) {
-        return await this.prisma.user.findUnique({ where });
+        return await this.prisma.client.user.findUnique({ where });
     }
 
     async findUserByMobile(mobile: string) {
-        return await this.prisma.user.findFirst({
+        return await this.prisma.client.user.findFirst({
             where: { Profile: { mobile } },
         });
     }
 
     async findManyUsers(where: Prisma.UserWhereInput) {
-        return await this.prisma.user.findMany({ where });
+        return await this.prisma.client.user.findMany({ where });
     }
 
     async findProfile(userId: string) {
-        return await this.prisma.profile.findUnique({ where: { userId } });
+        return await this.prisma.client.profile.findUnique({
+            where: { userId },
+        });
     }
 
     async findUserWithProfileById(id: string) {
-        return await this.prisma.user.findFirst({
+        return await this.prisma.client.user.findFirst({
             where: { id },
             include: { Profile: true },
         });
@@ -54,11 +56,11 @@ export class UserRepository {
     }
 
     async createUser(data: Prisma.UserCreateInput) {
-        return await PrismaService.getTransaction().user.create({ data });
+        return await this.prisma.getTransaction().user.create({ data });
     }
 
     async updateUser(id: string, data: Prisma.UserUpdateInput) {
-        return await PrismaService.getTransaction().user.update({
+        return await this.prisma.getTransaction().user.update({
             where: { id },
             data,
         });
@@ -68,9 +70,13 @@ export class UserRepository {
         userId: string,
         data: Prisma.ProfileUpdateInput
     ) {
-        return await PrismaService.getTransaction().profile.update({
+        return await this.prisma.getTransaction().profile.update({
             where: { userId },
             data,
         });
+    }
+
+    async deleteUser(id: string) {
+        return await this.prisma.getTransaction().user.delete({ id });
     }
 }

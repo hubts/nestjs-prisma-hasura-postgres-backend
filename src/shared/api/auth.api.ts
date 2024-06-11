@@ -36,6 +36,15 @@ export const AuthRoute: IApiRoute<IAuthApi> = {
                 "You will get new access and refresh tokens.",
             ],
         },
+        deactivateUser: {
+            name: "user/deactivate",
+            roles: [],
+            summary: "Deactivate user for test to soft-delete the user.",
+            description: [
+                "This feature is only for test.",
+                "Anyone can deactivate the user by soft-delete features.",
+            ],
+        },
     },
 };
 
@@ -45,6 +54,7 @@ export interface IAuthApi {
     refreshUser: (
         input: IUserRefreshDto
     ) => Promise<IResponse<IAuthTokenResult>>;
+    deactivateUser: (input: IUserLoginDto) => Promise<IResponse<null>>;
 }
 
 export interface IUserLoginDto {

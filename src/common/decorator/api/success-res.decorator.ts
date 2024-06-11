@@ -17,11 +17,13 @@ interface SuccessResOptions {
  */
 export const SuccessRes = (
     message: string,
-    genericDataType: Type,
+    genericDataType: Type | null,
     options?: SuccessResOptions
 ) => {
     return applyDecorators(
-        ApiExtraModels(SuccessResponseDto, genericDataType),
+        !!genericDataType
+            ? ApiExtraModels(SuccessResponseDto, genericDataType)
+            : ApiExtraModels(SuccessResponseDto),
         ApiResponse({
             status: options?.status ?? HttpStatus.OK,
             description: options?.description ?? "Successful response",
@@ -35,9 +37,13 @@ export const SuccessRes = (
                                     message: {
                                         example: message,
                                     },
-                                    data: {
-                                        $ref: getSchemaPath(genericDataType),
-                                    },
+                                    data: !!genericDataType
+                                        ? {
+                                              $ref: getSchemaPath(
+                                                  genericDataType
+                                              ),
+                                          }
+                                        : { example: null },
                                 },
                             },
                         ],

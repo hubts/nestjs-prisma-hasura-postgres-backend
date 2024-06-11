@@ -1,14 +1,13 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
-import { Prisma, PrismaClient } from "@prisma/client";
 import { PrismaTxClient } from "./prisma.type";
+import { PrismaClientExtended } from "./extended-prisma-client";
 
 @Injectable()
 export class PrismaService
-    extends PrismaClient<Prisma.PrismaClientOptions, "query">
+    extends PrismaClientExtended
     implements OnModuleInit, OnModuleDestroy
 {
-    private static instance: PrismaService;
-    private static tx: PrismaTxClient;
+    private tx: PrismaTxClient;
 
     constructor() {
         super({
@@ -34,18 +33,11 @@ export class PrismaService
         await this.$disconnect();
     }
 
-    static getInstance() {
-        if (!PrismaService.instance) {
-            PrismaService.instance = new PrismaService();
-        }
-        return PrismaService.instance;
-    }
-
-    static beginTransaction(tx: PrismaTxClient) {
+    beginTransaction(tx: PrismaTxClient) {
         this.tx = tx;
     }
 
-    static getTransaction() {
-        return this.tx ?? this.getInstance();
+    getTransaction() {
+        return this.tx ?? this.client;
     }
 }

@@ -1,5 +1,5 @@
 import { ApiTags } from "@nestjs/swagger";
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { JoinUserCommand } from "./application/join-user/command";
 import { LoginUserCommand } from "./application/login-user/command";
@@ -15,6 +15,7 @@ import { AuthRoute, IAuthApi } from "src/shared/api/auth.api";
 import { UserRefreshDto } from "./dto/user-refresh.dto";
 import { RefreshUserCommand } from "./application/refresh-user/command";
 import { ApiSpec } from "src/common/decorator/api/api-spec.decorator";
+import { DeactivateUserCommand } from "./application/deactivate-user/command";
 
 @ApiTags(AuthRoute.prefix)
 @Controller(AuthRoute.prefix)
@@ -29,6 +30,7 @@ export class AuthController implements IAuthApi {
         description: AuthRoute.subPath.joinUser.description,
     })
     @SuccessRes(SUCCESS_MESSAGE.AUTH.JOIN_USER, AuthTokenDto, {
+        status: HttpStatus.CREATED,
         description:
             "User will be created, and access and refresh tokens will be served.",
     })
@@ -54,6 +56,7 @@ export class AuthController implements IAuthApi {
         description: AuthRoute.subPath.loginUser.description,
     })
     @SuccessRes(SUCCESS_MESSAGE.AUTH.LOGIN_USER, AuthTokenDto, {
+        status: HttpStatus.CREATED,
         description: "Successful login returns access and refresh tokens.",
     })
     @FailureRes([
@@ -77,6 +80,7 @@ export class AuthController implements IAuthApi {
         description: AuthRoute.subPath.refreshUser.description,
     })
     @SuccessRes(SUCCESS_MESSAGE.AUTH.LOGIN_USER, AuthTokenDto, {
+        status: HttpStatus.CREATED,
         description: "New access and refresh tokens are served.",
     })
     @FailureRes([
@@ -90,5 +94,29 @@ export class AuthController implements IAuthApi {
         @Body() body: UserRefreshDto
     ): Promise<SuccessResponseDto<AuthTokenDto>> {
         return await this.commandBus.execute(new RefreshUserCommand(body));
+    }
+
+    // Deactivate user
+    @Post(AuthRoute.subPath.deactivateUser.name)
+    @JwtRolesAuth(AuthRoute.subPath.deactivateUser.roles)
+    @ApiSpec({
+        summary: AuthRoute.subPath.deactivateUser.summary,
+        description: AuthRoute.subPath.deactivateUser.description,
+    })
+    @SuccessRes(SUCCESS_MESSAGE.AUTH.USER_DEACTIVATED, null, {
+        status: HttpStatus.CREATED,
+        description: "User will be deactivated.",
+    })
+    @FailureRes([
+        { name: "UNREGISTERED_EMAIL", description: "Unknown email." },
+        {
+            name: "WRONG_PASSWORD",
+            description: "Email and password does not match",
+        },
+    ])
+    async deactivateUser(
+        @Body() body: UserLoginDto
+    ): Promise<SuccessResponseDto> {
+        return await this.commandBus.execute(new DeactivateUserCommand(body));
     }
 }

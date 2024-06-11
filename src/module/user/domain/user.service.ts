@@ -78,4 +78,8 @@ export class UserService {
             mobile: newMobile,
         });
     }
+
+    async deactivate(id: string) {
+        return await this.userRepo.deleteUser(id);
+    }
 }

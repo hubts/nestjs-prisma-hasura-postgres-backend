@@ -4,9 +4,9 @@ import { InternalServerErrorException } from "@nestjs/common";
 
 export async function transaction<R>(logic: () => R) {
     try {
-        const prisma = PrismaService.getInstance();
-        return await prisma.$transaction(async tx => {
-            PrismaService.beginTransaction(tx);
+        const prisma = new PrismaService();
+        return await prisma.client.$transaction(async tx => {
+            prisma.beginTransaction(tx);
             return logic();
         });
     } catch (e) {

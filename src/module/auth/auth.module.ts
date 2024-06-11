@@ -9,6 +9,7 @@ import { JwtConfigService } from "src/config/service/jwt.config.service";
 import { LoginUserHandler } from "./application/login-user/handler";
 import { UserModule } from "../user/user.module";
 import { RefreshUserHandler } from "./application/refresh-user/handler";
+import { DeactivateUserHandler } from "./application/deactivate-user/handler";
 
 const providers = [
     AuthService,
@@ -16,6 +17,7 @@ const providers = [
     JoinUserHandler,
     LoginUserHandler,
     RefreshUserHandler,
+    DeactivateUserHandler,
 ];
 
 @Module({
