@@ -77,6 +77,7 @@ export class UserRepository {
     }
 
     async deleteUser(id: string) {
+        await this.prisma.getTransaction().profile.delete({ userId: id });
         return await this.prisma.getTransaction().user.delete({ id });
     }
 }

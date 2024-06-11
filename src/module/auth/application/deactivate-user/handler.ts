@@ -42,8 +42,7 @@ export class DeactivateUserHandler
         /** 실행부 */
 
         // 실행 1: 유저 비활성화(Soft-delete)
-        const result = await this.userService.deactivate(user.id);
-        console.log("result", result);
+        await this.userService.deactivate(user.id);
 
         // 종료
         this.log(user);
