@@ -10,4 +10,4 @@ awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}'  jwtRS256.key.pub
 echo "\n";
 
 # Delete two files generated
-rm jwtRS256.key jwtRS256.key.pub
+# rm jwtRS256.key jwtRS256.key.pub
