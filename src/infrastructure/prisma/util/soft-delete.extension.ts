@@ -5,7 +5,7 @@ export const softDelete = Prisma.defineExtension({
     name: "softDelete",
     model: {
         $allModels: {
-            async delete<M, A>(
+            async softDelete<M, A>(
                 this: M,
                 where: Prisma.Args<M, "delete">["where"]
             ): Promise<Prisma.Result<M, A, "update">> {
@@ -26,7 +26,7 @@ export const softDeleteMany = Prisma.defineExtension({
     name: "softDeleteMany",
     model: {
         $allModels: {
-            async deleteMany<M, A>(
+            async softDeleteMany<M, A>(
                 this: M,
                 where: Prisma.Args<M, "deleteMany">["where"]
             ): Promise<Prisma.Result<M, A, "updateMany">> {

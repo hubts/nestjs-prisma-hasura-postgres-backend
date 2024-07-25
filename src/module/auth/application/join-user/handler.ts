@@ -60,7 +60,7 @@ export class JoinUserHandler
 
         // 실행 2: 로그인 토큰 발행
         const { accessToken, refreshToken } =
-            await this.authService.issueAuthTokens(newUser);
+            this.authService.issueAuthTokens(newUser);
 
         // 종료
         this.log(newUser);
