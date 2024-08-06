@@ -27,7 +27,8 @@ build() {
     if [ -z "$existing_image" ]; then
         echo "> 🐳 [ $IMAGE_FULLNAME ] image build started"
         
-        docker build --rm -t $IMAGE_FULLNAME $RUN_DIR
+        # docker build --rm -t $IMAGE_FULLNAME $RUN_DIR
+        docker build --rm --platform linux/amd64 -t $IMAGE_FULLNAME $RUN_DIR
         if (( $? != 0 )); then
             echo "> 😅 [ $IMAGE_FULLNAME ] image build failed"
             exit 1
