@@ -95,6 +95,7 @@ docker run -dit \
     --name=$APP_NAME \
     --env-file $ENV_FILE \
     -p 8000:$PORT \
+    --add-host host.docker.internal:host-gateway \
     $IMAGE_FULLNAME
 
 ###############################################
